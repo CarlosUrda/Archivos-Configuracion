@@ -70,9 +70,10 @@ set showmode
 set showmatch
 set matchtime=2
 " Realiza scroll para mostrar el corchete emparejado.
-inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
-inoremap ] ]<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
-inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+" ESTÁ IGNORÁNDOLO Y NO SÉ POR QUÉ
+"inoremap } }<Esc><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap ] ]<Esc><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap ) )<Esc><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 
 " changes special characters in search patterns (default)
 " set magic
