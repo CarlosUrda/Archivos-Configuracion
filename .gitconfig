@@ -1,0 +1,20 @@
+[color]
+    ui = auto
+    status = auto
+    branch = auto
+    interactive = auto
+    diff = auto
+[core]
+	editor = vim
+[push]
+	default = upstream
+[merge]
+	conflictstyle = diff3
+	tool = vimdiff
+[user]
+	name = Carlos A. Gómez Urda
+	email = carlosurda@yahoo.es
+[branch]
+	autosetuprebase = always
+[credential]
+	helper = cache
