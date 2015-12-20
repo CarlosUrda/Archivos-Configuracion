@@ -59,3 +59,8 @@ export LC_ALL=es_ES.UTF-8
 export LC_CTYPE=es_ES.UTF-8
 export LANG=es_ES.UTF-8
 export LANGUAGE=es_ES.UTF-8
+
+# Colores a los directorios y archivos
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+alias ls='ls $LS_OPTIONS'
