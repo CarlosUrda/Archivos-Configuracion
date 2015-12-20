@@ -50,8 +50,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export PS1="$purple\u$green\$(__git_ps1)$red \W $ $reset"
 
 #Alias para Sublime Text
-alias subl="/windows/D/sublime_text_3/sublime_text"
-alias smartgit="/windows/D/smartgit/bin/smartgit.sh"
+#alias smartgit="/windows/D/smartgit/bin/smartgit.sh"
 
 set meta-flag on        # conservar bit 8 en entrada de teclado
 set output-meta on      # conservar bit 8 en salida por terminal
