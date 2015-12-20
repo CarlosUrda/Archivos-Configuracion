@@ -5,16 +5,16 @@
     interactive = auto
     diff = auto
 [core]
-	editor = vim
+    editor = vim
 [push]
-	default = upstream
+    default = upstream
 [merge]
-	conflictstyle = diff3
-	tool = vimdiff
+    conflictstyle = diff3
+    tool = vimdiff
 [user]
-	name = Carlos A. Gómez Urda
-	email = carlosurda@yahoo.es
+    name = Carlos A. Gómez Urda
+    email = carlosurda@yahoo.es
 [branch]
-	autosetuprebase = always
+    autosetuprebase = always
 [credential]
-	helper = cache
+    helper = cache
