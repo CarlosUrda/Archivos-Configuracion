@@ -1,5 +1,5 @@
 # Archivos de Configuración
-Archivos de Configuración de distintas herramientas usadas: Vim, Git, etc.
+Archivos de Configuración de distintas herramientas usadas: Vim, Git, Bash, etc.
 
 Los archivos se pueden distribuir opcionalmente de la siguiente manera:
 
