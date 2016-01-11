@@ -1,3 +1,6 @@
+" get easier to use and more user friendly vim defaults
+" CAUTION: This option breaks some vi compatibility. 
+"          Switch it off if you prefer real vi compatibility
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -77,11 +80,6 @@ set matchtime=2
 
 " Required to be able to use keypad keys and map missed escape sequences
 set esckeys
-
-" get easier to use and more user friendly vim defaults
-" CAUTION: This option breaks some vi compatibility. 
-"          Switch it off if you prefer real vi compatibility
-set nocompatible
 
 " allow backspacing over everything in insert mode 
 set backspace=indent,eol,start
