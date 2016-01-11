@@ -20,4 +20,5 @@ Los archivos se pueden distribuir opcionalmente de la siguiente manera:
 ~/.vim/autoload/acp.vim
 
 Para poder usar el gestor de plugins Vundle hay que instalarlo previamente mediante:
+
 $ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
