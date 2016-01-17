@@ -34,7 +34,8 @@ Plugin 'wakatime/vim-wakatime'
 " Autocomplete
 Plugin 'AutoComplPop'
 
-" Búsqueda completa de archivos
+" Búsqueda completa de archivos 
+" Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
 " All of your Plugins must be added before the following line
