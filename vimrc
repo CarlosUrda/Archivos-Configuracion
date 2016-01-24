@@ -38,6 +38,9 @@ Plugin 'AutoComplPop'
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
+" Autocompletar código en java
+Plugin 'javacomplete'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 " Indentar automáticamente dependiendo del tipo de archivo.
