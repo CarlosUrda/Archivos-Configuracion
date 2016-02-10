@@ -41,6 +41,9 @@ Plugin 'ctrlp.vim'
 " Autocompletar código en java
 Plugin 'javacomplete'
 
+Plugin 'HTML5-Syntax-File'
+Plugin 'JavaScript-syntax-add-E4X-support'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 " Indentar automáticamente dependiendo del tipo de archivo.
