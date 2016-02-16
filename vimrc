@@ -42,7 +42,11 @@ Plugin 'ctrlp.vim'
 Plugin 'javacomplete'
 
 Plugin 'HTML5-Syntax-File'
-Plugin 'JavaScript-syntax-add-E4X-support'
+
+Plugin 'JavaScript-syntax'
+
+Plugin 'JavaAspect'
+Plugin 'java.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
