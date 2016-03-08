@@ -47,6 +47,7 @@ Plugin 'JavaScript-syntax'
 
 Plugin 'JavaAspect'
 Plugin 'java.vim'
+Plugin 'pythoncomplete'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
