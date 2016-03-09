@@ -49,6 +49,7 @@ Plugin 'JavaAspect'
 Plugin 'java.vim'
 Plugin 'pythoncomplete'
 Plugin 'HTML-AutoCloseTag'
+Plugin 'css3-syntax-plus'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
