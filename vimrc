@@ -38,10 +38,8 @@ Plugin 'ctrlp.vim'
 " Autocompletar código en java
 Plugin 'javacomplete'
 Plugin 'Javascript-OmniCompletion-with-YUI-and-j'
-
+Plugin 'javascript.vim'
 Plugin 'HTML5-Syntax-File'
-
-Plugin 'JavaScript-syntax'
 
 Plugin 'HTML-AutoCloseTag'
 Plugin 'css3-syntax-plus'
