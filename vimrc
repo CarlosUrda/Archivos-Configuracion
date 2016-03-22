@@ -36,10 +36,21 @@ Plugin 'wakatime/vim-wakatime'
 Plugin 'ctrlp.vim'
 
 " Autocompletar código en java
-Plugin 'javacomplete'
-Plugin 'JavaScript-syntax-add-E4X-support'
-Plugin 'HTML5-Syntax-File'
+Plugin 'Valloric/YouCompleteMe'
+" These are the tweaks I apply to YCM's config, you don't need them but they
+" might help.
+" " YCM gives you popups and splits by default that some people might not like,
+" so these should tidy it up a bit for you.
+let g:ycm_add_preview_to_completeopt=0
+let g:ycm_confirm_extra_conf=0
+set completeopt-=preview
 
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'pangloss/vim-javascript'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'Raimondi/delimitMate'
+
+Plugin 'HTML5-Syntax-File'
 Plugin 'HTML-AutoCloseTag'
 Plugin 'css3-syntax-plus'
 
@@ -64,6 +75,7 @@ set modifiable
 
 " enable syntax highlighting
 syntax on
+set t_Co=256
 
 " automatically indent lines (default)
 set autoindent
