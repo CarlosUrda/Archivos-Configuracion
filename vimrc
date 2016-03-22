@@ -31,21 +31,18 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " WakaTime Plugin
 Plugin 'wakatime/vim-wakatime'
 
-" Autocomplete
-"Plugin 'AutoComplPop'
-
 " Búsqueda completa de archivos 
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
 " Autocompletar código en java
 Plugin 'javacomplete'
+Plugin 'Javascript-OmniCompletion-with-YUI-and-j'
 
 Plugin 'HTML5-Syntax-File'
 
 Plugin 'JavaScript-syntax'
 
-Plugin 'pythoncomplete'
 Plugin 'HTML-AutoCloseTag'
 Plugin 'css3-syntax-plus'
 
