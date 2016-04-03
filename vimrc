@@ -30,9 +30,12 @@ Plugin 'wakatime/vim-wakatime'
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
+Plugin 'Indent-Guides' 
+Plugin 'SyntaxComplete'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
+
 " Indentar automáticamente dependiendo del tipo de archivo.
 filetype plugin indent on    " required
 " To ignore plugin indent changes, instead use:
