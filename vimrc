@@ -31,6 +31,7 @@ Plugin 'wakatime/vim-wakatime'
 Plugin 'ctrlp.vim'
 
 Plugin 'Indent-Guides' 
+Plugin 'Yggdroot/indentLine'
 Plugin 'SyntaxComplete'
 
 " All of your Plugins must be added before the following line
