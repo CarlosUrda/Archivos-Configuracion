@@ -30,9 +30,24 @@ Plugin 'wakatime/vim-wakatime'
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
-Plugin 'Indent-Guides' 
+" Líneas verticales de indentado.
 Plugin 'Yggdroot/indentLine'
+
 Plugin 'SyntaxComplete'
+
+" Autocompletar
+Plugin 'valloric/youcompleteme'
+Plugin 'marijnh/tern_for_vim'
+
+" JavaScript
+Plugin 'pangloss/vim-javascript'
+
+" Python
+Plugin 'davidhalter/jedi-vim'
+
+" HTML5, CSS
+Plugin 'othree/html5.vim'
+Plugin 'hail2u/vim-css3-syntax'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -138,3 +153,14 @@ set encoding=utf-8 fileencoding=utf8 termencoding=utf-8
 
 " Mostrar los número de línea.
 set number
+
+" Cambiar colores del Plugin indentLine
+" Vim
+let g:indentLine_color_term = 239
+"
+" "GVim
+let g:indentLine_color_gui = '#A4E57E'
+"
+" " none X terminal
+let g:indentLine_color_tty_light = 7 " (default: 4)
+let g:indentLine_color_dark = 1 " (default: 2)
