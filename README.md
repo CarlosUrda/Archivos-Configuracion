@@ -9,7 +9,7 @@ Los archivos se pueden distribuir opcionalmente de la siguiente manera:
 
 ~/.gitconfig
 
-~/git-completion.sh
+~/git-completion.bash
 
 ~/git-prompt.sh
 
