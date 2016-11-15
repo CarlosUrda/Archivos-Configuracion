@@ -39,6 +39,10 @@ Plugin 'SyntaxComplete'
 Plugin 'valloric/youcompleteme'
 Plugin 'marijnh/tern_for_vim'
 
+" Explorador de archivos como un árbol.
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+
 " JavaScript
 Plugin 'pangloss/vim-javascript'
 
@@ -48,6 +52,19 @@ Plugin 'davidhalter/jedi-vim'
 " HTML5, CSS
 Plugin 'othree/html5.vim'
 Plugin 'hail2u/vim-css3-syntax'
+
+" Code Folding (Ocultar bloques de código)
+Plugin 'tmhedberg/SimpylFold'
+
+" Auto indentación.
+Plugin 'vim-scripts/indentpython.vim'
+
+" Comprobar sintaxis
+Plugin 'scrooloose/syntastic'
+Plugin 'nvie/vim-flake8'
+
+" Línea base de información.
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -71,6 +88,7 @@ set modifiable
 
 " enable syntax highlighting
 syntax on
+let python_highlight_all=1
 set t_Co=256
 
 " automatically indent lines (default)
@@ -121,10 +139,22 @@ autocmd BufNewFile      *.spec  call SKEL_spec()
 " /etc/vimrc ends here
 
 " Cambiar espacios por tabulación
-set expandtab
-set tabstop=4
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
+
 retab
-set shiftwidth=4
+set expandtab
+
+" Code folding (comando za para desplegar/plegar código agrupado).
+set foldmethod=indent
+set foldlevel=99
 
 " Mantener los cambios realizados en un buffer cuando se alterna a otro
 set hidden
