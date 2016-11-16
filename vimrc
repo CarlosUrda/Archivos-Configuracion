@@ -151,6 +151,7 @@ au BufNewFile,BufRead *.js, *.html, *.css
 
 retab
 set expandtab
+set fileformat=unix
 
 " Code folding (comando za para desplegar/plegar código agrupado).
 set foldmethod=indent
