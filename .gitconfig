@@ -11,6 +11,8 @@
 [merge]
     conflictstyle = diff3
     tool = vimdiff
+[mergetool]
+    prompt = false
 [user]
     name = Carlos A. Gómez Urda
     email = carlosurda@yahoo.es
@@ -18,3 +20,9 @@
     autosetuprebase = always
 [credential]
     helper = cache
+[diff]
+    tool = vimdiff
+[difftool]
+    prompt = false
+[alias]
+    d = difftool
