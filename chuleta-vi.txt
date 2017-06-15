@@ -1,0 +1,153 @@
+COMANDOS NATIVOS EX
+- :set wm=[n]		// Margen derecho n donde se inserta un salto de línea automático.
+- :set nu \ set nonu	// Visualizar / quitar los números de línea.
+- :set nowrapscan	// Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
+- :preserve / pre	// Preservar en un buffer de autoguardado el estado actual del archivo.
+- :vi			// Volver al editor vi desde ex.
+- :[n]+[m] \ [n]-[m]	// Posición relativa de m líneas hacia adelante \ atrás desde la línea n. Si no hay n la posiciónrelativa es a partir de la línea actual.
+- :[n],[m]		// Líneas desde la posición n a la m. Si la m es posición relativa (+/-) se calcula a partir de la línea actual.
+- :[n];[m]		// Líneas desde la posición n a la m. Si la m es posición relativa (+/-) se calcula a partir de n.
+			// Si no hay m es por defecto la línea n.
+- :[n]			// Mover el cursor a la línea n.
+- :/patrón/		// Línea donde se encuentra la primera ocurrencia del patrón.
+- :.			// Línea actual del archivo.
+- :$			// Última línea del archivo.
+- :%			// Todas las líneas del archivo.
+- :args / ar		// Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
+- :n 			// Mostrar el buffer del siguiente archivo de la línea de comandos. 
+- :rewind / rew		// Mostrar el buffer del primer archivo de la línea de comandos.
+- :e archivo		// Abrir un archivo cargando su contenido en un nuevo buffer.
+- :e #			// Mostrar el buffer asignado con la etiqueta #. % equivale al nombre del archivo del buffer actual.
+- :e!			// Descarta los cambios realizados en el buffer actual volviendo a la última versión guardada.
+- :buffer [n] / b [n]	// Mostrar el buffer n
+- :buffers / ls		// Mostrar un listado de todos los buffers.
+- :bnext / bn		// Mostrar el siguiente buffer de la lista.
+- :bprevious / bp	// Mostrar el buffer previo de la lista.
+- :bfirst / bf		// Mostrar el primer buffer de la lista.
+- :blast / bl		// Mostrar el último buffer de la lista.
+- :bdelete / bd		// Eliminar el buffer.
+// Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
+- :d			// Borrar la línea actual.
+- :m[l]			// Mover la línea actual a la posición siguiente a la línea l.
+- :co[l] \ t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
+- :# / p		// Mostrar temporalmente la línea actual.
+- :s/p1/p2/		// Sustituir en la línea actual el primer patrón encontrado p1 por p2.
+- :s/p1/p2/g		// Sustituir en la línea actual todo patrón p1 por p2.
+- :=			// Mostrar el número total de líneas del archivo.
+- :[n]=			// Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
+- :g/patrón		// Mover a la última ocurrencia del patrón en el archivo. Puede indicarse antes las líneas a buscar.
+- :g/patrón/p		// Mostrar todas las líneas que contienen el patrón.
+- :g/patrón/nu		// Mostrar todas las líneas que contienen el patrón junto con el número de línea.
+- :g!/patrón		// Mostrar todas las líneas que no contienen el patrón. 
+- :c1 | c2		// Combinar varios comandos.
+- :w [archivo]		// Guardar el buffer en el archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
+- :w >> archivo		// Guardar el buffer al final del archivo.
+- :q			// Quitar vi y volver a la terminal.
+- :x			// Guardar (si ha sido modificado el archivo) y salir
+- :comando!		// Evita el aviso que pueda salir al ejecutar el comando.
+- :read [a] / r	[a]     // Leer el contenido del archivo a y añadirlo a partir de la línea actual.
+- :ya [n]		// Copiar la línea actual en el buffer con letra n (si n es un dígito copia n líneas desde la actual).
+- :pu [n]		// Pegar después de la línea actual el contenido del buffer n (puede ser dígito o letra).
+
+
+COMANDOS NATIVOS VI
+- ZZ		// Guardar y salir.
+- [n]h		// Mover el cursor [n] posición[es] a la izquierda.
+- [n]l		// Mover el cursor [n] posición[es] a la derecha.
+- [n]j		// Mover el cursor [n] posición[es] hacia abajo. 
+- [n]k		// Mover el cursor [n] posición[es] hacia arriba.
+- [n]w		// Mover cursor a derecha situándose al inicio de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
+- [n]e		// Mover cursor a derecha situándose al final de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
+- [n]b		// Mover cursor a izquierda situándose al inicio de la anterior [n] palabra. No incluye puntuación como parte de la palabra
+- [n]W		// Mover cursor a derecha situándose al inicio de la siguiente [n] palabra. Incluye puntuación como parte de la palabra.
+- [n]B		// Mover cursor a izquierda situándose al inicio de la anterior [n] palabra. Incluye puntuación como parte de la palabra.
+- [n]E		// Mover cursor a derecha situándose al final de la siguiente [n] palabra. Incluye puntuación como parte de la palabra.
+- 0		// Mover el cursor al inicio de la línea actual.
+- $		// Mover el cursor al final de la línea actual.
+- ^		// Mover el cursor al primer carácter no blanco de la línea actual.
+- [n]|		// Mover a la columna n de la línea actual.
+- [n]+ \ Intro	// Mover el cursor al primer carácter no blanco de la siguiente [enésima] línea.
+- [n]-		// Mover el cursor al primer carácter no blanco de la anterior [enésima] línea.
+- [n])		// Mover el cursor al inicio de la siguiente [enésima] frase.
+- [n](		// Mover el cursor al inicio de la anterior [enésima] frase.
+- [n]}		// Mover el cursor al inicio del siguiente [enésimo] párrafo.
+- [n]{		// Mover el cursor al inicio del anterior [enésimo] párrafo.
+- [n]]]		// Mover el cursor al inicio de la sección [enésima] siguiente.
+- [n][[		// Mover el cursor al inicio de la sección [enésima] anterior.
+- gg		// Mover el cursor al inicio del archivo.
+- [n]G		// Mover el cursor a la línea n.
+- G		// Mover el cursor al final del archivo.
+- ``		// Mover el cursor a la posición exacta antes de realizar el último movimiento G.
+- ''		// Mover el cursor al inicio de la línea donde estaba antes de realizar el último movimiento G.
+- Ctrl-f	// Mover la pantalla una página hacia abajo.
+- Ctrl-b	// Mover la pantalla una página hacia arriba.
+- Ctrl-d	// Mover la pantalla media página hacia arriba.
+- Ctrl-u	// Mover la pantalla media página hacia abajo.
+- Ctrl-e	// Mover la pantalla una línea hacia abajo.
+- Ctrl-y	// Mover la pantalla una línea hacia arriba.
+- [n]z-Intro	// Mover la pantalla situando la línea [n] en la parte superior.
+- z-		// Mover la pantalla situando la línea actual en la parte inferior.
+- z.		// Mover la pantalla situando la línea actual en la parte media.
+- [n]H		// Mover el cursor a [n líneas desde] la parte superior de la página actual.
+- [n]L		// Mover el cursor a [n líneas desde] la parte inferior de la página actual.
+- M		// Mover el cursor a la mitad de la página actual.
+- y[m]		// Copiar lo indicado en el comando posterior de movimiento.
+- [n]p		// Pegar el buffer sin nombre [n veces] después del cursor.
+- [n]P		// Pegar el buffer sin nombre [n veces] antes del cursor.
+- "[n]y		// Copiar en el buffer nombrado n. La n puede ser una letra o un número de un dígito. 
+		// Válido también para el comando borrar d, copiando  previamente lo borrado.
+		// Si la letra n es mayúscula se añade lo copiado al contenido del buffer nombrado con la letra minúscula.
+- "[n]p		// Pegar lo almacenado en el buffer n. La n puede ser una letra o un número de un dígito. 
+- [n]a		// Añadir [n veces] texto después de la posición del cursor.
+- [n]A		// Añadir [n veces] texto al final de la línea actual.
+- [n]i		// Insertar [n veces] texto a partir de la posición actual.
+- [n]I		// Insertar [n veces] texto al inicio de la línea actual.
+- [n]r		// Reemplazar [n caracteres desde] el carácter actual por el nuevo carácter. Vuelve al modo comando automáticamente.
+- [n]R		// Reemplazar [n veces] a partir del cursor actual por el nuevo texto a introducir.
+- [n]s		// Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
+- o		// Añadir una línea en blanco debajo de la línea actual y entrar en modo insertar.
+- O		// Añadir una línea en blanco encima de la línea actual y entrar en modo insertar.
+- c[m]		// Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
+- C		// Cambiar desde el cursor hasta el final de línea por lo nuevo a escribir en su lugar.
+- d[m]		// Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el buffer sin nombre.
+- D		// Borrar desde la posición del cursor hasta el final de la línea actual.
+- [n]cc \ [n]S	// Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
+- [n]dd		// Borrar [n] línea[s] entera[s] a partir de] la línea actual. 
+		// Se almacena automáticamente en buffer numerados las líneas borradas enteras.
+- [n]yy \ [n]Y	// Copiar [n líneas enteras a partir de] la línea actual.
+- [n]~		// Cambiar mayúsculas-minúsculas de [los n caracteres indicados desde] el carácter actual del cursor.
+- [n]x		// Borrar [n caracteres en adelante incluido] el carácter actual.
+- [n]X		// Borrar [n] caracter[es] previo[s] a la posición del cursor.
+- [n].		// Repetir [n veces] la última acción realizada. Usado tras "[n]p y u restaura el buffer n+1
+- Ctrl-2	// En modo insertar, repite la última inserción realizada.
+- [n]u		// Deshace la[s] última[s n] accion[es] realizada[s].
+- U		// Deshace las últimas acciones realizadas sobre la línea actual del cursor.
+- [n]Ctrl-r	// Rehace la[s] última[s n] accion[es] realizada[s].
+- [n]J		// Unir la línea actual con la[s n] línea[s] siguiente[s].
+- Ctrl-l	// Refrescar la pantalla.
+- /[t]		// Buscar hacia adelante el texto t. Sin texto se repite la última búsqueda hacia adelante.
+- ?[t]		// Buscar hacia atrás [el texto t]. Sin texto se repite la última búsqueda hacia atrás.
+- [n]n		// Repetir la última búsqueda en la misma dirección.
+- [n]N		// Repetir la última búsqueda en dirección opuesta.
+- [n]f[c]	// Mueve el cursor a la posición del siguiente [n] carácter c dentro de la línea.
+- [n]t[c]	// Mueve el cursor a la posición anterior al siguiente [n] carácter c dentro de la línea.
+- [n]F[c]	// Mueve el cursor a la posición del anterior [n] carácter c dentro de la línea.
+- [n]T[c]	// Mueve el cursor a la posición siguiente del anterior [n] carácter c dentro de la línea.
+- [n];		// Repetir la búsqueda de carácter en la línea en la misma dirección.
+- [n],		// Repetir la búsqueda de carácter en la línea en la dirección opuesta.
+- Ctrl-g	// Mostrar la línea de estado con información de las líneas del archivo. 
+- m[c]		// Crear una marca para volver más adelante.
+- `[c]		// Mover el cursor a la marca c creada anteriormente.
+- '[c]		// Mover el cursor al primer carácter de la línea con la marca m.
+- ``		// Mover el cursor a la posición anterior al último movimiento a una marca.
+- ''		// Mover el cursor al inicio de la línea de la posición anterior al último movimiento a una marca.
+- Q		// Volver al editor ex desde vi.
+- Ctrl-^	// Mostrar el buffer de la lista etiquetado #.
+
+EJECUCIÓN DE VI DESDE TERMINAL
+- vi +n	archivo		// Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
+- vi + archivo		// Abrir el archivo en la última línea.
+- vi +/patrón		// Abrir el archivo en la primera ocurrencia del patrón. Se puede usar -c en lugar de +.
+- vi -R \ view archivo 	// Abrir el archivo en modo lectura.
+- vi -r			// Listar todos los archivos temporales de autoguardado.
+- vi -r archivo		// Recuperar el archivo de autoguardado. 
