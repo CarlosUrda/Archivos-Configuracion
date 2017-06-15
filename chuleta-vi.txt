@@ -26,6 +26,12 @@ COMANDOS NATIVOS EX
 - :bfirst / bf		// Mostrar el primer buffer de la lista.
 - :blast / bl		// Mostrar el último buffer de la lista.
 - :bdelete / bd		// Eliminar el buffer.
+- :g/patrón		// Mover a la última ocurrencia del patrón en el archivo. Puede indicarse antes las líneas a buscar.
+			// Obtiene todos las líneas donde encuentra el patrón, sobre las cuales se pueden realizar otras acciones.
+- :g/patrón/p		// Mostrar todas las líneas que contienen el patrón.
+- :g/patrón/nu		// Mostrar todas las líneas que contienen el patrón junto con el número de línea.
+- :g!/patrón		// Mostrar todas las líneas que no contienen el patrón. 
+- :g/patrón/s//p2	// Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :d			// Borrar la línea actual.
 - :m[l]			// Mover la línea actual a la posición siguiente a la línea l.
@@ -33,12 +39,9 @@ COMANDOS NATIVOS EX
 - :# / p		// Mostrar temporalmente la línea actual.
 - :s/p1/p2/		// Sustituir en la línea actual el primer patrón encontrado p1 por p2.
 - :s/p1/p2/g		// Sustituir en la línea actual todo patrón p1 por p2.
+- :s/p1/p2/gc		// Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
 - :=			// Mostrar el número total de líneas del archivo.
 - :[n]=			// Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
-- :g/patrón		// Mover a la última ocurrencia del patrón en el archivo. Puede indicarse antes las líneas a buscar.
-- :g/patrón/p		// Mostrar todas las líneas que contienen el patrón.
-- :g/patrón/nu		// Mostrar todas las líneas que contienen el patrón junto con el número de línea.
-- :g!/patrón		// Mostrar todas las líneas que no contienen el patrón. 
 - :c1 | c2		// Combinar varios comandos.
 - :w [archivo]		// Guardar el buffer en el archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo		// Guardar el buffer al final del archivo.
@@ -85,18 +88,19 @@ COMANDOS NATIVOS VI
 - Ctrl-u	// Mover la pantalla media página hacia abajo.
 - Ctrl-e	// Mover la pantalla una línea hacia abajo.
 - Ctrl-y	// Mover la pantalla una línea hacia arriba.
-- [n]z-Intro	// Mover la pantalla situando la línea [n] en la parte superior.
-- z-		// Mover la pantalla situando la línea actual en la parte inferior.
-- z.		// Mover la pantalla situando la línea actual en la parte media.
+- [n]z-Intro	// Mover la pantalla situando la línea [n] en la parte superior. Si no se indica [n] se toma la línea actual.
+- [n]z-		// Mover la pantalla situando la línea [n] en la parte inferior. Si no se indica [n] se toma la línea actual.
+- [n]z.		// Mover la pantalla situando la línea [n] en la parte media. Si no se indica [n] se toma la línea actual.
 - [n]H		// Mover el cursor a [n líneas desde] la parte superior de la página actual.
 - [n]L		// Mover el cursor a [n líneas desde] la parte inferior de la página actual.
 - M		// Mover el cursor a la mitad de la página actual.
 - y[m]		// Copiar lo indicado en el comando posterior de movimiento.
-- [n]p		// Pegar el buffer sin nombre [n veces] después del cursor.
-- [n]P		// Pegar el buffer sin nombre [n veces] antes del cursor.
 - "[n]y		// Copiar en el buffer nombrado n. La n puede ser una letra o un número de un dígito. 
 		// Válido también para el comando borrar d, copiando  previamente lo borrado.
 		// Si la letra n es mayúscula se añade lo copiado al contenido del buffer nombrado con la letra minúscula.
+- [n]yy \ [n]Y	// Copiar [n líneas enteras a partir de] la línea actual.
+- [n]p		// Pegar el buffer sin nombre [n veces] después del cursor.
+- [n]P		// Pegar el buffer sin nombre [n veces] antes del cursor.
 - "[n]p		// Pegar lo almacenado en el buffer n. La n puede ser una letra o un número de un dígito. 
 - [n]a		// Añadir [n veces] texto después de la posición del cursor.
 - [n]A		// Añadir [n veces] texto al final de la línea actual.
@@ -114,11 +118,10 @@ COMANDOS NATIVOS VI
 - [n]cc \ [n]S	// Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
 - [n]dd		// Borrar [n] línea[s] entera[s] a partir de] la línea actual. 
 		// Se almacena automáticamente en buffer numerados las líneas borradas enteras.
-- [n]yy \ [n]Y	// Copiar [n líneas enteras a partir de] la línea actual.
 - [n]~		// Cambiar mayúsculas-minúsculas de [los n caracteres indicados desde] el carácter actual del cursor.
 - [n]x		// Borrar [n caracteres en adelante incluido] el carácter actual.
 - [n]X		// Borrar [n] caracter[es] previo[s] a la posición del cursor.
-- [n].		// Repetir [n veces] la última acción realizada. Usado tras "[n]p y u restaura el buffer n+1
+- [n].		// Repetir [n veces] la última acción de edición realizada. Usado tras "[n]p y u restaura el buffer n+1
 - Ctrl-2	// En modo insertar, repite la última inserción realizada.
 - [n]u		// Deshace la[s] última[s n] accion[es] realizada[s].
 - U		// Deshace las últimas acciones realizadas sobre la línea actual del cursor.
