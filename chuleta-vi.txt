@@ -2,6 +2,7 @@ COMANDOS NATIVOS EX
 - :set wm=[n]					// Margen derecho n donde se inserta un salto de línea automático.
 - :set nu \ set nonu	// Visualizar / quitar los números de línea.
 - :set nowrapscan			// Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
+- :set ic							// Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
 - :preserve / pre			// Preservar en un buffer de autoguardado el estado actual del archivo.
 - :vi									// Volver al editor vi desde ex.
 - :[n]+[m] \ [n]-[m]	// Posición relativa de m líneas hacia adelante \ atrás desde la línea n. Si no hay n la posiciónrelativa es a partir de la línea actual.
@@ -37,8 +38,9 @@ COMANDOS NATIVOS EX
 - :m[l]						// Mover la línea actual a la posición siguiente a la línea l.
 - :co[l] \ t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
 - :# / p					// Mostrar temporalmente la línea actual.
-- :s/p1/p2/				// Sustituir en la línea actual el primer patrón encontrado p1 por p2.
-- :s/p1/p2/g			// Sustituir en la línea actual todo patrón p1 por p2.
+- :s/p1/p2/				// Sustituir en la línea actual el patrón de búsqueda p1 por el patrón de reemplazo p2.
+- :s//p2/					// Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.. 
+- :s/p1/p2/g			// Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gc			// Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
 - :=							// Mostrar el número total de líneas del archivo.
 - :[n]=						// Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
@@ -163,15 +165,26 @@ EXPRESIONES REGULARES
 				// Si no está al inicio de la regex, representa simplemente al carácter ^.
 - $			// Al principio final la regex indica que dicha regex debe encontrarse al final de la línea.
 				// Si no está al final de la regex, representa simplemente al carácter $.
-- \			// Carácter de escape. Previene la interpretación especial del siguiente carácter (\., \*, etc) 
 - []		// Cualquier carácter incluido entre los corchetes. [ABC] => A o B o C.
 				// Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z
 				// Los caracteres \ - ] necesitan ser escapados. El resto . * pierden su poder y no lo necesitan. 
 				// Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C
+- [: :]	// Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
+- [. .]	// Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
+- [= =]	// Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è
+				// Los metacaracteres anteriores pierden su acción en el patrón de reemplazo de una sustitución, pero lo mantienen en el patrón de búsqueda. :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[
+- \			// Carácter de escape. Previene la interpretación especial del siguiente carácter (\., \*, \[, etc) 
+				// Es válido en el patrón de reemplazo de una sustitución.
 - \( \)	// Crear en la regex un buffer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
 				// /\(hola\) qué \(tal\), \1 qué \2/ => hola qué tal, hola qué tal.
+				// \n es válido en el patrón de reemplazo de una sustitución. :s/\(ho\)que/\1/
 - \< \>	// Comprobar palabras que empiezan o terminan con un patrón.
 				// \<p empareja palabras que empiecen por el patrón p (\<ho => emparejaría hola, hoyo, etc) 
 				// p\> empareja palabras que finalicen por el patrón p (la\> => emparejaría hola, cala, etc)
 				// No se usan juntas como el caso \( \), sino independientes para comprobar finales o inicios de palabras. 
-- 
+- ~ ó %	// Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2 
+- &			// En el patrón de reemplazo de una sustitución representa al patrón de búsqueda a ser sustituido en cada reemplazo. :s/.*/(&)/ => Envuelve cada línea entre paréntesis. 
+- \u		// En el patrón de reemplazo de una sustitución convierte a mayúsculas el siguiente carácter.
+- \l		// En el patrón de reemplazo de una sustitución convierte a minúsculas el siguiente carácter
+- \U		// En el patrón de reemplazo de una sustitución convierte a mayúsculas el resto del patrón (o hasta encontrar \e o \E)
+- \L		// En el patrón de reemplazo de una sustitución convierte a minúsculas el resto del patrón (o hasta encontrar \e o \E)
