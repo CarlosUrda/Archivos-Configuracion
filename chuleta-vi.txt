@@ -36,12 +36,15 @@ COMANDOS NATIVOS EX
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :d							// Borrar la línea actual.
 - :m[l]						// Mover la línea actual a la posición siguiente a la línea l.
-- :co[l] \ t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
+- :co[l] ó t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
 - :# / p					// Mostrar temporalmente la línea actual.
 - :s/p1/p2/				// Sustituir en la línea actual el patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s//p2/					// Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.. 
 - :s/p1/p2/g			// Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gc			// Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
+- :s ó :&					// Repite la última sustitución realizada (sin modificadores antes de s o después de p2)
+- :~							// Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último patrón de búsqueda en general utilizado => :s/rojo/azul/  |  /verde  |  :~ equivale a :s/verde/azul
+- :set edcompatible	// Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (:&).
 - :=							// Mostrar el número total de líneas del archivo.
 - :[n]=						// Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
 - :c1 | c2				// Combinar varios comandos.
@@ -183,8 +186,9 @@ EXPRESIONES REGULARES
 				// p\> empareja palabras que finalicen por el patrón p (la\> => emparejaría hola, cala, etc)
 				// No se usan juntas como el caso \( \), sino independientes para comprobar finales o inicios de palabras. 
 - ~ ó %	// Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2 
-- &			// En el patrón de reemplazo de una sustitución representa al patrón de búsqueda a ser sustituido en cada reemplazo. :s/.*/(&)/ => Envuelve cada línea entre paréntesis. 
-- \u		// En el patrón de reemplazo de una sustitución convierte a mayúsculas el siguiente carácter.
-- \l		// En el patrón de reemplazo de una sustitución convierte a minúsculas el siguiente carácter
-- \U		// En el patrón de reemplazo de una sustitución convierte a mayúsculas el resto del patrón (o hasta encontrar \e o \E)
-- \L		// En el patrón de reemplazo de una sustitución convierte a minúsculas el resto del patrón (o hasta encontrar \e o \E)
+- &			// Dentro de patrón de reemplazo de una sustitución representa el patrón de búsqueda a ser sustituido en cada reemplazo. :s/.*/(&)/ => Envuelve cada línea entre paréntesis. 
+- &			// Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
+- \u		// En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
+- \l		// En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter
+- \U		// En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E
+- \L		// En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E 
