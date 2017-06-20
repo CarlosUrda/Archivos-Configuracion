@@ -39,6 +39,7 @@ COMANDOS NATIVOS EX
 - :co[l] ó t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
 - :# / p					// Mostrar temporalmente la línea actual.
 - :s/p1/p2/				// Sustituir en la línea actual el patrón de búsqueda p1 por el patrón de reemplazo p2.
+									// En lugar de / se puede usar cualquier carácter excepto \, " ó | => :%s;/dir/sub;/dir2/sub2;g
 - :s//p2/					// Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.. 
 - :s/p1/p2/g			// Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gc			// Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
