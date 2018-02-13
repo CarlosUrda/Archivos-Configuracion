@@ -36,6 +36,7 @@ COMANDOS NATIVOS EX
 - :g/patrón/nu  // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
 - :g!/patrón    // Mostrar todas las líneas que no contienen el patrón. 
 - :g/patrón/s//p2	// Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
+
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :d							// Borrar la línea actual.
 - :m[l]						// Mover la línea actual a la posición siguiente a la línea l.
@@ -90,8 +91,8 @@ COMANDOS NATIVOS VI
 - [n]G      // Mover el cursor a la línea n.
 - G         // Mover el cursor al final del archivo.
 - m[c]		// Crear una marca para volver más adelante.
-- `[c]		// Mover el cursor a la marca c creada anteriormente.
-- '[c]		// Mover el cursor al primer carácter de la línea con la marca m.
+- `[c]		// Mover el cursor a la marca de letra c creada anteriormente.
+- '[c]		// Mover el cursor al primer carácter de la línea con la marca c.
 - ``        // Mover el cursor a la posición exacta antes de realizar el último movimiento G, movimiento a una marca o movimiento en una búsqueda.
 - ''        // Mover el cursor al inicio de la línea donde estaba antes de realizar el último movimiento G, movimiento a una marca o movimiento en una búsqueda.
 - [n]Ctrl-f     // Mover la pantalla [n] páginas hacia abajo.
@@ -107,8 +108,8 @@ COMANDOS NATIVOS VI
 - [n]L      // Mover el cursor a [n líneas desde] la parte inferior de la página actual.
 - M         // Mover el cursor a la mitad de la página actual.
 - y[m]      // Copiar lo indicado en el comando posterior de movimiento.
-- "[n]y     // Copiar en el buffer nombrado n. La n puede ser una letra o un número de un dígito. 
-            // Válido también para el comando borrar d, copiando previamente lo borrado.
+- "[n]y     // Copiar en el buffer nombrado n. La n puede ser una letra minúscula o un número de un dígito. 
+            // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
             // Si la letra n es mayúscula se añade lo copiado al contenido del buffer nombrado con la letra minúscula.
 - [n]yy \ [n]Y  // Copiar [n líneas enteras a partir de] la línea actual.
 - [n]p      // Pegar el buffer sin nombre [n veces] después del cursor.
@@ -133,7 +134,7 @@ COMANDOS NATIVOS VI
 - [n]~      // Cambiar mayúsculas-minúsculas de [los n caracteres indicados desde] el carácter actual del cursor.
 - [n]x      // Borrar [n caracteres en adelante incluido] el carácter actual.
 - [n]X      // Borrar [n] caracter[es] previo[s] a la posición del cursor.
-- [n].      // Repetir [n veces] la última acción de edición realizada. Usado tras "[n]p y u restaura el buffer n+1
+- [n].      // Repetir [n veces] la última acción de edición realizada. Usado tras "[n]p y u, restaura el buffer n+1.
 - Ctrl-2    // En modo insertar, repite la última inserción realizada.
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - U         // Deshace las últimas acciones realizadas sobre la línea actual del cursor.
@@ -164,7 +165,7 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi +/patrón           // Abrir el archivo en la primera ocurrencia del patrón. Se puede usar -c en lugar de +.
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
-- vi -r archivo         // Recuperar el archivo de autoguardado. 
+- vi -r archivo         // Recuperar el buffer de autoguardado del archivo.
 
 EXPRESIONES REGULARES
 * Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/
