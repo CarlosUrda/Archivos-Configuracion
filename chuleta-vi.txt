@@ -5,7 +5,7 @@ COMANDOS NATIVOS EX
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
 - :set ic               // Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
 - :set compatible \ nocompatible    // Compatibilidad con antiguo vi.
-- :preserve \ pre       // Preservar en un buffer de autoguardado el estado actual del archivo.
+- :preserve \ pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
                         // Si no hay n la posición relativa es a partir de la línea actual.
@@ -18,53 +18,55 @@ COMANDOS NATIVOS EX
 - :$            // Última línea del archivo.
 - :%            // Todas las líneas del archivo.
 - :args / ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
-- :n            // Mostrar el buffer del siguiente archivo de la línea de comandos. 
-- :rewind / rew // Mostrar el buffer del primer archivo de la línea de comandos.
-- :e archivo    // Abrir un archivo cargando su contenido en un nuevo buffer.
-- :e #          // Mostrar el buffer asignado con la etiqueta #. % equivale al nombre del archivo del buffer actual.
-- :e!           // Descarta los cambios realizados en el buffer actual volviendo a la última versión guardada.
-- :buffer [n] / b [n]   // Mostrar el buffer n
-- :buffers / ls         // Mostrar un listado de todos los buffers.
-- :bnext / bn           // Mostrar el siguiente buffer de la lista.
-- :bprevious / bp       // Mostrar el buffer previo de la lista.
-- :bfirst / bf          // Mostrar el primer buffer de la lista.
-- :blast / bl           // Mostrar el último buffer de la lista.
-- :bdelete / bd         // Eliminar el buffer.
-- :g/patrón     // Mover a la última ocurrencia del patrón en el archivo. Puede indicarse antes las líneas a buscar.
-                // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
-- :g/patrón/p   // Mostrar todas las líneas que contienen el patrón.
-- :g/patrón/nu  // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
-- :g!/patrón    // Mostrar todas las líneas que no contienen el patrón. 
-- :g/patrón/s//p2	// Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
+- :n            // Mostrar el búfer del siguiente archivo de la línea de comandos. 
+- :rewind / rew // Mostrar el búfer del primer archivo de la línea de comandos.
+- :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
+- :e #          // Mostrar el búfer alterno asignado con la etiqueta #. % equivale al nombre del archivo del búfer actual.
+- :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
+- :c1 | c2              // Combinar varios comandos.
+- :q                    // Quitar vi y volver a la terminal.
+- :x                    // Guardar (si ha sido modificado el archivo) y salir
+- :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
+- :buffer [n] / b [n]   // Mostrar el búfer n
+- :buffers / ls         // Mostrar un listado de todos los búfers.
+- :bnext / bn           // Mostrar el siguiente búfer de la lista.
+- :bprevious / bp       // Mostrar el búfer previo de la lista.
+- :bfirst / bf          // Mostrar el primer búfer de la lista.
+- :blast / bl           // Mostrar el último búfer de la lista.
+- :bdelete / bd         // Eliminar el búfer.
 
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
-- :d							// Borrar la línea actual.
-- :m[l]						// Mover la línea actual a la posición siguiente a la línea l.
-- :co[l] ó t[l]		// Copiar la línea actual a la posición siguiente a la línea l. 
-- :# / p					// Mostrar temporalmente la línea actual.
-- :s/p1/p2/				// Sustituir en la línea actual el patrón de búsqueda p1 por el patrón de reemplazo p2.
-									// En lugar de / se puede usar cualquier carácter excepto \, " ó | => :%s;/dir/sub;/dir2/sub2;g
-- :s//p2/					// Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.. 
-- :s/p1/p2/g			// Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
-- :s/p1/p2/gc			// Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
+- :# / p            // Mostrar temporalmente la línea actual.
+- :=                // Mostrar el número total de líneas del archivo.
+- :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
+- :d                // Borrar la línea actual.
+- :m[l]             // Mover la línea actual a la posición siguiente a la línea l.
+- :co[l] ó t[l]     // Copiar la línea actual a la posición siguiente a la línea l. 
+- :g/patrón         // Mover a la última ocurrencia del patrón en el archivo. 
+                    // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
+- :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
+- :g/patrón/nu      // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
+- :g!/patrón        // Mostrar todas las líneas que no contienen el patrón. 
+- :g/patrón/s//p2   // Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
+- :s/p1/p2/         // Sustituir en la línea actual el patrón de búsqueda p1 por el patrón de reemplazo p2.
+                    // En lugar de / se puede usar cualquier carácter excepto \, " ó | => :%s;/dir/sub;/dir2/sub2;g
+- :s//p2/           // Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.. 
+- :s/p1/p2/g        // Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
+- :s/p1/p2/gc       // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
 - :s ó :&					// Repite la última sustitución realizada (sin modificadores antes de s o después de p2)
 - :~							// Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último patrón de búsqueda en general utilizado => :s/rojo/azul/  |  /verde  |  :~ equivale a :s/verde/azul
 - :set edcompatible	// Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (:&).
-- :=							// Mostrar el número total de líneas del archivo.
-- :[n]=						// Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
-- :c1 | c2				// Combinar varios comandos.
-- :w [archivo]      // Guardar el buffer en el archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
-- :w >> archivo     // Guardar el buffer al final del archivo.
-- :q							// Quitar vi y volver a la terminal.
-- :x							// Guardar (si ha sido modificado el archivo) y salir
-- :comando!				// Evita el aviso que pueda salir al ejecutar el comando.
-- :read [a] / r	[a]     // Leer el contenido del archivo a y añadirlo a partir de la línea actual.
-- :ya [n]					// Copiar la línea actual en el buffer con letra n (si n es un dígito copia n líneas desde la actual).
-- :pu [n]					// Pegar después de la línea actual el contenido del buffer n (puede ser dígito o letra).
+- :ya [n]           // Copiar la línea actual en la memoria nombrada con letra n (si n es un dígito copia n líneas desde la actual).
+                    // Permite copiar contenido entre distintos búferes de archivos.
+- :pu [n]           // Pegar después de la línea actual el contenido de la memoria nombrada n.
+- :read [a] / r	[a] // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
+- :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
+- :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 
 
 COMANDOS NATIVOS VI
 - ZZ        // Guardar y salir.
+- ^^        // Equivalente a :e #. Cambia al búfer alterno etiquetado con #.
 - [n]h      // Mover el cursor [n] posición[es] a la izquierda.
 - [n]l      // Mover el cursor [n] posición[es] a la derecha.
 - [n]j      // Mover el cursor [n] posición[es] hacia abajo. 
@@ -108,13 +110,14 @@ COMANDOS NATIVOS VI
 - [n]L      // Mover el cursor a [n líneas desde] la parte inferior de la página actual.
 - M         // Mover el cursor a la mitad de la página actual.
 - y[m]      // Copiar lo indicado en el comando posterior de movimiento.
-- "[n]y     // Copiar en el buffer nombrado n. La n puede ser una letra minúscula o un número de un dígito. 
+- "[n]y     // Copiar en la memoria nombrada n. La n puede ser una letra minúscula o un dígito. 
             // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
-            // Si la letra n es mayúscula se añade lo copiado al contenido del buffer nombrado con la letra minúscula.
+            // Si la letra n es mayúscula se añade lo copiado al contenido de la memoria nombrada con la letra minúscula.
+            // Si la memoria es nombrada con letra no se borra al alternar entre búferes.
 - [n]yy \ [n]Y  // Copiar [n líneas enteras a partir de] la línea actual.
-- [n]p      // Pegar el buffer sin nombre [n veces] después del cursor.
-- [n]P      // Pegar el buffer sin nombre [n veces] antes del cursor.
-- "[n]p     // Pegar lo almacenado en el buffer n. La n puede ser una letra o un número de un dígito. 
+- [n]p      // Pegar de la memoria [n veces] después del cursor.
+- [n]P      // Pegar de la memoria [n veces] antes del cursor.
+- "[n]p     // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito. 
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
@@ -127,14 +130,14 @@ COMANDOS NATIVOS VI
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
 - C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
 - [n]cc \ [n]S  // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
-- d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el buffer sin nombre.
+- d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el búfer sin nombre.
 - D         // Borrar desde la posición del cursor hasta el final de la línea actual.
 - [n]dd     // Borrar [n] línea[s] entera[s] a partir de] la línea actual. 
-            // Se almacena automáticamente en buffer numerados las líneas borradas enteras.
+            // Se almacena automáticamente en búfer numerados las líneas borradas enteras.
 - [n]~      // Cambiar mayúsculas-minúsculas de [los n caracteres indicados desde] el carácter actual del cursor.
 - [n]x      // Borrar [n caracteres en adelante incluido] el carácter actual.
 - [n]X      // Borrar [n] caracter[es] previo[s] a la posición del cursor.
-- [n].      // Repetir [n veces] la última acción de edición realizada. Usado tras "[n]p y u, restaura el buffer n+1.
+- [n].      // Repetir [n veces] la última acción de edición realizada. Usado tras "[n]p y u, restaura el búfer n+1.
 - Ctrl-2    // En modo insertar, repite la última inserción realizada.
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - U         // Deshace las últimas acciones realizadas sobre la línea actual del cursor.
@@ -157,7 +160,7 @@ COMANDOS NATIVOS VI
 - [n],      // Repetir la búsqueda de carácter en la línea en la dirección opuesta.
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo. 
 - Q         // Volver al editor ex desde vi.
-- Ctrl-^    // Mostrar el buffer de la lista etiquetado #.
+- Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n	archivo	        // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
@@ -165,7 +168,7 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi +/patrón           // Abrir el archivo en la primera ocurrencia del patrón. Se puede usar -c en lugar de +.
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
-- vi -r archivo         // Recuperar el buffer de autoguardado del archivo.
+- vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
 
 EXPRESIONES REGULARES
 * Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/
@@ -185,7 +188,7 @@ EXPRESIONES REGULARES
 				// Los metacaracteres anteriores pierden su acción en el patrón de reemplazo de una sustitución, pero lo mantienen en el patrón de búsqueda. :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[
 - \			// Carácter de escape. Previene la interpretación especial del siguiente carácter (\., \*, \[, etc) 
 				// Es válido en el patrón de reemplazo de una sustitución.
-- \( \)	// Crear en la regex un buffer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
+- \( \)	// Crear en la regex un búfer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
 				// /\(hola\) qué \(tal\), \1 qué \2/ => hola qué tal, hola qué tal.
 				// \n es válido en el patrón de reemplazo de una sustitución. :s/\(ho\)que/\1/
 - \< \>	// Comprobar palabras que empiezan o terminan con un patrón.
