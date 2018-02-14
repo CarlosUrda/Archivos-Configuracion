@@ -202,3 +202,4 @@ EXPRESIONES REGULARES
 - \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter
 - \U    // En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E
 - \L    // En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E 
+***
