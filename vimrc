@@ -179,6 +179,9 @@ nnoremap + <C-W>+
 nnoremap / <C-W><
 nnoremap * <C-W>>
 
+" Guardar un archivo sin privilegios sudo.
+cmap w!! w !sudo tee % >/dev/null
+
 " Codificación UTF-8
 set encoding=utf-8 fileencoding=utf8 termencoding=utf-8
 
