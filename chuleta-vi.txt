@@ -47,8 +47,11 @@ COMANDOS NATIVOS EX
                     // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
 - :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
 - :g/patrón/nu      // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
-- :g!/patrón        // Mostrar todas las líneas que no contienen el patrón. 
+- :g!/patr ó v/patr // Mostrar todas las líneas que no contienen el patrón. 
 - :g/patrón/s//p2/g // Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
+                    // Después de g/patrón/ se añade un comando que se ejecuta para cada línea. 
+                    // Dicho comando añadido puede a su vez tener sus propias líneas a que aplicarse. Por ejemplo:
+                    // :1,10g/^/ 20,30t$  => Copia 10 veces las líneas de la 20 a la 30 al final del archivo.
 - :s/p1/p2/         // Sustituir en la línea actual el primer patrón de búsqueda p1 por el patrón de reemplazo p2.
                     // En lugar de / se puede usar cualquier carácter no alfanumérico ni espacio, excepto \, " ó | => :%s;/dir/sub;/dir2/sub2;g
 - :s//p2/           // Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.
@@ -176,7 +179,7 @@ EJECUCIÓN DE VI DESDE TERMINAL
 EXPRESIONES REGULARES
 ** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
 - .     // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
-- *     // Cero o cualquier número de repeticiones del carácter que lo precede.
+- *     // Cero o cualquier número de repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible.
 - ^     // Al principio de la regex indica que dicha regex debe encontrarse al inicio de la línea.
         // Si no está al inicio de la regex, representa simplemente al mismo carácter ^.
 - $     // Al final la regex indica que dicha regex debe encontrarse al final de la línea.
@@ -184,25 +187,25 @@ EXPRESIONES REGULARES
 - \( \)	// Crear en la regex un búfer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
         // /\(hola\) qué \(tal\), \1 qué \2/ => hola qué tal, hola qué tal.
         // \num es válido tanto en el patrón de búsqueda como el de reemplazo de una sustitución. :s/\(ho\)que\1/\1que/
-- \< \>	// Comprobar palabras que empiezan o terminan con un patrón.
+- \< \>	// Comprobar palabras que empiezan o terminan con un patrón. El inicio o final de palabra es determinado por espacio o signo de puntuación.
         // \<p empareja palabras que empiecen por el patrón p. \<ho => emparejaría hola, hoyo, etc
         // p\> empareja palabras que finalicen por el patrón p. la\> => emparejaría hola, cala, etc
         // Pueden usarse independientes para comprobar finales o inicios de palabras. Si se usan juntas, comprueba una palabra completa.
 - []    // Cualquier carácter (solo uno) incluido entre los corchetes. [ABC] => A o B o C.
         // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z
-        // Los caracteres \ - ] necesitan ser escapados. El resto . * pierden su poder y no lo necesitan. 
+        // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan. 
         // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C
 - [: :]	// Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
         // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
 - [. .]	// Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
 - [= =]	// Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è
-        // Todos los metacaracteres anteriores pierden su acción en el patrón de reemplazo de una sustitución, pero no en el patrón de búsqueda. 
+        // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda. 
         // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[
 - \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc) 
-        // Es válido en el patrón de búsqueda de una sustitución.
+        // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
 - ~ ó %	// Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
         // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2 
-- &     // Dentro de patrón de reemplazo de una sustitución representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve línea entre (). 
+- &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre (). 
         // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
 - \u    // En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
 - \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter
