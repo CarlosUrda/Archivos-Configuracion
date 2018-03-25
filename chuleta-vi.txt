@@ -17,9 +17,9 @@ COMANDOS NATIVOS EX
 - :.            // Línea actual del archivo.
 - :$            // Última línea del archivo.
 - :%            // Al inicio del comando ex representa todas las líneas del archivo.
-- :args / ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
+- :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
 - :n            // Mostrar el búfer del siguiente archivo de la línea de comandos. 
-- :rewind / rew // Mostrar el búfer del primer archivo de la línea de comandos.
+- :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
 - :e #          // Mostrar el búfer alterno asignado con la etiqueta #. 
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
@@ -28,16 +28,16 @@ COMANDOS NATIVOS EX
 - :q                    // Quitar vi y volver a la terminal.
 - :x                    // Guardar (si ha sido modificado el archivo) y salir
 - :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
-- :buffer [n] / b [n]   // Mostrar el búfer n
-- :buffers / ls         // Mostrar un listado de todos los búfers.
-- :bnext / bn           // Mostrar el siguiente búfer de la lista.
-- :bprevious / bp       // Mostrar el búfer previo de la lista.
-- :bfirst / bf          // Mostrar el primer búfer de la lista.
-- :blast / bl           // Mostrar el último búfer de la lista.
-- :bdelete / bd         // Eliminar el búfer.
+- :buffer [n] ó b [n]   // Mostrar el búfer n
+- :buffers ó ls         // Mostrar un listado de todos los búfers.
+- :bnext ó bn           // Mostrar el siguiente búfer de la lista.
+- :bprevious ó bp       // Mostrar el búfer previo de la lista.
+- :bfirst ó bf          // Mostrar el primer búfer de la lista.
+- :blast ó bl           // Mostrar el último búfer de la lista.
+- :bdelete ó bd         // Eliminar el búfer.
 
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
-- :# / p            // Mostrar temporalmente la línea actual.
+- :# ó p            // Mostrar temporalmente la línea actual.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
 - :d                // Borrar la línea actual.
@@ -65,7 +65,7 @@ COMANDOS NATIVOS EX
 - :ya [n]           // Copiar la línea actual en la memoria nombrada con letra n (si n es un dígito copia n líneas desde la actual).
                     // Permite copiar contenido entre distintos búferes de archivos.
 - :pu [n]           // Pegar después de la línea actual el contenido de la memoria nombrada n.
-- :read [a] / r	[a] // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
+- :read [a] ó r	[a] // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 
