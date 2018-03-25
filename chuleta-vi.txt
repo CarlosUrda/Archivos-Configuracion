@@ -107,11 +107,12 @@ COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
 - [n]Ctrl-b     // Mover la pantalla [n] páginas hacia arriba.
 - [n]Ctrl-d     // Mover la pantalla [n] líneas hacia abajo. Sin [n] se mueve media página.
 - [n]Ctrl-u     // Mover la pantalla [n] líneas hacia arriba. Sin [n] se mueve media página.
-- [n]Ctrl-e     // Mover la pantalla [n] líneas hacia abajo. El cursor permanece en la misma línea.
-- [n]Ctrl-y     // Mover la pantalla [n] líneas hacia arriba. El cursor permanece en la misma línea.
-- [n]z-Intro    // Mover la pantalla situando la línea [n] en la parte superior. Sin [n] se toma la línea actual.
-- [n]z-         // Mover la pantalla situando la línea [n] en la parte inferior. Sin [n] se toma la línea actual.
-- [n]z.         // Mover la pantalla situando la línea [n] en la parte media. Sin [n] se toma la línea actual.
+- [n]Ctrl-e     // Mover la pantalla [n] líneas hacia abajo. El cursor permanece en la misma posición.
+- [n]Ctrl-y     // Mover la pantalla [n] líneas hacia arriba. El cursor permanece en la misma posición.
+- [n]z-Intro    // Mover la pantalla situando la línea [n] en la parte superior. Por defecto línea actual.
+- [n]z-         // Mover la pantalla situando la línea [n] en la parte inferior. Por defecto línea actual.
+- [n]z.         // Mover la pantalla situando la línea [n] en la parte media. Por defecto línea actual. 
+- [n]zz         // Mover la pantalla situando la línea [n] en la parte media. El cursor permanece en la misma posición.
 - [n]H      // Mover el cursor a [n líneas desde] la parte superior de la página actual.
 - [n]L      // Mover el cursor a [n líneas desde] la parte inferior de la página actual.
 - M         // Mover el cursor a la mitad de la página actual.
