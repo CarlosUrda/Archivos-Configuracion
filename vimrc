@@ -98,8 +98,8 @@ set t_Co=256
 " automatically indent lines (default)
 set autoindent
 
-" select case-insenitiv search (not default)
-set ignorecase
+" select case-sensitive search
+set noic
 
 " show cursor line and column in the status line
 set ruler
@@ -145,27 +145,36 @@ autocmd BufNewFile      *.spec  call SKEL_spec()
 " Cambiar espacios por tabulación
 au BufNewFile,BufRead *.py
     \ set tabstop=4
-    \ set softtabstop=4
+    \ set softtabstop=0
     \ set shiftwidth=4
 
 au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2
-    \ set softtabstop=2
+    \ set softtabstop=0
     \ set shiftwidth=2
 
 retab
 set expandtab
+set smarttab
 set fileformat=unix
 
 " Code folding (comando za para desplegar/plegar código agrupado).
 set foldmethod=indent
 set foldlevel=99
 
-" Mantener los cambios realizados en un buffer cuando se alterna a otro
+" Mantener cambios realizados en el búfer cuando se alterna a otro.
 set hidden
 
+" Grabar el archivo cuando se alterna a otro búfer o se ejecuta un comando de
+" terminal.
+set autowrite
+
+" Visualizar los tabuladores y espacios al final de la línea con caracteres
+" especiales
+set list
+
 " Línea que informa del límite de 80 caracteres.
-set textwidth=80
+set textwidth=79
 set colorcolumn=+1
 highlight ColorColumn ctermbg=7
 
