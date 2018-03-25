@@ -70,7 +70,7 @@ COMANDOS NATIVOS EX
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 
 
-COMANDOS NATIVOS VI
+COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
 - ZZ        // Guardar y salir.
 - ^^        // Equivalente a :e #. Cambia al búfer alterno etiquetado con #.
 - [n]h      // Mover el cursor [n] posición[es] a la izquierda.
@@ -156,6 +156,8 @@ COMANDOS NATIVOS VI
 - ?patrón   // Buscar hacia atrás el patrón.
 - ?-Intro   // Repite la última búsqueda hacia atrás.
 - ?-Cursor  // Accede al historial de búsquedas.
+- q:        // Obtener ventana con listado del historial de comandos.
+- q/        // Obtener ventana con el listado del historial de búsquedas.
 - [n]n      // Repetir la última búsqueda en la misma dirección.
 - [n]N      // Repetir la última búsqueda en dirección opuesta.
 - [n]f[c]   // Mueve el cursor a la posición del siguiente [n] carácter c dentro de la línea.
