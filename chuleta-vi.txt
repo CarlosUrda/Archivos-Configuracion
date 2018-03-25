@@ -1,11 +1,29 @@
 COMANDOS NATIVOS EX
 - :!comando             // Acceso a comandos de la terminal.
-- :set wm=[n]           // Margen derecho n donde se inserta un salto de línea automático.
-- :set nu \ set nonu    // Visualizar o quitar los números de línea.
+- :!sh                  // Ejecutar el intérprete de comandos. Para volver a vi Ctrl-D.
+- :set wm=n             // Margen derecho n donde se inserta un salto de línea automático.
+- :set nu ó number      // Visualizar los números de línea.
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
 - :set ic               // Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
 - :set compatible \ nocompatible    // Compatibilidad con antiguo vi.
-- :preserve \ pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
+- :set all              // Mostrar la completa lista de opciones fijadas, tanto  manualmente como por defecto.
+- :set                  // Mostrar la lista de opciones fijadas manualmente.
+- :set opcion?          // Mostrar el valor fijado en la opción.
+- :set magic            // Reconoce caracteres comodín al buscar patrones.
+- :set window=n         // Número de líneas de la ventana.
+- :set autowrite        // Grabar automáticamente el búfer en el archivo al moverse a otro búfer.
+- :set showmatch        // Mostrar paréntesis o corchetes emparejados.
+- :set tabstop=n        // Ancho en caracteres de un tabulador.
+- :set softabstop=n     // Ancho de caracteres usado como prioridad sobre tabstop al insertar un tabulador. 
+                        // Intenta usar tabulaciones de ancho tabstop y, si no encaja, rellena con caracteres.
+- :set shiftwidth=n     // Ancho en caracteres del sangrado. Intenta usar tabulaciones tabstop y, si no encaja, rellena con caracteres.
+- :set expandtab        // Al usar tabulación, inserta tantos espacios como el ancho definido en lugar de tabulación.
+- :set smarttab         // Al usar tabulación al inicio de la línea posiciona el cursor en su sangrado correcto.
+- :set list             // Visualizar los tabuladores y espacios al final de la línea con caracteres especiales.
+- :set exrc             // Ejecuta la configuración de .vimrc o .exrc existente en el directorio actual.
+                        // Esta configuración se ejecuta después de ejecutar .vimrc o .exrc del directorio personal.
+- :so ó source archivo  // Leer comandos de configuración ex de un archivo externo.
+- :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
                         // Si no hay n la posición relativa es a partir de la línea actual.
@@ -65,7 +83,7 @@ COMANDOS NATIVOS EX
 - :ya [n]           // Copiar la línea actual en la memoria nombrada con letra n (si n es un dígito copia n líneas desde la actual).
                     // Permite copiar contenido entre distintos búferes de archivos.
 - :pu [n]           // Pegar después de la línea actual el contenido de la memoria nombrada n.
-- :read [a] ó r	[a] // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
+- :read [a] ó r[a]  // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 
@@ -86,15 +104,15 @@ COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
 - 0         // Mover el cursor al inicio de la línea actual.
 - $         // Mover el cursor al final de la línea actual.
 - ^         // Mover el cursor al primer carácter no blanco de la línea actual.
-- [n]|          // Mover a la columna n de la línea actual.
-- [n]+ \ Intro  // Mover el cursor al primer carácter no blanco de la siguiente [enésima] línea.
-- [n]-          // Mover el cursor al primer carácter no blanco de la anterior [enésima] línea.
-- [n])		// Mover el cursor al inicio de la siguiente [enésima] frase.
-- [n](		// Mover el cursor al inicio de la anterior [enésima] frase.
-- [n]}		// Mover el cursor al inicio del siguiente [enésimo] párrafo.
-- [n]{		// Mover el cursor al inicio del anterior [enésimo] párrafo.
-- [n]]]		// Mover el cursor al inicio de la sección [enésima] siguiente.
-- [n][[		// Mover el cursor al inicio de la sección [enésima] anterior.
+- [n]|         // Mover a la columna n de la línea actual.
+- [n]+ \ Intro // Mover el cursor al primer carácter no blanco de la siguiente [enésima] línea.
+- [n]-         // Mover el cursor al primer carácter no blanco de la anterior [enésima] línea.
+- [n])         // Mover el cursor al inicio de la siguiente [enésima] frase.
+- [n](         // Mover el cursor al inicio de la anterior [enésima] frase.
+- [n]}         // Mover el cursor al inicio del siguiente [enésimo] párrafo.
+- [n]{         // Mover el cursor al inicio del anterior [enésimo] párrafo.
+- [n]]]        // Mover el cursor al inicio de la sección [enésima] siguiente.
+- [n][[        // Mover el cursor al inicio de la sección [enésima] anterior.
 - gg        // Mover el cursor al inicio del archivo.
 - [n]G      // Mover el cursor a la línea n.
 - G         // Mover el cursor al final del archivo.
@@ -172,7 +190,7 @@ COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
 
 EJECUCIÓN DE VI DESDE TERMINAL
-- vi +n	archivo	        // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
+- vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
 - vi + archivo          // Abrir el archivo en la última línea.
 - vi +/patrón           // Abrir el archivo en la primera ocurrencia del patrón. Se puede usar -c en lugar de +.
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
@@ -187,10 +205,10 @@ EXPRESIONES REGULARES
         // Si no está al inicio de la regex, representa simplemente al mismo carácter ^.
 - $     // Al final la regex indica que dicha regex debe encontrarse al final de la línea.
         // Si no está al final de la regex, representa simplemente al carácter $.
-- \( \)	// Crear en la regex un búfer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
+- \( \) // Crear en la regex un búfer temporal (numerado de 1 a 9 en orden) guardando el patrón de su interior.
         // /\(hola\) qué \(tal\), \1 qué \2/ => hola qué tal, hola qué tal.
         // \num es válido tanto en el patrón de búsqueda como el de reemplazo de una sustitución. :s/\(ho\)que\1/\1que/
-- \< \>	// Comprobar palabras que empiezan o terminan con un patrón. El inicio o final de palabra es determinado por espacio o signo de puntuación.
+- \< \> // Comprobar palabras que empiezan o terminan con un patrón. El inicio o final de palabra es determinado por espacio o signo de puntuación.
         // \<p empareja palabras que empiecen por el patrón p. \<ho => emparejaría hola, hoyo, etc
         // p\> empareja palabras que finalicen por el patrón p. la\> => emparejaría hola, cala, etc
         // Pueden usarse independientes para comprobar finales o inicios de palabras. Si se usan juntas, comprueba una palabra completa.
@@ -198,15 +216,15 @@ EXPRESIONES REGULARES
         // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z
         // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan. 
         // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C
-- [: :]	// Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
+- [: :] // Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
         // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
-- [. .]	// Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
-- [= =]	// Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è
+- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
+- [= =] // Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è
         // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda. 
         // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[
 - \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc) 
         // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
-- ~ ó %	// Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
+- ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
         // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2 
 - &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre (). 
         // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
