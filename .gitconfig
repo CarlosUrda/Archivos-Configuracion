@@ -30,3 +30,4 @@
     sb = show-branch --all --sha1-name
     b = branch -v -a
     s = status -s
+    ch = checkout
