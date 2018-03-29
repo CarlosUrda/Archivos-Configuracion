@@ -195,7 +195,7 @@ COMANDOS NATIVOS VI
 - !<pos><comando>  // Aplica el comando a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
-- ![n]!<comando>   // Aplica el comando a [las n líneas a partir de la] línea actual. Esto no funciona en ex.
+- ![n]!<comando>   // Aplica el comando a [las n líneas a partir de la] línea actual. En ex tiene otra funcionalidad.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
