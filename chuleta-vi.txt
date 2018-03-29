@@ -1,6 +1,6 @@
 COMANDOS NATIVOS EX
-- :!comando             // Acceso a comandos de la terminal.
-- :!sh                  // Ejecutar el intérprete de comandos. Para volver a vi Ctrl-D.
+- :!<comando>           // Ejecuta un comando de la terminal.
+- :!sh                  // Ejecutar el intérprete de comandos. Para volver Ctrl-D.
 - :set wm=n             // Margen derecho n donde se inserta un salto de línea automático.
 - :set nu ó number      // Visualizar los números de línea.
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
@@ -8,7 +8,7 @@ COMANDOS NATIVOS EX
 - :set compatible \ nocompatible    // Compatibilidad con antiguo vi.
 - :set all              // Mostrar la completa lista de opciones fijadas, tanto  manualmente como por defecto.
 - :set                  // Mostrar la lista de opciones fijadas manualmente.
-- :set opcion?          // Mostrar el valor fijado en la opción.
+- :set <opcion>?        // Mostrar el valor fijado en la opción.
 - :set magic            // Reconoce caracteres comodín al buscar patrones.
 - :set window=n         // Número de líneas de la ventana.
 - :set autowrite        // Grabar automáticamente el búfer en el archivo al moverse a otro búfer.
@@ -22,7 +22,7 @@ COMANDOS NATIVOS EX
 - :set list             // Visualizar los tabuladores y espacios al final de la línea con caracteres especiales.
 - :set exrc             // Ejecuta la configuración de .vimrc o .exrc existente en el directorio actual.
                         // Esta configuración se ejecuta después de ejecutar .vimrc o .exrc del directorio personal.
-- :so ó source archivo  // Leer comandos de configuración ex de un archivo externo.
+- :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
@@ -55,6 +55,9 @@ COMANDOS NATIVOS EX
 - :bdelete ó bd         // Eliminar el búfer.
 
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
+- :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
+                    // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
+- :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :# ó p            // Mostrar temporalmente la línea actual.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
@@ -84,11 +87,12 @@ COMANDOS NATIVOS EX
                     // Permite copiar contenido entre distintos búferes de archivos.
 - :pu [n]           // Pegar después de la línea actual el contenido de la memoria nombrada n.
 - :read [a] ó r[a]  // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
+                    // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 
 
-COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
+COMANDOS NATIVOS VI
 - ZZ        // Guardar y salir.
 - ^^        // Equivalente a :e #. Cambia al búfer alterno etiquetado con #.
 - [n]h      // Mover el cursor [n] posición[es] a la izquierda.
@@ -188,6 +192,10 @@ COMANDOS NATIVOS V://github.com/tpope/vim-dadbodI
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo. 
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
+- !<pos><comando>  // Aplica el comando a las líneas seleccionadas desde el cursor hasta posición.
+                   // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
+                   // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
+- ![n]!<comando>   // Aplica el comando a [las n líneas a partir de la] línea actual. Esto no funciona en ex.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
