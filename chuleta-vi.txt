@@ -192,10 +192,10 @@ COMANDOS NATIVOS VI
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo. 
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
-- !<pos><comando>  // Aplica el comando a las líneas seleccionadas desde el cursor hasta posición.
+- !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
-- ![n]!<comando>   // Aplica el comando a [las n líneas a partir de la] línea actual. En ex tiene otra funcionalidad.
+- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual. En ex tiene otra funcionalidad.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
