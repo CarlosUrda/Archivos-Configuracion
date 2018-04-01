@@ -3,17 +3,17 @@ Archivos de Configuración de distintas herramientas usadas: Vim, Git, Bash, etc
 
 Los archivos se pueden distribuir opcionalmente de la siguiente manera:
 
-~/.bashrc
+_~/.bashrc_
 
-~/.bash_profile
+_~/.bash_profile_
 
-~/.gitconfig
+_~/.gitconfig_
 
-~/git-completion.bash
+_~/git-completion.bash_
 
-~/git-prompt.sh
+_~/git-prompt.sh_
 
-~/.vim/vimrc
+_~/.vim/vimrc_
 
 Para poder usar el gestor de plugins Vundle hay que instalarlo previamente mediante:
 
