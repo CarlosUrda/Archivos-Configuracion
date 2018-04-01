@@ -17,7 +17,7 @@ Los archivos se pueden distribuir opcionalmente de la siguiente manera:
 
 Para poder usar el gestor de plugins Vundle hay que instalarlo previamente mediante:
 
-$ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+`$ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim`
 
 Una vez instalado el plugin Vundle, dentro de vim ejecutar el comando :PluginInstall! Parara instalar y actualizar todos los plugins configurados en vimrc.
 
