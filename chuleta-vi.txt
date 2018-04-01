@@ -14,7 +14,7 @@ COMANDOS NATIVOS EX
 - :set autowrite        // Grabar automáticamente el búfer en el archivo al moverse a otro búfer.
 - :set showmatch        // Mostrar paréntesis o corchetes emparejados.
 - :set tabstop=n        // Ancho en caracteres de un tabulador.
-- :set softabstop=n     // Ancho de caracteres usado como prioridad sobre tabstop al insertar un tabulador. 
+- :set softabstop=n     // Ancho de caracteres usado como prioridad sobre tabstop al insertar un tabulador.
                         // Intenta usar tabulaciones de ancho tabstop y, si no encaja, rellena con caracteres.
 - :set shiftwidth=n     // Ancho en caracteres del sangrado. Intenta usar tabulaciones tabstop y, si no encaja, rellena con caracteres.
 - :set expandtab        // Al usar tabulación, inserta tantos espacios como el ancho definido en lugar de tabulación.
@@ -22,9 +22,16 @@ COMANDOS NATIVOS EX
 - :set list             // Visualizar los tabuladores y espacios al final de la línea con caracteres especiales.
 - :set exrc             // Ejecuta la configuración de .vimrc o .exrc existente en el directorio actual.
                         // Esta configuración se ejecuta después de ejecutar .vimrc o .exrc del directorio personal.
+- :set remap            // Permitir a las macros de secuencias de comandos contener otras macros definidas manualmente.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
+- :ab <abr> <texto>     // Crea una macro abr que será sustituida por texto al escribirla como palabra entera en el búfer en modo inserción.
+                        // Si abr extá dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+- :unab <abr>           // Eliminar la abreviación.
+- :map <x> <secuencia>  // Crear una macro para una secuencias de comandos para el modo comando.
+                        // Los caracteres especiales en secuencia se escriben como el valor obtenido en ex al pulsar Ctrl-V y el carácter.
+- :unmap <x>            // Eliminar una macro de secuencia de comandos.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
                         // Si no hay n la posición relativa es a partir de la línea actual.
 - :[n],[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de la línea actual.
@@ -36,17 +43,17 @@ COMANDOS NATIVOS EX
 - :$            // Última línea del archivo.
 - :%            // Al inicio del comando ex representa todas las líneas del archivo.
 - :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
-- :n            // Mostrar el búfer del siguiente archivo de la línea de comandos. 
+- :n            // Mostrar el búfer del siguiente archivo de la línea de comandos.
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
-- :e #          // Mostrar el búfer alterno asignado con la etiqueta #. 
+- :e #          // Mostrar el búfer alterno asignado con la etiqueta #.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
 - :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
 - :c1 | c2              // Combinar varios comandos.
 - :q                    // Quitar vi y volver a la terminal.
-- :x                    // Guardar (si ha sido modificado el archivo) y salir
+- :x                    // Guardar (si ha sido modificado el archivo) y salir.
 - :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
-- :buffer [n] ó b [n]   // Mostrar el búfer n
+- :buffer [n] ó b [n]   // Mostrar el búfer n.
 - :buffers ó ls         // Mostrar un listado de todos los búfers.
 - :bnext ó bn           // Mostrar el siguiente búfer de la lista.
 - :bprevious ó bp       // Mostrar el búfer previo de la lista.
@@ -63,14 +70,14 @@ COMANDOS NATIVOS EX
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
 - :d                // Borrar la línea actual.
 - :m[l]             // Mover la línea actual a la posición siguiente a la línea l.
-- :co[l] ó t[l]     // Copiar la línea actual y la pega en la posición siguiente a la línea l. 
-- :g/patrón         // Mover a la última ocurrencia del patrón en el archivo. 
+- :co[l] ó t[l]     // Copiar la línea actual y la pega en la posición siguiente a la línea l.
+- :g/patrón         // Mover a la última ocurrencia del patrón en el archivo.
                     // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
 - :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
 - :g/patrón/nu      // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
-- :g!/patr ó v/patr // Mostrar todas las líneas que no contienen el patrón. 
+- :g!/patr ó v/patr // Mostrar todas las líneas que no contienen el patrón.
 - :g/patrón/s//p2/g // Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
-                    // Después de g/patrón/ se añade un comando que se ejecuta para cada línea. 
+                    // Después de g/patrón/ se añade un comando que se ejecuta para cada línea.
                     // Dicho comando añadido puede a su vez tener sus propias líneas a que aplicarse. Por ejemplo:
                     // :1,10g/^/ 20,30t$  => Copia 10 veces las líneas de la 20 a la 30 al final del archivo.
 - :s/p1/p2/         // Sustituir en la línea actual el primer patrón de búsqueda p1 por el patrón de reemplazo p2.
@@ -78,10 +85,10 @@ COMANDOS NATIVOS EX
 - :s//p2/           // Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.
 - :s/p1/p2/g        // Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gc       // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
-- :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2)
+- :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2).
                     // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo.
 - :set edcompatible // Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (útil en :&).
-- :~                // Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último en general utilizado 
+- :~                // Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último en general utilizado.
                     // :s/rojo/azul/  y  :/verde  entonces  :~  equivale a  :s/verde/azul
 - :ya [n]           // Copiar la línea actual en la memoria nombrada con letra n (si n es un dígito copia n líneas desde la actual).
                     // Permite copiar contenido entre distintos búferes de archivos.
@@ -97,11 +104,11 @@ COMANDOS NATIVOS VI
 - ^^        // Equivalente a :e #. Cambia al búfer alterno etiquetado con #.
 - [n]h      // Mover el cursor [n] posición[es] a la izquierda.
 - [n]l      // Mover el cursor [n] posición[es] a la derecha.
-- [n]j      // Mover el cursor [n] posición[es] hacia abajo. 
+- [n]j      // Mover el cursor [n] posición[es] hacia abajo.
 - [n]k      // Mover el cursor [n] posición[es] hacia arriba.
 - [n]w      // Mover cursor a derecha situándose al inicio de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
 - [n]e      // Mover cursor a derecha situándose al final de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
-- [n]b      // Mover cursor a izquierda situándose al inicio de la anterior [n] palabra. No incluye puntuación como parte de la palabra
+- [n]b      // Mover cursor a izquierda situándose al inicio de la anterior [n] palabra. No incluye puntuación como parte de la palabra.
 - [n]W      // Mover cursor a derecha situándose al inicio de la siguiente [n] palabra. Incluye puntuación como parte de la palabra.
 - [n]B      // Mover cursor a izquierda situándose al inicio de la anterior [n] palabra. Incluye puntuación como parte de la palabra.
 - [n]E      // Mover cursor a derecha situándose al final de la siguiente [n] palabra. Incluye puntuación como parte de la palabra.
@@ -125,28 +132,28 @@ COMANDOS NATIVOS VI
 - '[c]      // Mover el cursor al primer carácter de la línea con la marca c.
 - ``        // Mover el cursor a la posición exacta antes de realizar el último movimiento G, movimiento a una marca o movimiento en una búsqueda.
 - ''        // Mover el cursor al inicio de la línea donde estaba antes de realizar el último movimiento G, movimiento a una marca o búsqueda.
-- [n]Ctrl-f     // Mover la pantalla [n] páginas hacia abajo.
-- [n]Ctrl-b     // Mover la pantalla [n] páginas hacia arriba.
-- [n]Ctrl-d     // Mover la pantalla [n] líneas hacia abajo. Sin [n] se mueve media página.
-- [n]Ctrl-u     // Mover la pantalla [n] líneas hacia arriba. Sin [n] se mueve media página.
-- [n]Ctrl-e     // Mover la pantalla [n] líneas hacia abajo. El cursor permanece en la misma posición.
-- [n]Ctrl-y     // Mover la pantalla [n] líneas hacia arriba. El cursor permanece en la misma posición.
-- [n]z-Intro    // Mover la pantalla situando la línea [n] en la parte superior. Por defecto línea actual.
-- [n]z-         // Mover la pantalla situando la línea [n] en la parte inferior. Por defecto línea actual.
-- [n]z.         // Mover la pantalla situando la línea [n] en la parte media. Por defecto línea actual. 
-- [n]zz         // Mover la pantalla situando la línea [n] en la parte media. El cursor permanece en la misma posición.
+- [n]Ctrl-f // Mover la pantalla [n] páginas hacia abajo.
+- [n]Ctrl-b // Mover la pantalla [n] páginas hacia arriba.
+- [n]Ctrl-d // Mover la pantalla [n] líneas hacia abajo. Sin [n] se mueve media página.
+- [n]Ctrl-u // Mover la pantalla [n] líneas hacia arriba. Sin [n] se mueve media página.
+- [n]Ctrl-e // Mover la pantalla [n] líneas hacia abajo. El cursor permanece en la misma posición.
+- [n]Ctrl-y // Mover la pantalla [n] líneas hacia arriba. El cursor permanece en la misma posición.
+- [n]z-Intr // Mover la pantalla situando la línea [n] en la parte superior. Por defecto línea actual.
+- [n]z-     // Mover la pantalla situando la línea [n] en la parte inferior. Por defecto línea actual.
+- [n]z.     // Mover la pantalla situando la línea [n] en la parte media. Por defecto línea actual.
+- [n]zz     // Mover la pantalla situando la línea [n] en la parte media. El cursor permanece en la misma posición.
 - [n]H      // Mover el cursor a [n líneas desde] la parte superior de la página actual.
 - [n]L      // Mover el cursor a [n líneas desde] la parte inferior de la página actual.
 - M         // Mover el cursor a la mitad de la página actual.
-- y[m]      // Copiar lo indicado en el comando posterior de movimiento.
-- "[n]y[m]  // Copiar en la memoria nombrada n. La n puede ser una letra minúscula o un dígito. 
+- y[m]      // Copiar lo indicado en el comando posterior de movimiento. Se almacena en el búfer sin nombre.
+- "[n]y[m]  // Copiar en la memoria nombrada n. La n puede ser una letra minúscula o un dígito.
             // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
             // Si la letra n es mayúscula se añade lo copiado al contenido de la memoria nombrada con la letra minúscula.
             // Si la memoria es nombrada con letra no se borra al alternar entre búferes.
-- [n]yy \ [n]Y  // Copiar [n líneas enteras a partir de] la línea actual.
+- [n]yy ó Y // Copiar [n líneas enteras a partir de] la línea actual. Se almacena en el búfer sin nombre.
 - [n]p      // Pegar de la memoria [n veces] después del cursor.
 - [n]P      // Pegar de la memoria [n veces] antes del cursor.
-- "[n]p     // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito. 
+- "[n]p     // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
@@ -158,10 +165,10 @@ COMANDOS NATIVOS VI
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
 - C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
-- [n]cc \ [n]S  // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
+- [n]cc ó S // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
 - d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el búfer sin nombre.
 - D         // Borrar desde la posición del cursor hasta el final de la línea actual.
-- [n]dd     // Borrar [n] línea[s] entera[s] a partir de la línea actual. 
+- [n]dd     // Borrar [n] línea[s] entera[s] a partir de la línea actual.
             // Se almacena automáticamente en búfer numerados las líneas borradas enteras.
 - [n]x      // Borrar [n caracteres en adelante incluido] el carácter actual.
 - [n]X      // Borrar [n] caracter[es] previo[s] a la posición del cursor.
@@ -173,7 +180,7 @@ COMANDOS NATIVOS VI
 - [n]Ctrl-r // Rehace la[s] última[s n] accion[es] realizada[s].
 - [n]J      // Unir la línea actual con la[s n] línea[s] siguiente[s].
 - Ctrl-l    // Refrescar la pantalla.
-- /patrón   // Buscar hacia delante el patrón. 
+- /patrón   // Buscar hacia delante el patrón.
 - /-Intro   // Repite la última búsqueda hacia adelante.
 - /-Cursor  // Accede al historial de búsquedas.
 - ?patrón   // Buscar hacia atrás el patrón.
@@ -189,7 +196,7 @@ COMANDOS NATIVOS VI
 - [n]T[c]   // Mueve el cursor a la posición siguiente del anterior [n] carácter c dentro de la línea.
 - [n];      // Repetir la búsqueda de carácter en la línea en la misma dirección.
 - [n],      // Repetir la búsqueda de carácter en la línea en la dirección opuesta.
-- Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo. 
+- Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
@@ -217,26 +224,26 @@ EXPRESIONES REGULARES
         // /\(hola\) qué \(tal\), \1 qué \2/ => hola qué tal, hola qué tal.
         // \num es válido tanto en el patrón de búsqueda como el de reemplazo de una sustitución. :s/\(ho\)que\1/\1que/
 - \< \> // Comprobar palabras que empiezan o terminan con un patrón. El inicio o final de palabra es determinado por espacio o signo de puntuación.
-        // \<p empareja palabras que empiecen por el patrón p. \<ho => emparejaría hola, hoyo, etc
-        // p\> empareja palabras que finalicen por el patrón p. la\> => emparejaría hola, cala, etc
+        // \<p empareja palabras que empiecen por el patrón p. \<ho => emparejaría hola, hoyo, etc.
+        // p\> empareja palabras que finalicen por el patrón p. la\> => emparejaría hola, cala, etc.
         // Pueden usarse independientes para comprobar finales o inicios de palabras. Si se usan juntas, comprueba una palabra completa.
 - []    // Cualquier carácter (solo uno) incluido entre los corchetes. [ABC] => A o B o C.
-        // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z
-        // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan. 
-        // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C
+        // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z.
+        // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan.
+        // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C.
 - [: :] // Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
-        // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
-- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
-- [= =] // Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è
-        // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda. 
-        // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[
-- \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc) 
+        // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?].
+- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch.
+- [= =] // Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è.
+        // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda.
+        // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[.
+- \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc).
         // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
 - ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
-        // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2 
-- &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre (). 
+        // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2.
+- &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre ().
         // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
 - \u    // En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
-- \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter
-- \U    // En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E
-- \L    // En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E 
+- \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter.
+- \U    // En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E.
+- \L    // En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E.
