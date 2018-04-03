@@ -29,8 +29,9 @@ COMANDOS NATIVOS EX
 - :ab <abr> <texto>     // Crea una macro abr que será sustituida por texto al escribirla como palabra entera en el búfer en modo inserción.
                         // Si abr extá dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
 - :unab <abr>           // Eliminar la abreviación.
-- :map <x> <secuencia>  // Crear una macro para una secuencias de comandos para el modo comando.
+- :map <x> <secuencia>  // Crear una macro para mapear una secuencias de comandos en el modo comando.
                         // Los caracteres especiales en secuencia se escriben como el valor obtenido en ex al pulsar Ctrl-V y el carácter.
+- :map! <x> <secuencia> // Crear una macro para mapear una secuencias de comandos en el modo inserción.
 - :unmap <x>            // Eliminar una macro de secuencia de comandos.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
                         // Si no hay n la posición relativa es a partir de la línea actual.
@@ -38,10 +39,13 @@ COMANDOS NATIVOS EX
 - :[n];[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de n.
                 // Si no hay m es por defecto el último valor de m.
 - :[n]          // Mover el cursor a la línea n.
-- :/patrón/     // Línea donde se encuentra la primera ocurrencia del patrón.
+- :/patrón[/]   // Siguiente línea donde se encuentra la primera ocurrencia del patrón.
+- :?patrón[?]   // Anterior línea donde se encuentra la primera ocurrencia del patrón.
 - :.            // Línea actual del archivo.
 - :$            // Última línea del archivo.
 - :%            // Al inicio del comando ex representa todas las líneas del archivo.
+- :\/           // Siguiente línea donde se encuentra el último patrón usado en una búsqueda.
+- :\?           // Anterior línea donde se encuentra el último patrón usado en una búsqueda.
 - :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
 - :n            // Mostrar el búfer del siguiente archivo de la línea de comandos.
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
@@ -49,9 +53,9 @@ COMANDOS NATIVOS EX
 - :e #          // Mostrar el búfer alterno asignado con la etiqueta #.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
 - :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
-- :c1 | c2              // Combinar varios comandos.
-- :q                    // Quitar vi y volver a la terminal.
-- :x                    // Guardar (si ha sido modificado el archivo) y salir.
+- :c1 | c2      // Combinar varios comandos.
+- :q            // Quitar vi y volver a la terminal.
+- :x            // Guardar (si ha sido modificado el archivo) y salir.
 - :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
 - :buffer [n] ó b [n]   // Mostrar el búfer n.
 - :buffers ó ls         // Mostrar un listado de todos los búfers.
@@ -84,9 +88,10 @@ COMANDOS NATIVOS EX
                     // En lugar de / se puede usar cualquier carácter no alfanumérico ni espacio, excepto \, " ó | => :%s;/dir/sub;/dir2/sub2;g
 - :s//p2/           // Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.
 - :s/p1/p2/g        // Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
-- :s/p1/p2/gc       // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución.
+- :s/p1/p2/gci      // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución e ignora el caso.
 - :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2).
                     // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo.
+- :\&               // Siguiente línea donde se encuentra el último patrón de búsqueda usado en una sustitución.
 - :set edcompatible // Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (útil en :&).
 - :~                // Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último en general utilizado.
                     // :s/rojo/azul/  y  :/verde  entonces  :~  equivale a  :s/verde/azul
@@ -104,7 +109,7 @@ COMANDOS NATIVOS VI
 - ^^        // Equivalente a :e #. Cambia al búfer alterno etiquetado con #.
 - [n]h      // Mover el cursor [n] posición[es] a la izquierda.
 - [n]l      // Mover el cursor [n] posición[es] a la derecha.
-- [n]j      // Mover el cursor [n] posición[es] hacia abajo.
+- [n]j      // Mover el cursor [n] posición[es] hacia abajo. También lo hace Ctrl-J
 - [n]k      // Mover el cursor [n] posición[es] hacia arriba.
 - [n]w      // Mover cursor a derecha situándose al inicio de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
 - [n]e      // Mover cursor a derecha situándose al final de la siguiente [n] palabra. No incluye puntuación como parte de la palabra.
@@ -157,7 +162,7 @@ COMANDOS NATIVOS VI
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
-- [n]I      // Insertar [n veces] texto al inicio de la línea actual.
+- [n]I      // Insertar [n veces] texto al inicio del contenido de la línea actual.
 - [n]r      // Reemplazar [n caracteres desde] el carácter actual por el nuevo carácter. Vuelve solo al modo comando.
 - [n]R      // Reemplazar [n veces] a partir del cursor actual por el nuevo texto a introducir.
 - o         // Añadir una línea en blanco debajo de la línea actual y entrar en modo insertar.
@@ -199,6 +204,10 @@ COMANDOS NATIVOS VI
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
+- >>        // Sangrado hacia adelante.
+- <<        // Sangrado hacia atrás.
+- @l        // Ejecuta en modo comando la secuencia de comandos guardada en el búfer de memoria con letra l.
+            // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
@@ -213,9 +222,27 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
 
 EXPRESIONES REGULARES
-** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
+*** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
 - .     // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
 - *     // Cero o cualquier número de repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible.
+- \+    // Uno o cualquier número de repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \= ó \?       // Cero o una repetición del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{n,m}        // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{n} ó \{-n}  // Exactamente n repeticiones del carácter que lo precede. No en vi.
+- \{,m}         // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{n,}         // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{-}          // Cero o más repeticiones del carácter que lo precede. Intenta emparejar siempre lo mínimo posible. No en vi.
+- \{-n,m}       // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \{-n,}        // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \{-,m}        // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \@=           // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
+                // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
+                // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
+- \@!           // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
+- \@<=          // Comprueba el carácter anterior y el resultado del emparejamiento es vacío. Tiene que estar al inicio del patrón de búsqueda.
+                // Los elementos a continuación los intenta emparejar a partir del final del elemento anterior emparejado:
+                // faa\(bar\)\@<=foo => faabarfoo -> Nada; \(bar\)\@<=foo => faabarfoo -> foo
+- \@<!          // Igual que \@<= pero comprobando si no coincide con el carácter anterior.
 - ^     // Al principio de la regex indica que dicha regex debe encontrarse al inicio de la línea.
         // Si no está al inicio de la regex, representa simplemente al mismo carácter ^.
 - $     // Al final la regex indica que dicha regex debe encontrarse al final de la línea.
@@ -232,18 +259,35 @@ EXPRESIONES REGULARES
         // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan.
         // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C.
 - [: :] // Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
-        // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?].
-- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch.
+        // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
+- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
 - [= =] // Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è.
         // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda.
         // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[.
 - \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc).
         // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
 - ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
-        // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ = p2.
+        // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ equivale a p2.
 - &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre ().
         // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
 - \u    // En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
+        // En patrón de búsqueda equivale a un carácter en mayúscula.
 - \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter.
+        // En patrón de búsqueda equivale a un carácter en minúscula.
 - \U    // En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E.
+        // En patrón de búsqueda equivale a un carácter que no es mayúscula.
 - \L    // En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E.
+        // En patrón de búsqueda equivale a un carácter que no es minúscula.
+- \s    // En patrón de búsqueda carácter en blanco (espacio y tabulador). \S cualquier carácter no blanco.
+- \d    // En patrón de búsqueda dígito. \D cualquier carácter no dígito.
+- \x    // En patrón de búsqueda dígito hexadecimal. \X cualquier carácter no dígito hexadecimal.
+- \o    // En patrón de búsqueda dígito octal. \O cualquier carácter no dígito octal.
+- \h    // En patrón de búsqueda carácter cabeza de palabra [A-Za-z_]. \H cualquier carácter no cabeza de palabra.
+- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. \W cualquier carácter no de palabra.
+- \i    // En patrón de búsqueda carácter de identificador [0-9A-Za-z_].
+- \I    // En patrón de búsqueda carácter de inicio de identificador [A-Za-z_].
+- \a    // En patrón de búsqueda carácter alfabético [A-Za-z]. \A cualquier carácter no alfabético.
+- \t    // En patrón de búsqueda tabulador.
+- \e    // En patrón de búsqueda escape.
+- \r    // En patrón de búsqueda retorno de carro.
+
