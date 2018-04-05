@@ -12,7 +12,7 @@ COMANDOS NATIVOS EX
 - :set magic            // Reconoce caracteres comodín al buscar patrones.
 - :set window=n         // Número de líneas de la ventana.
 - :set autowrite        // Grabar automáticamente el búfer en el archivo al moverse a otro búfer.
-- :set showmatch        // Mostrar paréntesis o corchetes emparejados.
+- :set showmatch        // Mostrar paréntesis o corchetes emparejados al escribir el de cierre.
 - :set tabstop=n        // Ancho en caracteres de un tabulador.
 - :set softabstop=n     // Ancho de caracteres usado como prioridad sobre tabstop al insertar un tabulador.
                         // Intenta usar tabulaciones de ancho tabstop y, si no encaja, rellena con caracteres.
@@ -23,6 +23,7 @@ COMANDOS NATIVOS EX
 - :set exrc             // Ejecuta la configuración de .vimrc o .exrc existente en el directorio actual.
                         // Esta configuración se ejecuta después de ejecutar .vimrc o .exrc del directorio personal.
 - :set remap            // Permitir a las macros de secuencias de comandos contener otras macros definidas manualmente.
+- :set autoindent       // Sangría automática.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -75,6 +76,7 @@ COMANDOS NATIVOS EX
 - :d                // Borrar la línea actual.
 - :m[l]             // Mover la línea actual a la posición siguiente a la línea l.
 - :co[l] ó t[l]     // Copiar la línea actual y la pega en la posición siguiente a la línea l.
+- :j                // Unir las líneas seleccionadas formando una sola línea.
 - :g/patrón         // Mover a la última ocurrencia del patrón en el archivo.
                     // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
 - :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
@@ -102,6 +104,10 @@ COMANDOS NATIVOS EX
                     // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
+- :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
+- :tag id           // Abre el archivo que contiene la definición del identificador y posiciona el cursor en el inicio de la definición.
+                    // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, 
+                    // para todos los archivos donde queremos buscar el identificador => :!ctags archivo[s].
 
 
 COMANDOS NATIVOS VI
@@ -120,6 +126,7 @@ COMANDOS NATIVOS VI
 - 0         // Mover el cursor al inicio de la línea actual.
 - $         // Mover el cursor al final de la línea actual.
 - ^         // Mover el cursor al primer carácter no blanco de la línea actual.
+- %         // Mueve el cursor al carácter limitador de un bloque ([, (, {, <) más cercano y a su pareja.
 - [n]|         // Mover a la columna n de la línea actual.
 - [n]+ \ Intro // Mover el cursor al primer carácter no blanco de la siguiente [enésima] línea.
 - [n]-         // Mover el cursor al primer carácter no blanco de la anterior [enésima] línea.
@@ -204,8 +211,10 @@ COMANDOS NATIVOS VI
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
-- >>        // Sangrado hacia adelante.
-- <<        // Sangrado hacia atrás.
+- >>        // Sangrado hacia adelante. En modo inserción Ctrl-T.
+- <<        // Sangrado hacia atrás. En modo inserción Ctrl-D.
+- ^Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, pero la mantiene para líneas posteriores.
+- 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
 - @l        // Ejecuta en modo comando la secuencia de comandos guardada en el búfer de memoria con letra l.
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
@@ -220,6 +229,8 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
+- ex -s archiv < script // Ejecutar un script de comandos ex a un archivo.
+- ex -s archv << scrpt  // Ejecutar en el archivo la lista de comandos introducidos a continuación por teclado.
 
 EXPRESIONES REGULARES
 *** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
