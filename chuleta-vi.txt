@@ -217,6 +217,8 @@ COMANDOS NATIVOS VI
 - 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
 - @l        // Ejecuta en modo comando la secuencia de comandos guardada en el búfer de memoria con letra l.
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
+- ^]        // Busca el identificador bajo el cursor (desde su posición) en el archivo de tags y lleva al archivo donde se encuentra la definición.
+            // Similar a :tag en ex.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
