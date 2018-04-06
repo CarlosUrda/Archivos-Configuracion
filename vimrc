@@ -173,9 +173,14 @@ set autowrite
 " especiales
 set list
 
-" Línea que informa del límite de 80 caracteres.
-set textwidth=79
+" Límite de 80 caracteres.
+set textwidth=80
+" Columna avisando del límite de caracteres. 81 general y 73 para commits
 set colorcolumn=+1
+" Límite de 72 caracteres para editar commits.
+autocmd FileType gitcommit set textwidth=72
+" Segunda columna avisando del límite de caracteres en commits.
+autocmd FileType gitcommit set colorcolumn+=51 
 highlight ColorColumn ctermbg=7
 
 " Manejar buffers
