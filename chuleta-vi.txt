@@ -24,6 +24,7 @@ COMANDOS NATIVOS EX
                         // Esta configuración se ejecuta después de ejecutar .vimrc o .exrc del directorio personal.
 - :set remap            // Permitir a las macros de secuencias de comandos contener otras macros definidas manualmente.
 - :set autoindent       // Sangría automática.
+- :set extended         // Activar las expresiones regulares extendidas en la variante nvi.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -237,17 +238,17 @@ EJECUCIÓN DE VI DESDE TERMINAL
 EXPRESIONES REGULARES
 *** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
 - .     // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
-- *     // Cero o cualquier número de repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible.
-- \+    // Uno o cualquier número de repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- *     // Cero o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible.
+- \+    // Uno o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \= ó \?       // Cero o una repetición del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
-- \{n,m}        // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
-- \{n} ó \{-n}  // Exactamente n repeticiones del carácter que lo precede. No en vi.
-- \{,m}         // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
-- \{n,}         // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
-- \{-}          // Cero o más repeticiones del carácter que lo precede. Intenta emparejar siempre lo mínimo posible. No en vi.
-- \{-n,m}       // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
-- \{-n,}        // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
-- \{-,m}        // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \{n,m\}       // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{n\} (ó -n)  // Exactamente n repeticiones del carácter que lo precede. No en vi.
+- \{,m\}        // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{n,\}        // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- \{-\}         // Cero o más repeticiones del carácter que lo precede. Intenta emparejar siempre lo mínimo posible. No en vi.
+- \{-n,m\}      // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \{-n,\}       // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
+- \{-,m\}       // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \@=           // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
                 // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
                 // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
@@ -267,13 +268,14 @@ EXPRESIONES REGULARES
         // \<p empareja palabras que empiecen por el patrón p. \<ho => emparejaría hola, hoyo, etc.
         // p\> empareja palabras que finalicen por el patrón p. la\> => emparejaría hola, cala, etc.
         // Pueden usarse independientes para comprobar finales o inicios de palabras. Si se usan juntas, comprueba una palabra completa.
+- \|    // Cualquiera de los elementos (tomados como un todo) a ambos lados: hola\|qué\|tal => hola ó qué ó tal. No en vi.
 - []    // Cualquier carácter (solo uno) incluido entre los corchetes. [ABC] => A o B o C.
         // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z.
         // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan.
         // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C.
 - [: :] // Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
         // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
-- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch
+- [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch **No me funciona en vim**
 - [= =] // Caracteres equivalentes al indicado en su interior. [=e=] => e, é, è.
         // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda.
         // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[.
