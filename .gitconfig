@@ -31,3 +31,5 @@
     b = branch -v -a
     s = status -s
     ch = checkout
+[help]
+    autocorrect = 10
