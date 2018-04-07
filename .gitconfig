@@ -1,35 +1,35 @@
 [color]
-    ui = auto
-    status = auto
-    branch = auto
-    interactive = auto
-    diff = auto
+	ui = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	diff = auto
 [core]
-    editor = vim
+	editor = vim
 [push]
-    default = upstream
+	default = upstream
 [merge]
-    conflictstyle = diff3
-    tool = vimdiff
+	conflictstyle = diff3
+	tool = vimdiff
 [mergetool]
-    prompt = false
+	prompt = false
 [user]
-    name = Carlos A. Gómez Urda
-    email = carlosurda@yahoo.es
+	name = Carlos A. Gómez Urda
+	email = carlosurda@yahoo.es
 [branch]
-    autosetuprebase = always
+	autosetuprebase = always
 [credential]
-    helper = cache
+	helper = cache
 [diff]
-    tool = vimdiff
+	tool = vimdiff
 [difftool]
-    prompt = false
+	prompt = false
 [alias]
-    d = difftool
-    l = log --pretty=oneline --graph --abbrev-commit --stat --decorate --all
-    sb = show-branch --all --sha1-name
-    b = branch -v -a
-    s = status -s
-    ch = checkout
+	d = difftool
+	l = log --pretty=oneline --graph --abbrev-commit --stat --decorate --all
+	sb = show-branch --all --sha1-name
+	b = branch -v -a
+	s = status -s
+	ch = checkout
 [help]
-    autocorrect = 10
+	autocorrect = 10
