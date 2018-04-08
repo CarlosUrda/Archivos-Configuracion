@@ -66,6 +66,13 @@ COMANDOS NATIVOS EX
 - :bfirst ó bf          // Mostrar el primer búfer de la lista.
 - :blast ó bl           // Mostrar el último búfer de la lista.
 - :bdelete ó bd         // Eliminar el búfer.
+- :[n]tag id    // Abre el archivo que contiene la [n] definición del identificador y posiciona el cursor en el inicio de la definición.
+                // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, para 
+                // todos los archivos donde queremos buscar el identificador => :!ctags archivo[s] (mejor exuberant ctags)
+                // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. No en vi.
+- :[n]tag       // Muestra el archivo donde se encuentra la definición del id de la [n] entrada en la pila de tags a partir de la actual (incluyéndola)
+- :[n]pop       // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
+- :tags         // Muestra la pila de etiquetas (tags) buscadas. No en vi.
 
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
@@ -106,9 +113,6 @@ COMANDOS NATIVOS EX
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
 - :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
-- :tag id           // Abre el archivo que contiene la definición del identificador y posiciona el cursor en el inicio de la definición.
-                    // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, 
-                    // para todos los archivos donde queremos buscar el identificador => :!ctags archivo[s].
 
 
 COMANDOS NATIVOS VI
@@ -218,8 +222,10 @@ COMANDOS NATIVOS VI
 - 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
 - @l        // Ejecuta en modo comando la secuencia de comandos guardada en el búfer de memoria con letra l.
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
-- ^]        // Busca el identificador bajo el cursor (desde su posición) en el archivo de tags y lleva al archivo donde se encuentra la definición.
-            // Similar a :tag en ex.
+- [n]Ctrl-] // Busca el identificador bajo el cursor (desde su posición) en archivo de tags y lleva al archivo donde se encuentra la [n] definición.
+            // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. Similar a :tag en ex. No en vi.
+- [n]Ctrl-T // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
+            // Similar a :pop. No en vi.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
