@@ -25,6 +25,7 @@ COMANDOS NATIVOS EX
 - :set remap            // Permitir a las macros de secuencias de comandos contener otras macros definidas manualmente.
 - :set autoindent       // Sangría automática.
 - :set extended         // Activar las expresiones regulares extendidas en la variante nvi.
+- :set binary ó bin     // Conveniente cuando se manipulan archivos binarios.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -238,6 +239,7 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
+- vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
 - ex -s archiv < script // Ejecutar un script de comandos ex a un archivo.
 - ex -s archv << scrpt  // Ejecutar en el archivo la lista de comandos introducidos a continuación por teclado.
 
