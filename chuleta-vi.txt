@@ -31,6 +31,8 @@ COMANDOS NATIVOS EX
 - :set wrap ó nowrap    // Desactiva scroll lateral mostrando en varias líneas visuales (no reales) el exceso de texto fuera de la pantalla. No en vi.
 - :set sidescroll=n     // Número de caracteres a desplazar la pantalla cuando se produce el scroll lateral. No en vi.
                         // Si 0, el cursor se sitúa en mitad de pantalla al realizar el desplazamiento lateral.
+- :set ruler            // Muestra información en pantalla sobre la fila y columna actual. No en vi.
+- :set showmode         // Muestra información en pantalla sobre el modo de acción actual.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
