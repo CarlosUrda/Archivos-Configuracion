@@ -25,6 +25,14 @@ COMANDOS NATIVOS EX
 - :set remap            // Permitir a las macros de secuencias de comandos contener otras macros definidas manualmente.
 - :set autoindent       // Sangría automática.
 - :set extended         // Activar las expresiones regulares extendidas en la variante nvi.
+- :set binary ó bin     // Conveniente cuando se manipulan archivos binarios.
+- :set incsearch ó is   // Muestra de manera interactiva el texto que va coincidiendo con el patrón de búsqueda. No en vi.
+                        // Mientras se está escribiendo el patrón, Ctrl-G y Ctrl-T permiten moverse por los textos coincidentes.
+- :set wrap ó nowrap    // Desactiva scroll lateral mostrando en varias líneas visuales (no reales) el exceso de texto fuera de la pantalla. No en vi.
+- :set sidescroll=n     // Número de caracteres a desplazar la pantalla cuando se produce el scroll lateral. No en vi.
+                        // Si 0, el cursor se sitúa en mitad de pantalla al realizar el desplazamiento lateral.
+- :set ruler            // Muestra información en pantalla sobre la fila y columna actual. No en vi.
+- :set showmode         // Muestra información en pantalla sobre el modo de acción actual.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -238,6 +246,7 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -R \ view archivo  // Abrir el archivo en modo lectura.
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
+- vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
 - ex -s archiv < script // Ejecutar un script de comandos ex a un archivo.
 - ex -s archv << scrpt  // Ejecutar en el archivo la lista de comandos introducidos a continuación por teclado.
 
@@ -311,4 +320,3 @@ EXPRESIONES REGULARES
 - \t    // En patrón de búsqueda tabulador.
 - \e    // En patrón de búsqueda escape.
 - \r    // En patrón de búsqueda retorno de carro.
-
