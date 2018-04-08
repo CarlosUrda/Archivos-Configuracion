@@ -28,6 +28,9 @@ COMANDOS NATIVOS EX
 - :set binary ó bin     // Conveniente cuando se manipulan archivos binarios.
 - :set incsearch ó is   // Muestra de manera interactiva el texto que va coincidiendo con el patrón de búsqueda. No en vi.
                         // Mientras se está escribiendo el patrón, Ctrl-G y Ctrl-T permiten moverse por los textos coincidentes.
+- :set wrap ó nowrap    // Desactiva scroll lateral mostrando en varias líneas visuales (no reales) el exceso de texto fuera de la pantalla. No en vi.
+- :set sidescroll=n     // Número de caracteres a desplazar la pantalla cuando se produce el scroll lateral. No en vi.
+                        // Si 0, el cursor se sitúa en mitad de pantalla al realizar el desplazamiento lateral.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
