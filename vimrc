@@ -173,6 +173,9 @@ set autowrite
 " especiales
 set list
 
+" Activa búsqueda interactiva.
+set incsearch
+
 " Límite de 80 caracteres.
 set textwidth=80
 " Columna avisando del límite de caracteres. 81 general y 73 para commits
