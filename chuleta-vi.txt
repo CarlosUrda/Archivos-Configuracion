@@ -221,6 +221,8 @@ COMANDOS NATIVOS VI
 - [n]T[c]   // Mueve el cursor a la posición siguiente del anterior [n] carácter c dentro de la línea.
 - [n];      // Repetir la búsqueda de carácter en la línea en la misma dirección.
 - [n],      // Repetir la búsqueda de carácter en la línea en la dirección opuesta.
+- Ctrl-i    // Sitúa el cursor en la anterior localización por la cual navegó el cursor. 
+- Ctrl-o    // Sitúa el cursor en la siguiente localización por la cual navegó el cursor.
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
