@@ -33,6 +33,8 @@ COMANDOS NATIVOS EX
                         // Si 0, el cursor se sitúa en mitad de pantalla al realizar el desplazamiento lateral.
 - :set ruler            // Muestra información en pantalla sobre la fila y columna actual. No en vi.
 - :set showmode         // Muestra información en pantalla sobre el modo de acción actual.
+- :set undofile         // Activar el deshacer persistente que guarda el historial de acciones aunque se cierre vim. No en vi.
+- :set undodir=~/.vim/undodir // Directorio donde guardar la información del undo persistente.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
