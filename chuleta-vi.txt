@@ -251,6 +251,21 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
 - vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
+- vi -c ó -cmd comando  // El comando será ejecutado como comando ex al iniciar vim. En vim permite hasta 10 opciones -c.
+- vim -C                // Ejecuta vim en modo compatible con vi.
+- vim -d                // Ejecuta vim en modo diff para 4 archivos como máximo.
+- vimdiff ó viewdiff    // Variantes para ejecutar el modo diff.
+- vim -E                // Arranca en modo ex mejorado.
+- vim -F ó -A           // Modo arábico o farsi.
+- vim -g                // Arranca gvim (GUI).
+- gvim ó gview          // Variantes para ejecutar modo GUI.
+- vim -m                // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
+- vim -o[n]             // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
+- vim -O[n]             // Igual que el anterior pero las ventanas son verticales.
+- vim -y                // Abre vim en modo fácil para inexpertos (probablemente abre gvim).
+- evim ó eview          // Variantes para ejecutar el modo fácil.
+- vim -Z                // Ejecuta vim en modo restringido, desactivando interfaces externas y previniendo el acceso a características del sistema.
+- rvim ó rview ó rgvim  // Variantes para ejecutar en modo restringido.
 - ex -s archiv < script // Ejecutar un script de comandos ex a un archivo.
 - ex -s archv << scrpt  // Ejecutar en el archivo la lista de comandos introducidos a continuación por teclado.
 
