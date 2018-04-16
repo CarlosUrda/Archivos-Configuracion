@@ -51,6 +51,7 @@ COMANDOS NATIVOS EX
 - :[n];[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de n.
                 // Si no hay m es por defecto el último valor de m.
 - :[n]          // Mover el cursor a la línea n.
+- :go [n]       // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - :/patrón[/]   // Siguiente línea donde se encuentra la primera ocurrencia del patrón.
 - :?patrón[?]   // Anterior línea donde se encuentra la primera ocurrencia del patrón.
 - :.            // Línea actual del archivo.
@@ -151,9 +152,13 @@ COMANDOS NATIVOS VI
 - [n]{         // Mover el cursor al inicio del anterior [enésimo] párrafo.
 - [n]]]        // Mover el cursor al inicio de la sección [enésima] siguiente.
 - [n][[        // Mover el cursor al inicio de la sección [enésima] anterior.
-- gg        // Mover el cursor al inicio del archivo.
-- [n]G      // Mover el cursor a la línea n.
-- G         // Mover el cursor al final del archivo.
+- gg           // Mover el cursor al inicio del archivo.
+- [n]G         // Mover el cursor a la línea n.
+- G            // Mover el cursor al final del archivo.
+- [n]Ctrl-End  // Mover el cursor al último carácter (aunque sea blanco) de la línea n (por defecto la última línea).
+- [n]Ctrl-Home // Mover el cursor al primer carácter no blanco de la línea n (por defecto la primera línea).
+- [n]%         // Mover el cursor a la línea situada en el porcentaje n del archivo. El porcentaje se calcula en base al número de líneas totales.
+- [n]go        // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - m[c]      // Crear una marca para volver más adelante.
 - `[c]      // Mover el cursor a la marca de letra c creada anteriormente.
 - '[c]      // Mover el cursor al primer carácter de la línea con la marca c.
