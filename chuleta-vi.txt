@@ -35,6 +35,7 @@ COMANDOS NATIVOS EX
 - :set showmode         // Muestra información en pantalla sobre el modo de acción actual.
 - :set undofile         // Activar el deshacer persistente que guarda el historial de acciones aunque se cierre vim. No en vi.
 - :set undodir=~/.vim/undodir // Directorio donde guardar la información del undo persistente.
+- :set mouse=a          // Activar el ratón para uso del modo visual.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -69,7 +70,8 @@ COMANDOS NATIVOS EX
 - :c1 | c2      // Combinar varios comandos.
 - :q            // Quitar vi y volver a la terminal.
 - :x            // Guardar (si ha sido modificado el archivo) y salir.
-- :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
+- :comando!     // Evita el aviso que pueda salir al ejecutar el comando.
+- :help text-objects    // Ayuda sobre selección de objetos en modo visual.
 - :buffer [n] ó b [n]   // Mostrar el búfer n.
 - :buffers ó ls         // Mostrar un listado de todos los búfers.
 - :bnext ó bn           // Mostrar el siguiente búfer de la lista.
@@ -246,7 +248,20 @@ COMANDOS NATIVOS VI
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
-- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual. En ex tiene otra funcionalidad.
+- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual.. En ex tiene otra funcionalidad.
+- v         // Activa y desactiva el modo visual.
+- [n]aw     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
+            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+- [n]aW     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
+            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]iw     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+- [n]iW     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]as     // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco.
+- [n]is     // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
+- [n]ap     // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco.
+- [n]ip     // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
