@@ -36,6 +36,10 @@ COMANDOS NATIVOS EX
 - :set undofile         // Activar el deshacer persistente que guarda el historial de acciones aunque se cierre vim. No en vi.
 - :set undodir=~/.vim/undodir // Directorio donde guardar la información del undo persistente.
 - :set mouse=a          // Activar el ratón para uso del modo visual.
+- :set isident=carcts   // Definir los caracteres considerados a formar parte de un identificador válido.
+- :set iskeyword=carcts // Definir los caracteres considerados a formar parte de una palabra clave válida.
+- :set isfname=carcts   // Definir los caracteres considerados a formar parte de un nombre de archivo válido.
+- :set isprint=carcts   // Definir los caracteres considerados a ser imprimibles.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -291,9 +295,9 @@ EJECUCIÓN DE VI DESDE TERMINAL
 
 EXPRESIONES REGULARES
 *** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
-- .     // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
-- *     // Cero o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible.
-- \+    // Uno o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- .             // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
+- * ó \{}       // Cero o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible.
+- \+            // Uno o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \= ó \?       // Cero o una repetición del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \{n,m\}       // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \{n\} (ó -n)  // Exactamente n repeticiones del carácter que lo precede. No en vi.
@@ -303,14 +307,14 @@ EXPRESIONES REGULARES
 - \{-n,m\}      // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-n,\}       // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-,m\}       // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
-- \@=           // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
-                // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
-                // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
-- \@!           // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
-- \@<=          // Comprueba el carácter anterior y el resultado del emparejamiento es vacío. Tiene que estar al inicio del patrón de búsqueda.
-                // Los elementos a continuación los intenta emparejar a partir del final del elemento anterior emparejado:
-                // faa\(bar\)\@<=foo => faabarfoo -> Nada; \(bar\)\@<=foo => faabarfoo -> foo
-- \@<!          // Igual que \@<= pero comprobando si no coincide con el carácter anterior.
+- \@=   // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
+        // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
+        // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
+- \@!   // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
+- \@<=  // Comprueba el carácter anterior y el resultado del emparejamiento es vacío. Tiene que estar al inicio del patrón de búsqueda.
+        // Los elementos a continuación los intenta emparejar a partir del final del elemento anterior emparejado:
+        // faa\(bar\)\@<=foo => faabarfoo -> Nada; \(bar\)\@<=foo => faabarfoo -> foo
+- \@<!  // Igual que \@<= pero comprobando si no coincide con el carácter anterior.
 - ^     // Al principio de la regex indica que dicha regex debe encontrarse al inicio de la línea.
         // Si no está al inicio de la regex, representa simplemente al mismo carácter ^.
 - $     // Al final la regex indica que dicha regex debe encontrarse al final de la línea.
@@ -352,9 +356,16 @@ EXPRESIONES REGULARES
 - \x    // En patrón de búsqueda dígito hexadecimal. \X cualquier carácter no dígito hexadecimal.
 - \o    // En patrón de búsqueda dígito octal. \O cualquier carácter no dígito octal.
 - \h    // En patrón de búsqueda carácter cabeza de palabra [A-Za-z_]. \H cualquier carácter no cabeza de palabra.
-- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. \W cualquier carácter no de palabra.
-- \i    // En patrón de búsqueda carácter de identificador [0-9A-Za-z_].
-- \I    // En patrón de búsqueda carácter de inicio de identificador [A-Za-z_].
+- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. 
+- \W    // En patrón de búsqueda cualquier carácter no de palabra.
+- \i    // En patrón de búsqueda carácter de identificador definido en isident. Suele ser [0-9A-Za-z_]. 
+- \I    // En patrón de búsqueda igual que \i pero sin dígitos.
+- \k    // En patrón de búsqueda carácter de palabra clave definido en iskeyword.
+- \K    // En patrón de búsqueda igual que \k pero sin dígitos.
+- \f    // En patrón de búsqueda carácter de nombre de archivo válido definido en isfname.
+- \F    // En patrón de búsqueda igual que \f pero sin dígitos.
+- \p    // En patrón de búsqueda carácter imprimible válido definido en isprint.
+- \P    // En patrón de búsqueda igual que \p pero sin dígitos.
 - \a    // En patrón de búsqueda carácter alfabético [A-Za-z]. \A cualquier carácter no alfabético.
 - \t    // En patrón de búsqueda tabulador.
 - \e    // En patrón de búsqueda escape.
