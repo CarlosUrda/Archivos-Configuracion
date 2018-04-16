@@ -33,6 +33,13 @@ COMANDOS NATIVOS EX
                         // Si 0, el cursor se sitúa en mitad de pantalla al realizar el desplazamiento lateral.
 - :set ruler            // Muestra información en pantalla sobre la fila y columna actual. No en vi.
 - :set showmode         // Muestra información en pantalla sobre el modo de acción actual.
+- :set undofile         // Activar el deshacer persistente que guarda el historial de acciones aunque se cierre vim. No en vi.
+- :set undodir=~/.vim/undodir // Directorio donde guardar la información del undo persistente.
+- :set mouse=a          // Activar el ratón para uso del modo visual.
+- :set isident=carcts   // Definir los caracteres considerados a formar parte de un identificador válido.
+- :set iskeyword=carcts // Definir los caracteres considerados a formar parte de una palabra clave válida.
+- :set isfname=carcts   // Definir los caracteres considerados a formar parte de un nombre de archivo válido.
+- :set isprint=carcts   // Definir los caracteres considerados a ser imprimibles.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -49,6 +56,7 @@ COMANDOS NATIVOS EX
 - :[n];[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de n.
                 // Si no hay m es por defecto el último valor de m.
 - :[n]          // Mover el cursor a la línea n.
+- :go [n]       // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - :/patrón[/]   // Siguiente línea donde se encuentra la primera ocurrencia del patrón.
 - :?patrón[?]   // Anterior línea donde se encuentra la primera ocurrencia del patrón.
 - :.            // Línea actual del archivo.
@@ -66,7 +74,8 @@ COMANDOS NATIVOS EX
 - :c1 | c2      // Combinar varios comandos.
 - :q            // Quitar vi y volver a la terminal.
 - :x            // Guardar (si ha sido modificado el archivo) y salir.
-- :comando!             // Evita el aviso que pueda salir al ejecutar el comando.
+- :comando!     // Evita el aviso que pueda salir al ejecutar el comando.
+- :help text-objects    // Ayuda sobre selección de objetos en modo visual.
 - :buffer [n] ó b [n]   // Mostrar el búfer n.
 - :buffers ó ls         // Mostrar un listado de todos los búfers.
 - :bnext ó bn           // Mostrar el siguiente búfer de la lista.
@@ -149,9 +158,13 @@ COMANDOS NATIVOS VI
 - [n]{         // Mover el cursor al inicio del anterior [enésimo] párrafo.
 - [n]]]        // Mover el cursor al inicio de la sección [enésima] siguiente.
 - [n][[        // Mover el cursor al inicio de la sección [enésima] anterior.
-- gg        // Mover el cursor al inicio del archivo.
-- [n]G      // Mover el cursor a la línea n.
-- G         // Mover el cursor al final del archivo.
+- gg           // Mover el cursor al inicio del archivo.
+- [n]G         // Mover el cursor a la línea n.
+- G            // Mover el cursor al final del archivo.
+- [n]Ctrl-End  // Mover el cursor al último carácter (aunque sea blanco) de la línea n (por defecto la última línea).
+- [n]Ctrl-Home // Mover el cursor al primer carácter no blanco de la línea n (por defecto la primera línea).
+- [n]%         // Mover el cursor a la línea situada en el porcentaje n del archivo. El porcentaje se calcula en base al número de líneas totales.
+- [n]go        // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - m[c]      // Crear una marca para volver más adelante.
 - `[c]      // Mover el cursor a la marca de letra c creada anteriormente.
 - '[c]      // Mover el cursor al primer carácter de la línea con la marca c.
@@ -221,6 +234,8 @@ COMANDOS NATIVOS VI
 - [n]T[c]   // Mueve el cursor a la posición siguiente del anterior [n] carácter c dentro de la línea.
 - [n];      // Repetir la búsqueda de carácter en la línea en la misma dirección.
 - [n],      // Repetir la búsqueda de carácter en la línea en la dirección opuesta.
+- Ctrl-i    // Sitúa el cursor en la anterior localización por la cual navegó el cursor. 
+- Ctrl-o    // Sitúa el cursor en la siguiente localización por la cual navegó el cursor.
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
@@ -237,7 +252,20 @@ COMANDOS NATIVOS VI
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
-- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual. En ex tiene otra funcionalidad.
+- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual.. En ex tiene otra funcionalidad.
+- v         // Activa y desactiva el modo visual.
+- [n]aw     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
+            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+- [n]aW     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
+            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]iw     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+- [n]iW     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]as     // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco.
+- [n]is     // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
+- [n]ap     // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco.
+- [n]ip     // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
@@ -247,14 +275,29 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -r                 // Listar todos los archivos temporales de autoguardado.
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
 - vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
+- vi -c ó -cmd comando  // El comando será ejecutado como comando ex al iniciar vim. En vim permite hasta 10 opciones -c.
+- vim -C                // Ejecuta vim en modo compatible con vi.
+- vim -d                // Ejecuta vim en modo diff para 4 archivos como máximo.
+- vimdiff ó viewdiff    // Variantes para ejecutar el modo diff.
+- vim -E                // Arranca en modo ex mejorado.
+- vim -F ó -A           // Modo arábico o farsi.
+- vim -g                // Arranca gvim (GUI).
+- gvim ó gview          // Variantes para ejecutar modo GUI.
+- vim -m                // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
+- vim -o[n]             // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
+- vim -O[n]             // Igual que el anterior pero las ventanas son verticales.
+- vim -y                // Abre vim en modo fácil para inexpertos (probablemente abre gvim).
+- evim ó eview          // Variantes para ejecutar el modo fácil.
+- vim -Z                // Ejecuta vim en modo restringido, desactivando interfaces externas y previniendo el acceso a características del sistema.
+- rvim ó rview ó rgvim  // Variantes para ejecutar en modo restringido.
 - ex -s archiv < script // Ejecutar un script de comandos ex a un archivo.
 - ex -s archv << scrpt  // Ejecutar en el archivo la lista de comandos introducidos a continuación por teclado.
 
 EXPRESIONES REGULARES
 *** (Las expresiones regulares funcionan tanto con los comandos vi / y ?, como con los comandos ex :g, :s, :/)
-- .     // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
-- *     // Cero o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible.
-- \+    // Uno o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
+- .             // Cualquier carácter individual excepto el salto de línea. Representa un solo carácter siempre.
+- * ó \{}       // Cero o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible.
+- \+            // Uno o cualquier número de repeticiones del elemento que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \= ó \?       // Cero o una repetición del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \{n,m\}       // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el máximo posible. No en vi.
 - \{n\} (ó -n)  // Exactamente n repeticiones del carácter que lo precede. No en vi.
@@ -264,14 +307,14 @@ EXPRESIONES REGULARES
 - \{-n,m\}      // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-n,\}       // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-,m\}       // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
-- \@=           // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
-                // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
-                // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
-- \@!           // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
-- \@<=          // Comprueba el carácter anterior y el resultado del emparejamiento es vacío. Tiene que estar al inicio del patrón de búsqueda.
-                // Los elementos a continuación los intenta emparejar a partir del final del elemento anterior emparejado:
-                // faa\(bar\)\@<=foo => faabarfoo -> Nada; \(bar\)\@<=foo => faabarfoo -> foo
-- \@<!          // Igual que \@<= pero comprobando si no coincide con el carácter anterior.
+- \@=   // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
+        // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
+        // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
+- \@!   // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
+- \@<=  // Comprueba el carácter anterior y el resultado del emparejamiento es vacío. Tiene que estar al inicio del patrón de búsqueda.
+        // Los elementos a continuación los intenta emparejar a partir del final del elemento anterior emparejado:
+        // faa\(bar\)\@<=foo => faabarfoo -> Nada; \(bar\)\@<=foo => faabarfoo -> foo
+- \@<!  // Igual que \@<= pero comprobando si no coincide con el carácter anterior.
 - ^     // Al principio de la regex indica que dicha regex debe encontrarse al inicio de la línea.
         // Si no está al inicio de la regex, representa simplemente al mismo carácter ^.
 - $     // Al final la regex indica que dicha regex debe encontrarse al final de la línea.
@@ -313,9 +356,16 @@ EXPRESIONES REGULARES
 - \x    // En patrón de búsqueda dígito hexadecimal. \X cualquier carácter no dígito hexadecimal.
 - \o    // En patrón de búsqueda dígito octal. \O cualquier carácter no dígito octal.
 - \h    // En patrón de búsqueda carácter cabeza de palabra [A-Za-z_]. \H cualquier carácter no cabeza de palabra.
-- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. \W cualquier carácter no de palabra.
-- \i    // En patrón de búsqueda carácter de identificador [0-9A-Za-z_].
-- \I    // En patrón de búsqueda carácter de inicio de identificador [A-Za-z_].
+- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. 
+- \W    // En patrón de búsqueda cualquier carácter no de palabra.
+- \i    // En patrón de búsqueda carácter de identificador definido en isident. Suele ser [0-9A-Za-z_]. 
+- \I    // En patrón de búsqueda igual que \i pero sin dígitos.
+- \k    // En patrón de búsqueda carácter de palabra clave definido en iskeyword.
+- \K    // En patrón de búsqueda igual que \k pero sin dígitos.
+- \f    // En patrón de búsqueda carácter de nombre de archivo válido definido en isfname.
+- \F    // En patrón de búsqueda igual que \f pero sin dígitos.
+- \p    // En patrón de búsqueda carácter imprimible válido definido en isprint.
+- \P    // En patrón de búsqueda igual que \p pero sin dígitos.
 - \a    // En patrón de búsqueda carácter alfabético [A-Za-z]. \A cualquier carácter no alfabético.
 - \t    // En patrón de búsqueda tabulador.
 - \e    // En patrón de búsqueda escape.
