@@ -198,8 +198,8 @@ COMANDOS NATIVOS VI
 - [n]I      // Insertar [n veces] texto al inicio del contenido de la línea actual.
 - [n]r      // Reemplazar [n caracteres desde] el carácter actual por el nuevo carácter. Vuelve solo al modo comando.
 - [n]R      // Reemplazar [n veces] a partir del cursor actual por el nuevo texto a introducir.
-- o         // Añadir una línea en blanco debajo de la línea actual y entrar en modo insertar.
-- O         // Añadir una línea en blanco encima de la línea actual y entrar en modo insertar.
+- [n]o      // Añadir [n veces] debajo de la línea actual lo introducido (modo insertar) a partir de la línea en blanco abierta.
+- [n]O      // Añadir [n veces] encima de la línea actual lo introducido (modo insertar) a partir de la línea en blanco abierta.
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
 - C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
