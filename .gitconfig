@@ -26,7 +26,7 @@
 	prompt = false
 [alias]
 	d = difftool
-	l = log --pretty=oneline --graph --abbrev-commit --stat --decorate --all
+	l = log --oneline --graph --stat --decorate --all
 	sb = show-branch --all --sha1-name
 	b = branch -v -a
 	s = status -s
