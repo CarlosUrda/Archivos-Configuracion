@@ -1,6 +1,7 @@
 COMANDOS NATIVOS EX
 - :!<comando>           // Ejecuta un comando de la terminal.
-- :!sh                  // Ejecutar el intérprete de comandos. Para volver Ctrl-D.
+- :sh                   // Ejecutar el intérprete de comandos por defecto. Para volver Ctrl-D o exit.
+- :!sh                  // Ejecutar el intérprete de comandos sh. Para volver Ctrl-D o exit.
 - :set wm=n             // Margen derecho n donde se inserta un salto de línea automático.
 - :set nu ó number      // Visualizar los números de línea.
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
