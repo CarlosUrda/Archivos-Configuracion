@@ -94,6 +94,7 @@ COMANDOS NATIVOS EX
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
                     // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
+                    // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :# ó p            // Mostrar temporalmente la línea actual.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
