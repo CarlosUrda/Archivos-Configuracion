@@ -29,7 +29,7 @@
 	l = log --oneline --graph --stat --decorate --all
 	sb = show-branch --all --sha1-name
 	b = branch -v -a
-	s = status -s
+	s = status -s -b
 	ch = checkout
 [help]
 	autocorrect = 10
