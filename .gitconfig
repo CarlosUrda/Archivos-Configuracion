@@ -22,6 +22,7 @@
 	helper = cache
 [diff]
 	tool = vimdiff
+        renames = copies
 [difftool]
 	prompt = false
 [alias]
