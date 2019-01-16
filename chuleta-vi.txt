@@ -219,7 +219,7 @@ COMANDOS NATIVOS VI
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - [n]U      // Deshace la[s] última[s n] accion[es] realizadas sobre la línea actual del cursor.
 - [n]Ctrl-r // Rehace la[s] última[s n] accion[es] realizada[s].
-- [n]J      // Unir la línea actual con la[s n] línea[s] siguiente[s].
+- [n]J      // Unir la línea actual con la[s n-1] línea[s] siguiente[s].
 - Ctrl-l    // Refrescar la pantalla.
 - /patrón   // Buscar hacia delante el patrón.
 - /-Intro   // Repite la última búsqueda hacia adelante.
