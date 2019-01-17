@@ -23,6 +23,7 @@
 [diff]
         tool = vimdiff
         renames = copies
+        mnemonicPrefix = true
 [difftool]
         prompt = false
 [alias]
