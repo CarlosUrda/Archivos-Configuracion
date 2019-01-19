@@ -1,7 +1,7 @@
 COMANDOS NATIVOS EX
-- :!<comando>           // Ejecuta un comando de la terminal.
-- :!sh                  // Ejecutar el intérprete de comandos. Para volver Ctrl-D.
-- :set wm=n             // Margen derecho n donde se inserta un salto de línea automático.
+- :sh                   // Ejecutar el intérprete de comandos por defecto. Para volver Ctrl-D o exit.
+- :!sh                  // Ejecutar el intérprete de comandos sh. Para volver Ctrl-D o exit.
+- :set wm=n             // Margen derecho n donde se inserta un salto de línea automático. No afecta a las líneas ya existentes.
 - :set nu ó number      // Visualizar los números de línea.
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
 - :set ic               // Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
@@ -94,6 +94,7 @@ COMANDOS NATIVOS EX
 // Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
 - :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
                     // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
+                    // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :# ó p            // Mostrar temporalmente la línea actual.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
@@ -188,18 +189,22 @@ COMANDOS NATIVOS VI
             // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
             // Si la letra n es mayúscula se añade lo copiado al contenido de la memoria nombrada con la letra minúscula.
             // Si la memoria es nombrada con letra no se borra al alternar entre búferes.
+            // Si n es *, se copia el contenido al portapapeles del sistema operativo.
 - [n]yy ó Y // Copiar [n líneas enteras a partir de] la línea actual. Se almacena en el búfer sin nombre.
-- [n]p      // Pegar de la memoria [n veces] después del cursor.
-- [n]P      // Pegar de la memoria [n veces] antes del cursor.
-- "[n]p     // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
+- [n]p      // Pegar de la memoria [n veces] después del cursor o después de la línea actual si se pegan líneas.
+- [n]P      // Pegar de la memoria [n veces] antes del cursor o antes de la línea actual si se pegan líneas.
+- "[n]p \ P // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
+            // Si n es *, pega el contenido del portapapeles del sistema operativo.
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
 - [n]I      // Insertar [n veces] texto al inicio del contenido de la línea actual.
 - [n]r      // Reemplazar [n caracteres desde] el carácter actual por el nuevo carácter. Vuelve solo al modo comando.
 - [n]R      // Reemplazar [n veces] a partir del cursor actual por el nuevo texto a introducir.
-- o         // Añadir una línea en blanco debajo de la línea actual y entrar en modo insertar.
-- O         // Añadir una línea en blanco encima de la línea actual y entrar en modo insertar.
+- [n]o      // Añadir [n veces] debajo de la línea actual lo introducido (modo insertar) a partir de la línea en blanco abierta.
+            // La opción [n] supuestamente no funciona en vi.
+- [n]O      // Añadir [n veces] encima de la línea actual lo introducido (modo insertar) a partir de la línea en blanco abierta.
+            // La opción [n] supuestamente no funciona en vi.
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
 - C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
@@ -216,7 +221,7 @@ COMANDOS NATIVOS VI
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - [n]U      // Deshace la[s] última[s n] accion[es] realizadas sobre la línea actual del cursor.
 - [n]Ctrl-r // Rehace la[s] última[s n] accion[es] realizada[s].
-- [n]J      // Unir la línea actual con la[s n] línea[s] siguiente[s].
+- [n]J      // Unir la línea actual con la[s n-1] línea[s] siguiente[s].
 - Ctrl-l    // Refrescar la pantalla.
 - /patrón   // Buscar hacia delante el patrón.
 - /-Intro   // Repite la última búsqueda hacia adelante.
@@ -253,19 +258,17 @@ COMANDOS NATIVOS VI
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
 - ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual.. En ex tiene otra funcionalidad.
-- v         // Activa y desactiva el modo visual.
-- [n]aw     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
-            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
-- [n]aW     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
-            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
-- [n]iw     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
-            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
-- [n]iW     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
-            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
-- [n]as     // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco.
-- [n]is     // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
-- [n]ap     // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco.
-- [n]ip     // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
+- v          // Activa y desactiva el modo visual.
+- [n]aw \ aW // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco hasta la siguiente palabra.
+- [n]iw \ iW // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+             // w -> Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+             // W -> Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]as      // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco hasta la siguiente frase.
+- [n]is      // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
+- [n]ap      // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco hasta el siguiente párrafo.
+- [n]ip      // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
+- V          // Activa y desactiva el modo visual de líneas (solo se seleccionan líneas enteras).
+- Ctrl-v     // Activa y desactiva el modo visual de bloque.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
