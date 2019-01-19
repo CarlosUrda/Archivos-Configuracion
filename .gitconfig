@@ -29,6 +29,7 @@
 [alias]
         d = difftool
         l = log --oneline --graph --stat --decorate --all
+        ls = log --oneline --graph --decorate --all --shortstat
         sb = show-branch --all --sha1-name
         b = branch -v -a
         s = status -sb
