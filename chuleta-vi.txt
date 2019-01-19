@@ -189,10 +189,12 @@ COMANDOS NATIVOS VI
             // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
             // Si la letra n es mayúscula se añade lo copiado al contenido de la memoria nombrada con la letra minúscula.
             // Si la memoria es nombrada con letra no se borra al alternar entre búferes.
+            // Si n es *, se copia el contenido al portapapeles del sistema operativo.
 - [n]yy ó Y // Copiar [n líneas enteras a partir de] la línea actual. Se almacena en el búfer sin nombre.
-- [n]p      // Pegar de la memoria [n veces] después del cursor.
-- [n]P      // Pegar de la memoria [n veces] antes del cursor.
-- "[n]p     // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
+- [n]p      // Pegar de la memoria [n veces] después del cursor o después de la línea actual si se pegan líneas.
+- [n]P      // Pegar de la memoria [n veces] antes del cursor o antes de la línea actual si se pegan líneas.
+- "[n]p \ P // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
+            // Si n es *, pega el contenido del portapapeles del sistema operativo.
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
