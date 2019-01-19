@@ -256,20 +256,16 @@ COMANDOS NATIVOS VI
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
 - ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual.. En ex tiene otra funcionalidad.
-- v         // Activa y desactiva el modo visual.
-- [n]aw     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios    en blanco.
-            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
-- [n]aW     // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco.
-            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
-- [n]iw     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
-            // Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
-- [n]iW     // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
-            // Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
-- [n]as     // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco.
-- [n]is     // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
-- [n]ap     // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco.
-- [n]ip     // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
-- V         // Activa y desactiva el modo visual de líneas (solo se seleccionan líneas enteras).
+- v          // Activa y desactiva el modo visual.
+- [n]aw \ aW // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco hasta la siguiente palabra.
+- [n]iw \ iW // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
+             // w -> Los signos de puntuación no los considera como parte de la palabra, sino como una palabra aparte.
+             // W -> Los signos de puntuación sí los considera como parte de la palabra, formando parte de ella.
+- [n]as      // En modo visual selecciona las n frases completas desde el cursor incluyendo los espacios en blanco hasta la siguiente frase.
+- [n]is      // En modo visual selecciona n frases completas desde el cursor excluyendo espacios en blanco, tomados estos como una frase aparte.
+- [n]ap      // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco hasta el siguiente párrafo.
+- [n]ip      // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
+- V          // Activa y desactiva el modo visual de líneas (solo se seleccionan líneas enteras).
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
