@@ -266,6 +266,7 @@ COMANDOS NATIVOS VI
 - [n]ap      // En modo visual selecciona n párrafos completos desde el cursor incluyendo los espacios en blanco hasta el siguiente párrafo.
 - [n]ip      // En modo visual selecciona n párrafos completos desde el cursor excluyendo espacios en blanco, tomados estos como un párrafo aparte.
 - V          // Activa y desactiva el modo visual de líneas (solo se seleccionan líneas enteras).
+- Ctrl-v     // Activa y desactiva el modo visual de bloque.
 
 EJECUCIÓN DE VI DESDE TERMINAL
 - vi +n archivo         // Abrir el archivo en la línea n. Se puede usar -c en lugar de +.
