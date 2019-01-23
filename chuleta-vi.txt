@@ -69,7 +69,8 @@ COMANDOS NATIVOS EX
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
 - :last         // Mostrar el búfer del último archivo de la línea de comandos (sólo en vim).
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
-- :e #          // Mostrar el búfer alterno asignado con la etiqueta #.
+- :e #          // Mostrar el búfer alterno asignado con la etiqueta #. # puede usarse como nombre del archivo alterno en otros comandos.
+                // Ej: :r # => Lee en la línea actual el contenido del archivo del buffer alternativo.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
 - :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
 - :c1 | c2      // Combinar varios comandos.
