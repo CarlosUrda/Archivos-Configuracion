@@ -67,6 +67,7 @@ COMANDOS NATIVOS EX
 - :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
 - :n            // Mostrar el búfer del siguiente archivo de la línea de comandos.
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
+- :last         // Mostrar el búfer del último archivo de la línea de comandos (sólo en vim).
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
 - :e #          // Mostrar el búfer alterno asignado con la etiqueta #.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
