@@ -6,6 +6,7 @@
         diff = auto
 [core]
         editor = vim
+        autocrlf = input
 [push]
         default = upstream
 [merge]
