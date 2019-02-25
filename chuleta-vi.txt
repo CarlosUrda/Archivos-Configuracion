@@ -44,10 +44,12 @@ COMANDOS NATIVOS EX
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :ab <abr> <texto>     // Crea una macro abr que será sustituida por texto al escribirla como palabra entera en el búfer en modo inserción.
-                        // Si abr extá dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+                        // Si abr está dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+                        // Sin argumentos muestra todas las abreviaturas creadas.
 - :unab <abr>           // Eliminar la abreviación.
 - :map <x> <secuencia>  // Crear una macro para mapear una secuencias de comandos en el modo comando.
                         // Los caracteres especiales en secuencia se escriben como el valor obtenido en ex al pulsar Ctrl-V y el carácter.
+                        // Sin argumentos muestra todas las macros creadas.
 - :map! <x> <secuencia> // Crear una macro para mapear una secuencias de comandos en el modo inserción.
 - :unmap <x>            // Eliminar una macro de secuencia de comandos.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
