@@ -31,6 +31,7 @@
         d = difftool
         l = log --oneline --graph --stat --decorate --all
         ls = log --oneline --graph --decorate --all --shortstat
+        lf = log --all --graph --stat --relative-date --decorate --abbrev-commit -p
         sb = show-branch --all --sha1-name
         b = branch -v -a
         s = status -sb
