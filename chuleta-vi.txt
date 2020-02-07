@@ -6,7 +6,7 @@ COMANDOS NATIVOS EX
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
 - :set ic               // Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
 - :set compatible \ nocompatible    // Compatibilidad con antiguo vi.
-- :set all              // Mostrar la completa lista de opciones fijadas, tanto  manualmente como por defecto.
+- :set all              // Mostrar la completa lista de opciones fijadas, tanto manualmente como por defecto.
 - :set                  // Mostrar la lista de opciones fijadas manualmente.
 - :set <opcion>?        // Mostrar el valor fijado en la opción.
 - :set magic            // Reconoce caracteres comodín al buscar patrones.
@@ -44,10 +44,12 @@ COMANDOS NATIVOS EX
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :ab <abr> <texto>     // Crea una macro abr que será sustituida por texto al escribirla como palabra entera en el búfer en modo inserción.
-                        // Si abr extá dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+                        // Si abr está dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+                        // Sin argumentos muestra todas las abreviaturas creadas.
 - :unab <abr>           // Eliminar la abreviación.
 - :map <x> <secuencia>  // Crear una macro para mapear una secuencias de comandos en el modo comando.
                         // Los caracteres especiales en secuencia se escriben como el valor obtenido en ex al pulsar Ctrl-V y el carácter.
+                        // Sin argumentos muestra todas las macros creadas.
 - :map! <x> <secuencia> // Crear una macro para mapear una secuencias de comandos en el modo inserción.
 - :unmap <x>            // Eliminar una macro de secuencia de comandos.
 - :[n]+[m] \ [n]-[m]    // Posición relativa de m líneas hacia adelante \ atrás desde la línea n.
@@ -67,8 +69,10 @@ COMANDOS NATIVOS EX
 - :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
 - :n            // Mostrar el búfer del siguiente archivo de la línea de comandos.
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
+- :last         // Mostrar el búfer del último archivo de la línea de comandos (sólo en vim).
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
-- :e #          // Mostrar el búfer alterno asignado con la etiqueta #.
+- :e #          // Mostrar el búfer alterno asignado con la etiqueta #. # puede usarse como nombre del archivo alterno en otros comandos.
+                // Ej: :r # => Lee en la línea actual el contenido del archivo del buffer alternativo.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
 - :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
 - :c1 | c2      // Combinar varios comandos.
@@ -96,7 +100,8 @@ COMANDOS NATIVOS EX
                     // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
                     // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
-- :# ó p            // Mostrar temporalmente la línea actual.
+- :p                // Mostrar temporalmente la línea actual.
+- :#                // Muestra la línea actual con el número de línea.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
 - :d                // Borrar la línea actual.
@@ -118,7 +123,7 @@ COMANDOS NATIVOS EX
 - :s/p1/p2/g        // Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gci      // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución e ignora el caso.
 - :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2).
-                    // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo.
+                    // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo y en la línea entera.
 - :\&               // Siguiente línea donde se encuentra el último patrón de búsqueda usado en una sustitución.
 - :set edcompatible // Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (útil en :&).
 - :~                // Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último en general utilizado.
@@ -207,7 +212,7 @@ COMANDOS NATIVOS VI
             // La opción [n] supuestamente no funciona en vi.
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
-- C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
+- [n]C      // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
 - [n]cc ó S // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
 - d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el búfer sin nombre.
 - D         // Borrar desde la posición del cursor hasta el final de la línea actual.
@@ -220,6 +225,7 @@ COMANDOS NATIVOS VI
 - Ctrl-2    // En modo insertar, repite la última inserción realizada.
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - [n]U      // Deshace la[s] última[s n] accion[es] realizadas sobre la línea actual del cursor.
+            // En la práctica solo deshace todos los últimos cambios realizados sobre la última línea editada.
 - [n]Ctrl-r // Rehace la[s] última[s n] accion[es] realizada[s].
 - [n]J      // Unir la línea actual con la[s n-1] línea[s] siguiente[s].
 - Ctrl-l    // Refrescar la pantalla.
@@ -343,7 +349,7 @@ EXPRESIONES REGULARES
 - \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc).
         // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
 - ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
-        // Representa el patrón de reemplazo indicado en la última sustitución realizada. :s/p1/p2. => ~ equivale a p2.
+        // Representa el patrón de reemplazo indicado en la última sustitución realizada: s/p1/p2 => ~ equivale a p2
 - &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre ().
         // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
 - \u    // En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
