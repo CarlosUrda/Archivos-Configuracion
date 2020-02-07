@@ -212,7 +212,7 @@ COMANDOS NATIVOS VI
             // La opción [n] supuestamente no funciona en vi.
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
-- [n]C         // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
+- [n]C      // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
 - [n]cc ó S // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
 - d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el búfer sin nombre.
 - D         // Borrar desde la posición del cursor hasta el final de la línea actual.
@@ -225,6 +225,7 @@ COMANDOS NATIVOS VI
 - Ctrl-2    // En modo insertar, repite la última inserción realizada.
 - [n]u      // Deshace la[s] última[s n] accion[es] realizada[s].
 - [n]U      // Deshace la[s] última[s n] accion[es] realizadas sobre la línea actual del cursor.
+            // En la práctica solo deshace todos los últimos cambios realizados sobre la última línea editada.
 - [n]Ctrl-r // Rehace la[s] última[s n] accion[es] realizada[s].
 - [n]J      // Unir la línea actual con la[s n-1] línea[s] siguiente[s].
 - Ctrl-l    // Refrescar la pantalla.
