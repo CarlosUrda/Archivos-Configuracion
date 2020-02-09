@@ -124,6 +124,7 @@ COMANDOS NATIVOS EX
 - :s/p1/p2/gci      // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución e ignora el caso.
 - :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2).
                     // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo y en la línea entera.
+- :&&               // Repite la última sustitución realizada (con modificadores).
 - :\&               // Siguiente línea donde se encuentra el último patrón de búsqueda usado en una sustitución.
 - :set edcompatible // Recuerda los modificadores g y c de la última sustitución realizada para las siguientes (útil en :&).
 - :~                // Repite la última sustitución realizada (igual que :s) pero el patrón de búsqueda es el último en general utilizado.
