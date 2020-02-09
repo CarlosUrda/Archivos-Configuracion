@@ -101,7 +101,7 @@ COMANDOS NATIVOS EX
                     // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :p                // Mostrar temporalmente la línea actual.
-- :#                // Muestra la línea actual con el número de línea.
+- :# ó nu           // Muestra la línea actual con el número de línea.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
 - :d                // Borrar la línea actual.
