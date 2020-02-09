@@ -57,10 +57,13 @@ COMANDOS NATIVOS EX
 - :[n],[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de la línea actual.
 - :[n];[m]      // Líneas desde posición n a m. Si m es posición relativa (+/-) se calcula a partir de n.
                 // Si no hay m es por defecto el último valor de m.
+                // Pueden usarse /patrón/ en lugar de número de línea para elegir la primera línea encontrada con dicho patrón.
 - :[n]          // Mover el cursor a la línea n.
 - :go [n]       // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - :/patrón[/]   // Siguiente línea donde se encuentra la primera ocurrencia del patrón.
 - :?patrón[?]   // Anterior línea donde se encuentra la primera ocurrencia del patrón.
+- :/\%>nl\%<mlpatrón[/] // Siguiente línea donde se encuentra la primera ocurrencia del patrón dentro del rango de líneas n-m (no incluidas).
+- :?\%>nl\%<mlpatrón[?] // Anterior línea donde se encuentra la primera ocurrencia del patrón dentro del rango de líneas n-m (no incluidas).
 - :.            // Línea actual del archivo.
 - :$            // Última línea del archivo.
 - :%            // Al inicio del comando ex representa todas las líneas del archivo.
