@@ -217,10 +217,10 @@ COMANDOS NATIVOS VI
             // La opción [n] supuestamente no funciona en vi.
 - [n]s      // Sustituir [n caracteres desde] el carácter actual por lo nuevo a escribir en su lugar.
 - c[m]      // Cambiar lo indicado en el comando posterior de movimiento por lo nuevo a escribir en su lugar.
-- [n]C      // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar.
+- [n]C      // Cambiar desde el cursor hasta final de línea por lo nuevo a escribir en su lugar. Si n > 1 cambia las siguientes líneas enteras.
 - [n]cc ó S // Cambiar [n líneas enteras a partir de la] línea actual por lo nuevo a escribir en su lugar.
 - d[m]      // Borrar lo indicado en el comando posterior de movimiento. Lo borrado se almacena en el búfer sin nombre.
-- D         // Borrar desde la posición del cursor hasta el final de la línea actual.
+- [n]D      // Borrar desde la posición del cursor hasta el final de la línea actual. Si n > 1 borra las siguientes líneas enteras.
 - [n]dd     // Borrar [n] línea[s] entera[s] a partir de la línea actual.
             // Se almacena automáticamente en búfer numerados las líneas borradas enteras.
 - [n]x      // Borrar [n caracteres en adelante incluido] el carácter actual.
