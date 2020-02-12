@@ -5,6 +5,7 @@ COMANDOS NATIVOS EX
 - :set nu ó number      // Visualizar los números de línea.
 - :set nowrapscan       // Evita continuar la búsqueda por el otro lado al llegar al final o inicio del archivo.
 - :set ic               // Ignorar mayúsculas o minúsculas en las búsquedas. Ignorar el caso.
+- :set smartcase        // Tiene en cuenta el caso solo cuando al menos se usa un carácter mayúscula en la búsqueda. Necesita :set ic. Sólo vim.
 - :set compatible \ nocompatible    // Compatibilidad con antiguo vi.
 - :set all              // Mostrar la completa lista de opciones fijadas, tanto manualmente como por defecto.
 - :set                  // Mostrar la lista de opciones fijadas manualmente.
@@ -126,7 +127,7 @@ COMANDOS NATIVOS EX
 - :s//p2/           // Si no se indica p1, se toma como patrón de búsqueda el buscado en la última búsqueda realizada.
 - :s/p1/p2/g        // Sustituir en la línea actual todo patrón de búsqueda p1 por el patrón de reemplazo p2.
 - :s/p1/p2/gci      // Sustituir en la línea actual todo patrón p1 por p2. Pide confirmación en cada sustitución e ignora el caso.
-- :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2).
+- :s ó :&           // Repite la última sustitución realizada (sin modificadores antes de s o después de p2). Equivale a :s//~
                     // Se pueden añadir modificadores a & => :%&g  repite la sustitución en todo el archivo y en la línea entera.
 - :&&               // Repite la última sustitución realizada (con modificadores).
 - :\&               // Siguiente línea donde se encuentra el último patrón de búsqueda usado en una sustitución.
@@ -240,6 +241,7 @@ COMANDOS NATIVOS VI
 - ?patrón   // Buscar hacia atrás el patrón.
 - ?-Intro   // Repite la última búsqueda hacia atrás.
 - ?-Cursor  // Accede al historial de búsquedas.
+- &         // Equivale a :s ó :& en ex. Repite la última sustitución realizada (sin modificadores).
 - q:        // Obtener ventana con listado del historial de comandos.
 - q/        // Obtener ventana con el listado del historial de búsquedas.
 - [n]n      // Repetir la última búsqueda en la misma dirección.
@@ -356,15 +358,17 @@ EXPRESIONES REGULARES
 - ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
         // Representa el patrón de reemplazo indicado en la última sustitución realizada: s/p1/p2 => ~ equivale a p2
 - &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre ().
-        // Como comando vi equivale a :s ó :&. Repite la última sustitución realizada (sin modificadores).
+        // Como comando vi equivale a :s ó :& en ex. Repite la última sustitución realizada (sin modificadores).
 - \u    // En patrón de reemplazo de sustitución convierte a mayúsculas el siguiente carácter.
-        // En patrón de búsqueda equivale a un carácter en mayúscula.
+        // En patrón de búsqueda equivale a cualquier carácter en mayúscula.
 - \l    // En patrón de reemplazo de sustitución convierte a minúsculas el siguiente carácter.
-        // En patrón de búsqueda equivale a un carácter en minúscula.
+        // En patrón de búsqueda equivale a cualquier carácter en minúscula.
 - \U    // En patrón de reemplazo de sustitución convierte a mayúsculas el resto del patrón, o hasta encontrar \e o \E.
-        // En patrón de búsqueda equivale a un carácter que no es mayúscula.
+        // En patrón de búsqueda equivale a cualquier carácter que no es mayúscula.
 - \L    // En patrón de reemplazo de sustitución convierte a minúsculas el resto del patrón, o hasta encontrar \e o \E.
-        // En patrón de búsqueda equivale a un carácter que no es minúscula.
+        // En patrón de búsqueda equivale a cualquier carácter que no es minúscula.
+- \c    // En patrón de búsqueda implica ignorar el caso del patrón entero. Se añade en cualquier posición del patrón. Anula :set noic.
+- \C    // En patrón de búsqueda implica tener en cuenta el caso del patrón entero. Se añade en cualquier posición del patrón. Anula :set ic.
 - \s    // En patrón de búsqueda carácter en blanco (espacio y tabulador). \S cualquier carácter no blanco.
 - \d    // En patrón de búsqueda dígito. \D cualquier carácter no dígito.
 - \x    // En patrón de búsqueda dígito hexadecimal. \X cualquier carácter no dígito hexadecimal.
