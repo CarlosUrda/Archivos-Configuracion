@@ -104,6 +104,8 @@ COMANDOS NATIVOS EX
 - :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
                     // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
                     // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
+- :!!<comando>      // Aplica sobre la línea actual el último comando ejecutado.
+                    // Si se precede con un número, afecta a las n líneas siguientes (incluida la actual)
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :p                // Mostrar temporalmente la línea actual.
 - :# ó nu           // Muestra la línea actual con el número de línea.
@@ -270,7 +272,8 @@ COMANDOS NATIVOS VI
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
-- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual.. En ex tiene otra funcionalidad.
+- !<pos>!          // Aplica el último comando a las líneas seleccionadas desde el cursor hasta posición.
+- ![n]!<comando>   // Aplica el comando de terminal a [las n líneas a partir de] la línea actual. En ex tiene otra funcionalidad.
 - v          // Activa y desactiva el modo visual.
 - [n]aw \ aW // En modo visual selecciona las n palabras completas desde el cursor incluyendo los espacios en blanco hasta la siguiente palabra.
 - [n]iw \ iW // En modo visual selecciona n palabras completas desde el cursor excluyendo espacios en blanco, tomados estos como una palabra aparte.
