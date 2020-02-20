@@ -46,11 +46,11 @@ COMANDOS NATIVOS EX
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
 - :ab <abr> <texto>     // Crea una macro abr que será sustituida por texto al escribirla como palabra entera en el búfer en modo inserción.
-                        // Si abr está dentro de texto puede generar conflicto. Depende de la variedad de vi usada.
+                        // Si <abr> está dentro de <texto> puede generar conflicto, dependiendo de la variedad de vi usada.
                         // Sin argumentos muestra todas las abreviaturas creadas.
 - :unab <abr>           // Eliminar la abreviación.
 - :map <x> <secuencia>  // Crear una macro para mapear una secuencias de comandos en el modo comando.
-                        // Los caracteres especiales en secuencia se escriben como el valor obtenido en ex al pulsar Ctrl-V y el carácter.
+                        // El código de los caracteres especiales se obtienen usando en ex Ctrl-V y el carácter. #n representa a la tecla Fn.
                         // Sin argumentos muestra todas las macros creadas.
 - :map! <x> <secuencia> // Crear una macro para mapear una secuencias de comandos en el modo inserción.
 - :unmap <x>            // Eliminar una macro de secuencia de comandos.
@@ -262,8 +262,10 @@ COMANDOS NATIVOS VI
 - <<        // Sangrado hacia atrás. En modo inserción Ctrl-D.
 - ^Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, pero la mantiene para líneas posteriores.
 - 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
-- @l        // Ejecuta en modo comando la secuencia de comandos guardada en el búfer de memoria con letra l.
+- @l        // Ejecuta en modo comando la secuencia guardada en el búfer de memoria l. Si l es * se usa el búfer por defecto (sin nombre).
+            // La secuencia de comandos se ejecuta como un todo, repitiéndose entera si se usa la repetición \. .
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
+- @@        // Repite la última ejecución de @.
 - [n]Ctrl-] // Busca el identificador bajo el cursor (desde su posición) en archivo de tags y lleva al archivo donde se encuentra la [n] definición.
             // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. Similar a :tag en ex. No en vi.
 - [n]Ctrl-T // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
