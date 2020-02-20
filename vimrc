@@ -1,5 +1,5 @@
 " get easier to use and more user friendly vim defaults
-" CAUTION: This option breaks some vi compatibility. 
+" CAUTION: This option breaks some vi compatibility.
 "          Switch it off if you prefer real vi compatibility
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -26,7 +26,7 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " WakaTime Plugin
 Plugin 'wakatime/vim-wakatime'
 
-" Búsqueda completa de archivos 
+" Búsqueda completa de archivos
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
@@ -125,7 +125,7 @@ set matchtime=2
 " Required to be able to use keypad keys and map missed escape sequences
 set esckeys
 
-" allow backspacing over everything in insert mode 
+" allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
 " Complete longest common string, then each full match
@@ -183,7 +183,7 @@ set colorcolumn=+1
 " Límite de 72 caracteres para editar commits.
 autocmd FileType gitcommit set textwidth=72
 " Segunda columna avisando del límite de caracteres en commits.
-autocmd FileType gitcommit set colorcolumn+=51 
+autocmd FileType gitcommit set colorcolumn+=51
 highlight ColorColumn ctermbg=7
 
 " Manejar buffers
@@ -199,6 +199,9 @@ nnoremap - <C-W>-
 nnoremap + <C-W>+
 nnoremap / <C-W><
 nnoremap * <C-W>>
+
+" Eliminar todos los espacios finales.
+cmap Alt-b g/[[:blank:]]*$/s//
 
 " Guardar un archivo sin privilegios sudo.
 cmap w!! w !sudo tee % >/dev/null

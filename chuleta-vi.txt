@@ -93,7 +93,7 @@ COMANDOS NATIVOS EX
 - :blast ó bl           // Mostrar el último búfer de la lista.
 - :bdelete ó bd         // Eliminar el búfer.
 - :[n]tag id    // Abre el archivo que contiene la [n] definición del identificador y posiciona el cursor en el inicio de la definición.
-                // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, para 
+                // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, para
                 // todos los archivos donde queremos buscar el identificador => :!ctags archivo[s] (mejor exuberant ctags)
                 // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. No en vi.
 - :[n]tag       // Muestra el archivo donde se encuentra la definición del id de la [n] entrada en la pila de tags a partir de la actual (incluyéndola)
@@ -253,7 +253,7 @@ COMANDOS NATIVOS VI
 - [n]T[c]   // Mueve el cursor a la posición siguiente del anterior [n] carácter c dentro de la línea.
 - [n];      // Repetir la búsqueda de carácter en la línea en la misma dirección.
 - [n],      // Repetir la búsqueda de carácter en la línea en la dirección opuesta.
-- Ctrl-i    // Sitúa el cursor en la anterior localización por la cual navegó el cursor. 
+- Ctrl-i    // Sitúa el cursor en la anterior localización por la cual navegó el cursor.
 - Ctrl-o    // Sitúa el cursor en la siguiente localización por la cual navegó el cursor.
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
@@ -327,7 +327,7 @@ EXPRESIONES REGULARES
 - \{-n,m\}      // Entre n y m repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-n,\}       // Al menos n repeticiones del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
 - \{-,m\}       // Como mucho m repeticiones (entre 0 y m) del carácter que lo precede. Intenta emparejar siempre el mínimo posible. No en vi.
-- \@=   // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío. 
+- \@=   // Comprueba carácter anterior una vez, pero el resultado del emparejamento es vacío.
         // Los elementos a continuación los intenta emparejar a partir del inicio del elemento anterior emparejado:
         // foo\(bar\)\@= => foobar -> foo; foo\(bar\)foo\@= => foobarfoo -> Nada; foo\(bar\)bar\@ => foobarfoo -> foobar
 - \@!   // Comprueba que no coincida el carácter anterior, pero el resultado del emparejamento es vacío.
@@ -378,9 +378,9 @@ EXPRESIONES REGULARES
 - \x    // En patrón de búsqueda dígito hexadecimal. \X cualquier carácter no dígito hexadecimal.
 - \o    // En patrón de búsqueda dígito octal. \O cualquier carácter no dígito octal.
 - \h    // En patrón de búsqueda carácter cabeza de palabra [A-Za-z_]. \H cualquier carácter no cabeza de palabra.
-- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_]. 
+- \w    // En patrón de búsqueda carácter de palabra [0-9A-Za-z_].
 - \W    // En patrón de búsqueda cualquier carácter no de palabra.
-- \i    // En patrón de búsqueda carácter de identificador definido en isident. Suele ser [0-9A-Za-z_]. 
+- \i    // En patrón de búsqueda carácter de identificador definido en isident. Suele ser [0-9A-Za-z_].
 - \I    // En patrón de búsqueda igual que \i pero sin dígitos.
 - \k    // En patrón de búsqueda carácter de palabra clave definido en iskeyword.
 - \K    // En patrón de búsqueda igual que \k pero sin dígitos.
