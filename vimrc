@@ -204,7 +204,8 @@ nnoremap * <C-W>>
 cmap Alt-b g/[[:blank:]]*$/s//
 
 " Guardar un archivo sin privilegios sudo.
-cmap w!! w !sudo tee % >/dev/null
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+" cmap w!! w !sudo tee % >/dev/null
 
 " Codificación UTF-8
 set encoding=utf-8 fileencoding=utf8 termencoding=utf-8
