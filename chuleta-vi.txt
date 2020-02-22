@@ -61,6 +61,8 @@ COMANDOS NATIVOS EX
                 // Si no hay m es por defecto el último valor de m.
                 // Pueden usarse /patrón/ en lugar de número de línea para elegir la primera línea encontrada con dicho patrón.
 - :[n]          // Mover el cursor a la línea n.
+- :'<           // Inicio del texto seleccionado en modo visual. Si es un bloque visual representa el inicio de la primera línea.
+- :'>           // Final del texto seleccionado en modo visual. Si es un bloque visual representa el final de la última línea.
 - :go [n]       // Mover el cursor al byte n en el archivo (se tienen en cuenta hasta los saltos de línea).
 - :/patrón[/]   // Siguiente línea donde se encuentra la primera ocurrencia del patrón.
 - :?patrón[?]   // Anterior línea donde se encuentra la primera ocurrencia del patrón.
