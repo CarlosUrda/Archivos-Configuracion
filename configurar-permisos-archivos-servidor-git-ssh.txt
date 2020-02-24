@@ -189,9 +189,9 @@ no acceder dentro de ellos.
 - git-r: acceso de lectura (rx) sobre todas las subcarpetas de cualquier usuario
 dentro de git-repositorios. Permite ver el contenido y moverse por todos los 
 repositorios en este servidor git.
-- git-usuario: acceso de lectura (rx) sobre la carpeta usuario. Permite ver qué
-hay dentro y acceder a la carpeta usuario, pero no acceder a sus subdirectorios
-donde está el contenido de sus repositorios.
+- git-usuario: acceso de lectura (rx) sobre la carpeta usuario. Permite acceder
+a la carpeta usuario y ver qué repositorios tiene, pero no acceder dentro de 
+ellos a través de los subdirectorios donde está el contenido de sus repositorios.
 - git-usuario-r: acceso de lectura (rx) sobre todas las subcarpetas del usuario
 dentro de git-repositorios. Permite ver el contenido y moverse por todos los 
 repositorios de este usuario.
