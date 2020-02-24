@@ -166,3 +166,85 @@ $ chmod +t git-repositorios/usuario
 $ chmod +t git-repositorios/usuario/repositorio.git
 $ find repositorio.git/ -type d -exec chmod +t {} \;
 
+RESUMEN DE ESTRUCTURA DE DIRECTORIOS:
+- ssh: directorio donde se encuentran todos los servicios ssh.
+- ssh/git-repositorios: donde se encuentran las carpetas de los usuarios con sus
+repositorios.
+- ssh/git-repositorios/usuario: cuenta de un usuario donde se encuentran todos
+sus repositorios.
+- ssh/git-repositorios/usuario/repo: un repositorio de un usuario
+- ssh/git-repositorios/usuario/repo/refs/heads(ó tags)/invitado: carpeta de un
+invitado (o grupo de trabajo) donde pueden crear sus ramas si no tiene acceso de 
+administración sobre el repositorio. El invitado (o grupo de trabajo) tiene que
+tener acceso de escritura en esta carpeta y en objects.
+
+RESUMEN DE GRUPOS:
+- ssh: acceso de lectura (rx) sobre la carpeta ssh. Permite ver qué hay dentro
+y acceder a ssh, pero no a los subdirectorios.
+- ssh-admin: acceso de escritura y lectura (rwx) sobre ssh. Permite crear 
+contenido dentro de ssh (una carpeta con un nuevo servicio, configuración, etc).
+- git: acceso de lectura (rx) sobre git-repositorios. Permite acceder a la
+carpeta git-repositorios y ver los usuarios que tienen repositorios git, pero
+no acceder dentro de ellos.
+- git-r: acceso de lectura (rx) sobre todas las subcarpetas de cualquier usuario
+dentro de git-repositorios. Permite ver el contenido y moverse por todos los 
+repositorios en este servidor git.
+- git-usuario: acceso de lectura (rx) sobre la carpeta usuario. Permite ver qué
+hay dentro y acceder a la carpeta usuario, pero no acceder a sus subdirectorios
+donde está el contenido de sus repositorios.
+- git-usuario-r: acceso de lectura (rx) sobre todas las subcarpetas del usuario
+dentro de git-repositorios. Permite ver el contenido y moverse por todos los 
+repositorios de este usuario.
+- git-usuario-N-r: acceso de lectura (rx) sobre todas las subcarpetas del 
+repositorio N del usuario.Permite ver todo el contenido del repositorio N, pero
+no de otros repositorios de este usuario.
+- git-admin: acceso de lectura y escritura (rwx) sobre todas carpetas de todos
+los usuarios dentro del servidor git. Permite modificar cualquier contenido 
+dentro de los subdirectorios de cualquier repositorio de cualquier usuario.
+- git-usuario-admin: acceso de lectura y escritura (rwx) sobre todas carpetas de 
+un usuario. Permite modificar cualquier contenido dentro de los subdirectorios 
+de cualquier repositorio de un usuario.
+- usuario: acceso de lectura y escritura (rwx) sobre todas carpetas de 
+un usuario. Permite modificar cualquier contenido dentro de los subdirectorios 
+de cualquier repositorio de usuario. Se diferencia de git-usuario-admin en que,
+además del servidor git, tiene acceso a otros servicios dentro del host.
+- git-usuario-N-admin: acceso de lectura y escritura (rwx) sobre todas las 
+subcarpetas del repositorio N de usuario. Permite modificar cualquier contenido 
+dentro de los subdirectorios de la carpeta del repositorio N de usuario.
+- git-usuario-N-w-invitado: acceso de escritura y escritura (rwx) sobre las
+carpetas refs/heads/invitado, refs/tags/invitado y objects dentro del directorio
+del repositorio N. Permite crear ramas dentro de invitado/ y guardar el
+contenido de los commits. En objects, las carpetas creadas se deben asignar al
+grupo git-usuario-N-admin de manera automática, aunque sea un invitado quien las
+cree al hacer push. Si es necesario que otros usuarios del grupo de trabajo 
+invitado tengan acceso a dichas carpetas creadas nuevas dentro de objects, se le
+asignará a dichas carpetas permisos de escritura con este grupo 
+git-usuario-N-w-invitado.
+- git-usuario-w-invitado: acceso de escritura y escritura (rwx) sobre las
+carpetas refs/heads/invitado, refs/tags/invitado y objects de varios 
+repositorios del usuario. Permite crear ramas dentro de invitado/ y guardar el
+contenido de los commits. En objects, las carpetas creadas se deben asignar al
+grupo git-usuario-N-admin de manera automática, aunque sea un invitado quien las
+cree al hacer push. Si es necesario que otros usuarios del grupo de trabajo 
+invitado tengan acceso a dichas carpetas creadas nuevas dentro de objects, se le
+asignará a dichas carpetas permisos de escritura con este grupo 
+git-usuario-w-invitado. Este grupo, a diferencia del anterior, puede abarcar
+varios repositorios de un usuario.
+- git-w-invitado: acceso de escritura y escritura (rwx) sobre las
+carpetas refs/heads/invitado, refs/tags/invitado y objects de varios 
+repositorios de varios usuarios. Permite crear ramas dentro de invitado/ y
+guardar el contenido de los commits. En objects, las carpetas creadas se deben 
+asignar al grupo git-usuario-N-admin de manera automática, aunque sea un 
+invitado quien las cree al hacer push. Si es necesario que otros usuarios del 
+grupo de trabajo invitado tengan acceso a dichas carpetas creadas nuevas dentro 
+de objects, se le asignará a dichas carpetas permisos de escritura con el grupo 
+git-w-invitado. Este grupo, a diferencia del anterior, puede abarcar
+varios repositorios de varios usuarios.
+
+
+Nota: dentro de la carpeta de cada usuario, existe un archivo llamado
+.id-repositorios donde se encuentra asociado para cada carpeta de repositorio un
+número, el cual se usará para crear los grupos correspondientes. Esto es 
+necesario porque los nombres de grupos no pueden ser muy largos, no pudiendo
+contener el nombre completo de un repositorio.
+repositorios de este usuario.
