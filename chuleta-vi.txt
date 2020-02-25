@@ -203,12 +203,12 @@ COMANDOS NATIVOS VI
             // Válido también para borrar d (si n es letra), copiando previamente lo borrado.
             // Si la letra n es mayúscula se añade lo copiado al contenido de la memoria nombrada con la letra minúscula.
             // Si la memoria es nombrada con letra no se borra al alternar entre búferes.
-            // Si n es *, se copia el contenido al portapapeles del sistema operativo.
+            // Si n es * ó +, se copia el contenido al portapapeles del sistema operativo.
 - [n]yy ó Y // Copiar [n líneas enteras a partir de] la línea actual. Se almacena en el búfer sin nombre.
 - [n]p      // Pegar de la memoria [n veces] después del cursor o después de la línea actual si se pegan líneas.
 - [n]P      // Pegar de la memoria [n veces] antes del cursor o antes de la línea actual si se pegan líneas.
 - "[n]p \ P // Pegar lo almacenado en la memoria n. La n puede ser una letra o un número de un dígito.
-            // Si n es *, pega el contenido del portapapeles del sistema operativo.
+            // Si n es * ó +, pega el contenido del portapapeles del sistema operativo.
 - [n]a      // Añadir [n veces] texto después de la posición del cursor.
 - [n]A      // Añadir [n veces] texto al final de la línea actual.
 - [n]i      // Insertar [n veces] texto a partir de la posición actual.
@@ -264,7 +264,11 @@ COMANDOS NATIVOS VI
 - <<        // Sangrado hacia atrás. En modo inserción Ctrl-D.
 - ^Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, pero la mantiene para líneas posteriores.
 - 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
-- @l        // Ejecuta en modo comando la secuencia guardada en el búfer de memoria l. Si l es * se usa el búfer por defecto (sin nombre).
+- qc        // Inicia grabación de una macro identificándola con el carácter c (número o letra minúscula).
+            // Si la letra es mayúscula añade la grabación a lo ya grabado en la macro con letra mínuscula.
+            // Toda acción ejecutada desde la activación queda grabada hasta su finalización volviendo a pulsar q.
+- @c        // Ejecuta en modo comando la secuencia guardada en el búfer de memoria o en la macro c (número o letra minúscula)
+            // Si c es " se usa el búfer por defecto (sin nombre). Si c es * ó + se usa el búfer del portapapeles.
             // La secuencia de comandos se ejecuta como un todo, repitiéndose entera si se usa la repetición \. .
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
 - @@        // Repite la última ejecución de @.
