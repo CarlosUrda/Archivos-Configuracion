@@ -143,6 +143,11 @@ COMANDOS NATIVOS EX
 - :ya [n]           // Copiar la línea actual en la memoria nombrada con letra n (si n es un dígito copia n líneas desde la actual).
                     // Permite copiar contenido entre distintos búferes de archivos.
 - :pu [n]           // Pegar después de la línea actual el contenido de la memoria nombrada n.
+- :registers        // Muestra un listado con todos los registros guardados en memoria con todo el contenido copiado.
+                    // "" búfer por defecto, conteniéndo lo último copiado o borrado, ya sea palabra o línea.
+                    // "0 búfer que contiene lo último copiado, ya sea palabra o línea.
+                    // "1 contiene la última línea borrada. Cada línea borrada se va guardando en "1 desplazando lo guardado a "2, "3, etc.
+                    // En los anteriores registros se aplica aunque se copie o borre a un búfer nombrado con una letra o número concreto.
 - :read [a] ó r[a]  // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
                     // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
