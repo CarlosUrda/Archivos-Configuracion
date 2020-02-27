@@ -105,13 +105,14 @@ COMANDOS NATIVOS EX
 - :[n]pop       // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
 - :tags         // Muestra la pila de etiquetas (tags) buscadas. No en vi.
 
-// Antes de los siguientes comandos se puede indicar el número o números de líneas a aplicar.
+// Antes de los siguientes comandos se puede indicar el número o rango de líneas a aplicar.
 - :!<comando>       // El bloque de líneas se convierte en la entrada del comando. La salida de este comando reemplaza dicho bloque en el búfer.
                     // Ej: .,+3 !sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
                     // Si no hay bloque de líneas previo ejecuta el comando como si estuviese en la terminal.
 - :![n]!<comando>   // Aplica sobre la línea actual [y las n-1 siguientes] el último comando ejecutado. *No me funciona en vim*.
 - :!!               // Aplica sobre el bloque de líneas el último comando ejecutado.
 - :p                // Mostrar temporalmente la línea actual.
+- :l                // Mostrar temporalmente la línea actual con caracteres especiales para espacios y tabulación. Efecto similar a set list.
 - :# ó nu           // Muestra la línea actual con el número de línea.
 - :=                // Mostrar el número total de líneas del archivo (en realidad muestra el número de la última línea).
 - :[n]=             // Mostrar el número de línea de la línea n. Si n es un cjto de líneas, se muestra el número de la última.
@@ -152,7 +153,6 @@ COMANDOS NATIVOS EX
                     // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
-- :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
 
 
 COMANDOS NATIVOS VI
@@ -268,10 +268,10 @@ COMANDOS NATIVOS VI
 - Ctrl-g    // Mostrar la línea de estado con información de las líneas del archivo.
 - Q         // Volver al editor ex desde vi.
 - Ctrl-^    // Mostrar el búfer de la lista etiquetado #.
-- >>        // Sangrado hacia adelante. En modo inserción Ctrl-T.
-- <<        // Sangrado hacia atrás. En modo inserción Ctrl-D.
-- ^Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, pero la mantiene para líneas posteriores.
-- 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no la mantiene para líneas posteriores.
+- >>        // Sangrado hacia adelante. En modo inserción se usa Ctrl-T.
+- <<        // Sangrado hacia atrás. En modo inserción se usa Ctrl-D.
+- ^Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, pero mantiene el autoindentado para líneas posteriores.
+- 0Ctrl-D   // En modo inserción elimina toda la sangría de la línea actual, y no mantiene el autoindentado para líneas posteriores.
 - qc        // Inicia grabación de una macro identificándola con el carácter c (número o letra minúscula).
             // Si la letra es mayúscula añade la grabación a lo ya grabado en la macro con letra mínuscula.
             // Toda acción ejecutada desde la activación queda grabada hasta su finalización volviendo a pulsar q.
