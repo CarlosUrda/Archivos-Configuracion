@@ -82,7 +82,7 @@ COMANDOS NATIVOS EX
 - :\/           // Siguiente línea donde se encuentra el último patrón usado en una búsqueda.
 - :\?           // Anterior línea donde se encuentra el último patrón usado en una búsqueda.
 - :args ó ar    // Mostrar los nombres de archivos introducidos en la línea de comandos. Entre [] el archivo actual.
-- :n            // Mostrar el búfer del siguiente archivo de la línea de comandos.
+- :next ó n     // Mostrar el búfer del siguiente archivo de la línea de comandos.
 - :rewind ó rew // Mostrar el búfer del primer archivo de la línea de comandos.
 - :last         // Mostrar el búfer del último archivo de la línea de comandos (sólo en vim).
 - :e archivo    // Abrir un archivo cargando su contenido en un nuevo búfer.
@@ -106,7 +106,7 @@ COMANDOS NATIVOS EX
                 // Antes ha tenido que crearse el archivo de tags, con la información sobre dónde se encuentran las definiciones, para
                 // todos los archivos donde queremos buscar el identificador => :!ctags archivo[s] (mejor exuberant ctags)
                 // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. No en vi.
-- :[n]tag       // Muestra el archivo donde se encuentra la definición del id de la [n] entrada en la pila de tags a partir de la actual (incluyéndola)
+- :[n]tag       // Muestra archivo donde se encuentra la definición del id de la [n] entrada en la pila de tags a partir de la actual (incluyéndola)
 - :[n]pop       // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
 - :tags         // Muestra la pila de etiquetas (tags) buscadas. No en vi.
 
@@ -161,19 +161,20 @@ COMANDOS NATIVOS EX
 - :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
 - :[n]split [++opt] [+cmd] [arch]  // Parte la ventana actual en dos ventanas horizontales.
                                    // La nueva ventana tendrá n líneas. Por defecto el tamaño viene fijado por equalalways y eadirection.
-                                   // Si no se indica archivo, el búfer de la nueva ventana es por defecto el de la actual.
+                                   // Si no se indica archivo, el búfer de la nueva ventana es por defecto el actual.
                                    // Opt es información de opción en la nueva ventana. P.ej: ++fileformat=unix
                                    // Cmd pasa un comando para ejecución en la nueva ventana.
 - :[n]new [++opt] [+cmd]           // Igual que split pero la nueva ventana horizontal edita un archivo vacío.
 - :[n]sview archivo                // Parte la ventana actual en dos horizontales y abre en la nueva ventana un búfer de solo lectura para archivo.
 - :[n]sfind [++opt] [+cmd] archivo // Igual que split pero busca el archivo en el path. Si no lo encuentra, no parte la ventana.
+- :[n]snext [++opt] [+cmd]         // Igual que split pero abriendo el siguiente [n] archivo entre los argumentos introducidos al ejecutar vim.
 - :[n]vsplit [++opt] [+cmd] [arch] // Igual que split pero para crear ventanas verticales.
-- :[n]new [++opt] [+cmd]           // Igual que vsplit pero la nueva ventana vertical edita un archivo vacío.
-- :topleft comando  // Ejecuta el comando y situa el cursor arriba a la izquierda. 
+- :[n]vnew [++opt] [+cmd]          // Igual que vsplit pero la nueva ventana vertical edita un archivo vacío.
+- :topleft comando  // Ejecuta el comando y situa el cursor arriba a la izquierda.
                     // Si el comando crea una nueva ventana, esta se sitúa en la parte superior si es horizontal, o en la izquierda si es vertical.
 - :botright comando // Igual que topleft pero abajo a la derecha.
 - :tabnew [archivo] // Abre una nueva pestaña [cargando su búfer con el archivo indicado].
-- :tabnext [n]      // Mover el cursor a la siguiente pestaña [número n]. 
+- :tabnext [n]      // Mover el cursor a la siguiente pestaña [número n].
 - :tabprevious [n]  // Mover el cursor a la anterior pestaña [n pestañas desde la actual].
 - :tablast          // Mover el cursor a la última pestaña más a la derecha.
 - :tabfirst         // Mover el cursor a la primera pestaña más a la izquierda.
@@ -315,7 +316,7 @@ COMANDOS NATIVOS VI
 - [n]Ctrl-w v      // Parte la ventana actual en dos ventanas verticales. La nueva ventana tiene n columnas (por defecto, dos ventanas iguales).
 - [n]Ctrl.w q      // Eliminar la ventana [posición n a partir de la] actual.
 - [n]Ctrl-w w      // Moverse [n posiciones] entre ventanas de forma cíclica. La segunda W en mayúscula produce el movimiento en sentido opuesto.
-- [n]Ctrl-w j      // Acceder a la ventana en la posición [n] inferior.
+- [n]Ctrl-w j      // Acceder a la ventana en la posición [n] inferior. Es como usar cursores para desplazarse entre ventanas.
 - [n]Ctrl-w k      // Acceder a la ventana en la posición [n] superior.
 - [n]Ctrl-w l      // Acceder a la ventana en la posición [n] a la derecha.
 - [n]Ctrl-w h      // Acceder a la ventana en la posición [n] a la izquierda.
@@ -365,9 +366,9 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
 - vi -c ó -cmd comando  // El comando será ejecutado como comando ex al iniciar vim. En vim permite hasta 10 opciones -c.
 - vi -m                 // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
-- vim -o[n] <archivos>  // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
-- vim -O[n] <archvos>    // Igual que el anterior pero las ventanas son verticales.
-- vi -p <archivos>      // Abre cada uno de los archivo en una pestaña distinta.
+- vi -o[n] <archivos>   // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
+- vi -O[n] <archvos>    // Igual que el anterior pero las ventanas son verticales.
+- vi -p <archivos>      // Abre cada uno de los archivos en una pestaña distinta.
 - vim -C                // Ejecuta vim en modo compatible con vi.
 - vim -d                // Ejecuta vim en modo diff para 4 archivos como máximo.
 - vimdiff ó viewdiff    // Variantes para ejecutar el modo diff.
