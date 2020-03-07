@@ -45,6 +45,11 @@ COMANDOS NATIVOS EX
 - :set iskeyword=carcts // Definir los caracteres considerados a formar parte de una palabra clave válida.
 - :set isfname=carcts   // Definir los caracteres considerados a formar parte de un nombre de archivo válido.
 - :set isprint=carcts   // Definir los caracteres considerados a ser imprimibles.
+- :set laststatus=n     // Muestra si la última ventana tiene una línea de estado: 0 (Nunca); 1 (Dos o más ventanas); 2 (Siempre).
+- :set winheight=n      // Número mínimo de líneas de la actual ventana.
+- :set winwidth=n       // Número mínimo de columnas de la actual ventana.
+- :set equalalways      // Activo hace que las ventanas se partan en partes de igual tamaño.
+- :set eadirection=val  // Indica qué dirección de ventana se parte de manera equidistante. Val puede ser: ver, hor, both.
 - :so ó source <arch>   // Leer comandos de configuración ex de un archivo externo.
 - :preserve ó pre       // Preservar en un búfer de autoguardado el estado actual del archivo.
 - :vi                   // Volver al editor vi desde ex.
@@ -153,6 +158,20 @@ COMANDOS NATIVOS EX
                     // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
 - :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
 - :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
+- :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
+- :[n]split [++opt] [+cmd] [arch]  // Parte la ventana actual en dos ventanas horizontales.
+                                   // La nueva ventana tendrá n líneas. Por defecto el tamaño viene fijado por equalalways y eadirection.
+                                   // Si no se indica archivo, el búfer de la nueva ventana es por defecto el de la actual.
+                                   // Opt es información de opción en la nueva ventana. P.ej: ++fileformat=unix
+                                   // Cmd pasa un comando para ejecución en la nueva ventana.
+- :[n]new [++opt] [+cmd]           // Igual que split pero la nueva ventana horizontal edita un archivo vacío.
+- :[n]sview archivo                // Parte la ventana actual en dos horizontales y abre en la nueva ventana un búfer de solo lectura para archivo.
+- :[n]sfind [++opt] [+cmd] archivo // Igual que split pero busca el archivo en el path. Si no lo encuentra, no parte la ventana.
+- :[n]vsplit [++opt] [+cmd] [arch] // Igual que split pero para crear ventanas verticales.
+- :[n]new [++opt] [+cmd]           // Igual que vsplit pero la nueva ventana vertical edita un archivo vacío.
+- :topleft comando  // Ejecuta el comando y situa el cursor arriba a la izquierda. 
+                    // Si el comando crea una nueva ventana, esta se sitúa en la parte superior si es horizontal, o en la izquierda si es vertical.
+- :botright comando // Igual que topleft pero abajo a la derecha.
 
 
 COMANDOS NATIVOS VI
@@ -284,6 +303,32 @@ COMANDOS NATIVOS VI
             // La n definición no es más que la enésima entrada del identificador encontrada en el archivo de tags. Similar a :tag en ex. No en vi.
 - [n]Ctrl-T // Vuelve al lugar desde donde se buscó la definición del id de la [n] entrada en la pila de tags anterior a la actual (sin incluir).
             // Similar a :pop. No en vi.
+- [n]Ctrl-w s      // Parte la ventana actual en dos ventanas horizontales. La nueva ventana tiene n líneas (por defecto, dos ventanas iguales).
+- [n]Ctrl-w v      // Parte la ventana actual en dos ventanas verticales. La nueva ventana tiene n columnas (por defecto, dos ventanas iguales).
+- [n]Ctrl.w q      // Eliminar la ventana [posición n a partir de la] actual.
+- [n]Ctrl-w w      // Moverse [n posiciones] entre ventanas de forma cíclica. La segunda W en mayúscula produce el movimiento en sentido opuesto.
+- [n]Ctrl-w j      // Acceder a la ventana en la posición [n] inferior.
+- [n]Ctrl-w k      // Acceder a la ventana en la posición [n] superior.
+- [n]Ctrl-w l      // Acceder a la ventana en la posición [n] a la derecha.
+- [n]Ctrl-w h      // Acceder a la ventana en la posición [n] a la izquierda.
+- Ctrl-w t         // Acceder a la ventana situada en la parte superior de la pantalla.
+- Ctrl-w b         // Acceder a la ventana situada en la parte inferior de la pantalla.
+- [n]Ctrl-w p      // Situarse en la ventana [n] previamente accedida. 
+- [n]Ctrl-w r      // Rotar [n posiciones] las localizaciones de todas las ventanas. La R en mayúscula produce la rotación en sentido opuesto.
+- [n]Ctrl-w x      // Intercambiar las posiciones de la ventana actual y la [n] adyacente.
+- Ctrl-w K         // Mueve la ventana actual a la parte superior usando el ancho total de la pantalla.
+- Ctrl-w J         // Mueve la ventana actual a la parte inferior usando el ancho total de la pantalla.
+- Ctrl-w H         // Mueve la ventana actual a la parte izquierda usando el alto total de la pantalla.
+- Ctrl-w L         // Mueve la ventana actual a la parte derecha usando el alto total de la pantalla.
+- Ctrl-w T         // Mueve la ventana actual a una nueva pestaña.
+- [n]Ctrl-w +      // Mueve [n líneas] hacia abajo el límite inferior de la ventana actual, aumentando su tamaño.
+                   // Si la ventana actual está la parte inferior de la pantalla, mueve el límite superior hacia arriba aumentando su tamaño.
+- [n]Ctrl-w -      // Mueve [n líneas] hacia arriba el límite inferior de la ventana actual, disminuyendo su tamaño.
+                   // Si la ventana actual está la parte inferior de la pantalla, mueve el límite superior hacia abajo disminuyendo su tamaño.
+- [n]Ctrl-w >      // Mueve [n líneas] a la derecha el límite derecho de la ventana actual, aumentando su tamaño.
+                   // Si la ventana actual está la parte derecha de la pantalla, mueve el límite izquierdo a la izquierda aumentando su tamaño.
+- [n]Ctrl-w <      // Mueve [n líneas] a la izquierda el límite derecho de la ventana actual, disminuyendo su tamaño.
+                   // Si la ventana actual está la parte derecha de la pantalla, mueve el límite izquierdo a la derecha disminuyendo su tamaño.
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
@@ -318,8 +363,8 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vim -g                // Arranca gvim (GUI).
 - gvim ó gview          // Variantes para ejecutar modo GUI.
 - vim -m                // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
-- vim -o[n]             // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
-- vim -O[n]             // Igual que el anterior pero las ventanas son verticales.
+- vim -o[n] <archs>     // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
+- vim -O[n] <archs>     // Igual que el anterior pero las ventanas son verticales.
 - vim -y                // Abre vim en modo fácil para inexpertos (probablemente abre gvim).
 - evim ó eview          // Variantes para ejecutar el modo fácil.
 - vim -Z                // Ejecuta vim en modo restringido, desactivando interfaces externas y previniendo el acceso a características del sistema.
