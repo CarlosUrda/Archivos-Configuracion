@@ -172,6 +172,14 @@ COMANDOS NATIVOS EX
 - :topleft comando  // Ejecuta el comando y situa el cursor arriba a la izquierda. 
                     // Si el comando crea una nueva ventana, esta se sitúa en la parte superior si es horizontal, o en la izquierda si es vertical.
 - :botright comando // Igual que topleft pero abajo a la derecha.
+- :tabnew [archivo] // Abre una nueva pestaña [cargando su búfer con el archivo indicado].
+- :tabnext [n]      // Mover el cursor a la siguiente pestaña [número n]. 
+- :tabprevious [n]  // Mover el cursor a la anterior pestaña [n pestañas desde la actual].
+- :tablast          // Mover el cursor a la última pestaña más a la derecha.
+- :tabfirst         // Mover el cursor a la primera pestaña más a la izquierda.
+- :tabmove [+/-n]   // Mover la pestaña actual a la posición de la siguiente pestaña. Si añade + ó - se mueve n posiciones desde la actual.
+                    // Si no se indica signo, se mueve a la posición n entre pestañas (puede usarse $ como posición final).
+- :tabclose [n]     // Cierra la pestaña [n], por defecto la actual.
 
 
 COMANDOS NATIVOS VI
@@ -329,6 +337,7 @@ COMANDOS NATIVOS VI
                    // Si la ventana actual está la parte derecha de la pantalla, mueve el límite izquierdo a la izquierda aumentando su tamaño.
 - [n]Ctrl-w <      // Mueve [n líneas] a la izquierda el límite derecho de la ventana actual, disminuyendo su tamaño.
                    // Si la ventana actual está la parte derecha de la pantalla, mueve el límite izquierdo a la derecha disminuyendo su tamaño.
+- [n]gt            // Moverse a la siguiente pestaña [enumerada n].
 - !<pos><comando>  // Aplica el comando de terminal a las líneas seleccionadas desde el cursor hasta posición.
                    // El resultado reemplaza las líneas seleccionadas. Solo aplica a líneas enteras.
                    // Ej: !3j sort  => Ordena las tres líneas siguientes y las reinserta en el búfer.
@@ -355,6 +364,10 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vi -r archivo         // Recuperar el búfer de autoguardado del archivo.
 - vi -b archivo         // Conveniente para manejar archivos binarios correctamente.
 - vi -c ó -cmd comando  // El comando será ejecutado como comando ex al iniciar vim. En vim permite hasta 10 opciones -c.
+- vi -m                 // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
+- vim -o[n] <archivos>  // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
+- vim -O[n] <archvos>    // Igual que el anterior pero las ventanas son verticales.
+- vi -p <archivos>      // Abre cada uno de los archivo en una pestaña distinta.
 - vim -C                // Ejecuta vim en modo compatible con vi.
 - vim -d                // Ejecuta vim en modo diff para 4 archivos como máximo.
 - vimdiff ó viewdiff    // Variantes para ejecutar el modo diff.
@@ -362,9 +375,6 @@ EJECUCIÓN DE VI DESDE TERMINAL
 - vim -F ó -A           // Modo arábico o farsi.
 - vim -g                // Arranca gvim (GUI).
 - gvim ó gview          // Variantes para ejecutar modo GUI.
-- vim -m                // Desactiva la opción de escritura impidiendo modificar los búferes de los archivos.
-- vim -o[n] <archs>     // Abre todos los archivos en ventanas horizontales separadas. Se puede indicar con un entero el número exacto de ventanas.
-- vim -O[n] <archs>     // Igual que el anterior pero las ventanas son verticales.
 - vim -y                // Abre vim en modo fácil para inexpertos (probablemente abre gvim).
 - evim ó eview          // Variantes para ejecutar el modo fácil.
 - vim -Z                // Ejecuta vim en modo restringido, desactivando interfaces externas y previniendo el acceso a características del sistema.
