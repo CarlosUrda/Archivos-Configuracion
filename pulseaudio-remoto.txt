@@ -1,0 +1,50 @@
+CONFIGURACIÓN DE PULSEAUDIO REMOTO PARA RECIBIR SONIDO AL USAR SSH
+
+Aunque se haga una conexión ssh desde el cliente al servidor ssh, el servidor
+del sonido no es el servidor ssh, sino el cliente que recibe el sonido enviado
+por el servidor.
+
+- Instalar paprefs, pulseaudio-module-zeroconf y avahi en el cliente y
+  servidor.
+
+- Ejecutar paprefs en el cliente ssh y activar las pestañas:
+    * Servidor de Red => Habilitar acceso desde la red a dispositivos locales.
+    * Multicast/RTP => Habilitar receptor de Multicast/RTP
+    * Multicast/RTP => Habilitar emisor de Multicast/RTP
+        (dejar activo Crear un dispositivo de audio separado)
+
+- Reiniciar el cliente ssh y comprobar que está preparado para la recepción DE
+  audio por tcp ejecutando:
+    $ pax11publish
+
+    Aquí tiene que aparecer un valor para servidor y otro para cookie. En 
+    servidor tiene que aparecer al final el formato tcp:servidor:puerto, que
+    por defecto será el nombre del equipo y el puerto 4713, del siguiente modo:
+    tcp:urdamac:4713 y tcp6:urdamac:4713
+    Si no aparece esto automáticamente al configurar paprefs, entrar en 
+    /etc/pulse/default.pa y quitar el comentario en las opciones 
+    module-native-protocol-tcp, module-zeroconf-publish y los módulos rtp. 
+    Reiniciar el equipo y volver a probar pax11publish.
+
+    $ pact info
+    Este comando sirve para obtener información del sistema de sonido. Si da
+    error es que no está accediendo al servidor de sonido correctamente.
+    Si se ejecuta en local, da igual que esté activada la recepción de sonido
+    en la red con el puerto tcp configurado, ya que en local no aparece esa
+    información de puertos en la salida de pact info. Pero en remoto, desde el
+    servidor ssh, al ejecutar ese comando sí tiene que aparecer información del
+    puerto y servidor de sonido a donde se enviará el audio ejecutado.
+
+- Abrir el puerto 4713 en el cliente ssh que hará de servidor de audio.
+
+- Acceder al servidor ssh. Por defecto, la sesión iniciada obtiene la información
+  de configuración de pulseaudio del cliente ssh. Comprobarlo con pax11publish
+  como el punto anterior. Destacar que en el servidor ssh NO hay que configurar
+  nada del servidor pulseaudio, ya que es el cliente del sonido. Como mucho
+  habría que confirgurar la variable de entorno PULSE_SERVER, pero esto se 
+  configura automáticamente por defecto.
+
+- Asegurarse que desde el servidor ssh puede acceder al equipo servidor de 
+  sonido pulseaudio con el nombre del servidor indicado en PULSE_SERVER. Si no
+  tiene asociada una IP con el nombre del servidor, crear una entrada en 
+  /etc/hosts en el servidor ssh asociando nombre e IP.
