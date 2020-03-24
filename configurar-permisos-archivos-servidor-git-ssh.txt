@@ -1,0 +1,255 @@
+Detallada información de los permisos dados a la estructura de archivos en un
+servidor git ssh.
+
+- Todos los repositorios git deben colgar de un directorio raíz (en nuestro caso
+git-repositorios) organizados por carpetas de usuario. Este directorio debe
+tener como grupo a git con permisos de lectura (rx) para que todo usuario con
+acceso a git pueda acceder y, una vez dentro, entrar en su carpeta de usuario
+asignada para crear sus repositorios.
+
+$ mkdir git-repositorios
+$ chmod o-rwx git-repositorios  // Si no se quiere hacer todo público.
+$ chgrp git-admin git-repositorios
+$ chmod g+rwx git-repositorios
+$ setfacl -m g:git:rX git-repositorios  // Si no era público o+rx. En fstab acl
+
+- A todo usuario que se cree, sin ser administrador, con acceso para crear sus
+propios repositorios, se le debe incluir en el grupo git para que pueda acceder
+a su carpeta persona.
+
+$ usermod -a -G git usuario
+
+- El usuario creador de estas carpetas debe ser administrador del sistema.
+Si se desea que solo el administrador pueda eliminar tanto la carpeta
+git-repositorios como la carpeta padre ssh, se debe añadir el modificador +t a
+ambas carpetas. Así, aunque existan otros usuarios con permiso de escritura en
+ambos directorios (perteneciendo a los grupos git-admin y git-ssh), solo el
+administrador del sistema podrá eliminarl las carpetas.
+
+$ chmod +t ssh
+$ chmod +t ssh/git-repositorios
+
+- Si se desea que algún otro usuario, aparte del administrador, tenga permisos
+de borrado de cualquier repositorio habría que eliminar el modificador t e
+incluir en el grupo git-admin (en lugar de git) solo a los administradores
+permisos rwx. El resto de usuarios tienen que pertenecer a un grupo base git que
+tenga solo acceso de lectura (rx) en git-repositorios. De este modo, podrá
+acceder a la carpeta git-repositorios y crear un repositorio dentro de la
+subcarpeta de usuario, en la cual tiene permisos de escritura a través de un
+grupo que se relaciona de manera única con dicha carpeta de usuario.
+
+$ cd git-repositorios
+$ mkdir usuario
+$ chgrp git-usuario usuario
+$ chmod g+rwx usuario
+$ setfacl -m -R g:git-admin:rwx usuario
+
+- Si no se desea crear una carpeta por usuario y se quiere permitir que solo un
+usuario con permisos de escritura de un repositorio pueda eliminar éste (a pesar
+de que cualquier usuario en el grupo git tiene permisos de escritura en
+git-repositorios), no se activa el flag t en git-repositorios. Como
+la carpeta de un repositorio tendrá contenido, solo se podrá eliminar dicha
+carpeta si se elimina el contenido previamente, pero para eso hay que tener
+permisos de escritura en la carpeta, perteneciendo al grupo de escritura del
+repositorio.
+
+- También se le debe añadir a la carpeta del usuario y todas las subcarpetas con
+los repositorios contenidos en ella el grupo usuario con los permisos rwx. Este
+grupo concede permisos de escritura al usuario ssh en todos los servicios
+asociados con dicho usuario, aparte de git.
+
+$ setfacl -m -R g:usuario:rwx usuario
+
+- Todos los repositorios creados tanto en el directorio git-repositorios como
+dentro de la subcarpeta de usuario de git-repositorios, inicialmente deben tener
+como grupo git-usuario. Si un usuario crea otros repositorios y quiere controlar
+los permisos de acceso de cada uno de manera independiente se deberá asignar un
+grupo distinto para cada repositorio con un nombre de grupo asociado de manera
+única a dicho repositorio y usuario git-usuario-repo
+
+$ mkdir usuario/repositorio.git
+$ chgrp git-usuario-repo usuario/repositorio.git
+$ chmod g+rwxs usuario/repositorio.git
+$ setfacl -m -R g:git-admin:rwx usuario/repositorio.git
+$ setfacl -m -R g:usuario:rwx usuario/repositorio.git
+
+- Se le asigna el permiso setGUID al grupo git-usuario-repo en el repositorio
+creado para que todo el contenido generado dentro de él tenga el mismo grupo.
+Así, todo contenido creado dentro del repositorio a modo de administrador del
+mismo, tendrá como grupo git-usuario-repo. El contenido que no sea generado a
+modo de administrador del repositorio por otros usuarios con acceso se realizará
+dentro de subcarpetas determinadas, como se verá después.
+
+- El usuario debe pertenecer al grupo usuario (si no lo tiene como grupo
+primario), el cual le permitira tener acceso rwx a todos sus repositorios
+
+$ usermod -G -a git usuario
+
+- Se debe inicializar la carpeta del repositorio para que contenga la estructura
+interna de un repositorio git.
+
+$ cd git-repositorios/usuario/repositorio.git
+$ git init --bare --share
+
+- Una vez subido el primer commit sobre el repositorio hacemos que todo el
+contenido inicial pertenezca al grupo git-usuario-repo. AUnque esto debería
+hacerlo automáticamente debido al flag s en la carpeta repositorio.git.
+
+$ chgrp -R git-usuario-repo usuario/repositorio.git/* usuario/repositorio.git/.*
+$ setfacl -m -R g:git-admin:rwx usuario/repositorio.git
+$ setfacl -m -R g:usuario:rwx usuario/repositorio.git
+
+- Si el usuario desea otorgar permisos de escritura sobre su repositorio se debe
+agregar a todo usuario permitido en el grupo git-usuario o git-usuario-repo
+(dependiendo si le quiere dar acceso a más repositorios a solo a éste).
+
+$ usermod -a -G git-usuario otro-usuario
+
+- Si un usuario quiere que nadie más pueda eliminar contenido de su repositorio
+se deberá activar el flag t para la carpeta del repositorio y las subcarpetas.
+
+$ chmod +t repositorio.git
+$ find repositorio.git/ -type d -exec chmod +t {} \;
+
+- Junto con los grupos que dan acceso de escritura se deben crear grupos que den
+únicamente acceso de lectura. El grupo git-r daría acceso de lectura a todos los
+repositorios; git-usuario-r acceso a todos los repositorios de un usuario; y
+git-usuario-repo-r acceso de lectura a un repositorio de un usuario. Esto se
+puede usar si no se desea dar acceso de lectura abierto a todo el mundo mediante
+el modificador o+rx.
+
+$ setfacl -m -R g:git-r:rx git-repositorios
+$ setfacl -m -R g:git-usuario-r:rx git-repositorios/usuario
+$ setfacl -m -R g:git-usuario-repo-r:rx git-repositorios/usuario/repositorio
+
+- Dentro de un repositorio, los grupos git-usuario y  git-usuario-repo conceden
+permisos de escritura (rwx) en todo el repositorio. Si se desea que otro usuario
+sin estos permisos pueda crear ramas sin modificar las principales (master,
+desarrollo, etc) se debe crear un grupo git-usuario-repo-invitado con permisos
+de escritura en la subcarpeta invitado dentro de refs donde pueda crear sus
+ramas. Para que pueda moverse por el repositorio además, a este usuario se le
+debe añadir al grupo git-usuario-repo-r
+
+$ usermod -a -G git-usuario-repo-r invitado
+$ mkdir refs/heads/invitado
+$ chgrp git-usuario-repo-invitado refs/heads/invitado
+$ chmod g+rwx refs/heads/invitado
+$ setfacl -m -R g:git-admin:rwx refs/heads/invitado
+$ setfacl -m -R g:usuario:rwx refs/heads/invitado
+$ setfacl -m -R g:git-usuario:rwx refs/heads/invitado
+$ setfacl -m -R g:git-usuario-repo:rwx refs/heads/invitado
+
+- Para que pueda crear nuevos objetos, el usuario invitado tiene que tener
+acceso de escritura en la carpeta objects. Para ello, asignamos permisos de
+escritura rwx al grupo git-usuario-repo-invitado en la carpeta objects. Si al
+crear un nuevo objeto se crea una carpeta automáticamente en objects solo hay
+que dar permisos de escritura en esta carpeta y archivos creados a los grupos
+git-admin, git-usuario, git-usuario-repo, asignando como grupo
+git-usuario-repo-invitado. Si, en cambio, los objetos nuevos se crean en
+carpetas ya existentes en objects, hay que asignar permisos de escritura al
+grupo git-usuario-repo-invitado a todas las subcarpetas y activar el modificador
++t, siendo el administrador de git el único que puede borrar los objetos ya
+creados. Estos objetos, además, solo se pueden modificar por usuarios con
+permisos de git-usuario-repo o superior, ya que los objetos creados de inicio
+son asignados a git-usuario-repo
+
+- Si se desea solo el usuario creador pueda eliminar el contenido de un
+repositorio, se debe asignar el flag +t al directorio del repositorio y a todos
+sus subdirectorios; aunque otros usuarios estén en el grupo git-usuario-repo,
+solo el usuario podrá eliminar su contenido. Si además se desea que solo el
+usuario pueda eliminar un repositorio entero, se asigna el flag t al directorio
+del usuario. Así, aunque otros usuarios estén con permisos de escritura en
+la carpeta del usuario al pertenecer a git-usuario, solo el usuario podrá
+eliminar el repositorio.
+
+$ chmod +t git-repositorios/usuario
+$ chmod +t git-repositorios/usuario/repositorio.git
+$ find repositorio.git/ -type d -exec chmod +t {} \;
+
+RESUMEN DE ESTRUCTURA DE DIRECTORIOS:
+- ssh: directorio donde se encuentran todos los servicios ssh.
+- ssh/git-repositorios: donde se encuentran las carpetas de los usuarios con sus
+repositorios.
+- ssh/git-repositorios/usuario: cuenta de un usuario donde se encuentran todos
+sus repositorios.
+- ssh/git-repositorios/usuario/repo: un repositorio de un usuario
+- ssh/git-repositorios/usuario/repo/refs/heads(ó tags)/invitado: carpeta de un
+invitado (o grupo de trabajo) donde pueden crear sus ramas si no tiene acceso de
+administración sobre el repositorio. El invitado (o grupo de trabajo) tiene que
+tener acceso de escritura en esta carpeta y en objects.
+
+RESUMEN DE GRUPOS:
+- ssh: acceso de lectura (rx) sobre la carpeta ssh. Permite ver qué hay dentro
+y acceder a ssh, pero no a los subdirectorios.
+- ssh-admin: acceso de escritura y lectura (rwx) sobre ssh. Permite crear
+contenido dentro de ssh (una carpeta con un nuevo servicio, configuración, etc).
+- git: acceso de lectura (rx) sobre git-repositorios. Permite acceder a la
+carpeta git-repositorios y ver los usuarios que tienen repositorios git, pero
+no acceder dentro de ellos.
+- git-r: acceso de lectura (rx) sobre todas las subcarpetas de cualquier usuario
+dentro de git-repositorios. Permite ver el contenido y moverse por todos los
+repositorios en este servidor git.
+- git-usuario: acceso de lectura (rx) sobre la carpeta usuario. Permite acceder
+a la carpeta usuario y ver qué repositorios tiene, pero no acceder dentro de
+ellos a través de los subdirectorios donde está el contenido de sus repositorios.
+- git-usuario-r: acceso de lectura (rx) sobre todas las subcarpetas del usuario
+dentro de git-repositorios. Permite ver el contenido y moverse por todos los
+repositorios de este usuario.
+- git-usuario-N-r: acceso de lectura (rx) sobre todas las subcarpetas del
+repositorio N del usuario.Permite ver todo el contenido del repositorio N, pero
+no de otros repositorios de este usuario.
+- git-admin: acceso de lectura y escritura (rwx) sobre todas carpetas de todos
+los usuarios dentro del servidor git. Permite modificar cualquier contenido
+dentro de los subdirectorios de cualquier repositorio de cualquier usuario.
+- git-usuario-admin: acceso de lectura y escritura (rwx) sobre todas carpetas de
+un usuario. Permite modificar cualquier contenido dentro de los subdirectorios
+de cualquier repositorio de un usuario.
+- usuario: acceso de lectura y escritura (rwx) sobre todas carpetas de
+un usuario. Permite modificar cualquier contenido dentro de los subdirectorios
+de cualquier repositorio de usuario. Se diferencia de git-usuario-admin en que,
+además del servidor git, tiene acceso a otros servicios dentro del host.
+- git-usuario-N-admin: acceso de lectura y escritura (rwx) sobre todas las
+subcarpetas del repositorio N de usuario. Permite modificar cualquier contenido
+dentro de los subdirectorios de la carpeta del repositorio N de usuario.
+- git-usuario-N-w-invitado: acceso de escritura y escritura (rwxs) sobre las
+carpetas refs/heads/invitado, refs/tags/invitado y objects (no flag s) del
+repositorio N de usuario que las contene. Permite generar ramas dentro de
+invitado/ y guardar el contenido de los commits. En objects, las carpetas creadas
+se [deben en teoría] asignar al grupo git-usuario-N-admin de manera automática,
+aunque sea un invitado quien las cree al hacer push. Por lo tanto, para que los
+usuarios del grupo git-usuario-N-w-invitado puedan modificar el contenido creado
+por ellos, dichas carpetas generadas y su contenido se deben asignar al grupo
+(con flag s) git-usuario-N-w-invitado con permisos de escritura. (Recordar
+volver a asignar los grupos con permiso de administración a todo el contenido
+creado por los invitados).
+- git-usuario-w-invitado: acceso de escritura y escritura (rwxs) sobre las
+carpetas refs/heads/invitado, refs/tags/invitado y objects (no s) de todos los
+repositorios de usuario que las contengan. Permite generar ramas dentro de
+invitado/ y guardar el contenido de los commits. En objects, las carpetas creadas
+se [deben en teoría] asignar al grupo git-usuario-N-admin de manera automática,
+aunque sea un invitado quien las cree al hacer push. Por lo tanto, para que los
+usuarios del grupo git-usuario-w-invitado puedan modificar el contenido creado
+por ellos, dichas carpetas creadas y su contenido se deben asignar al grupo
+(con flag s) git-usuario-w-invitado con permisos de escritura. Este grupo, a
+diferencia del anterior, puede abarcar varios repositorios de un usuario.
+(Recordar volver a asignar los grupos con permiso de administración a todo el
+contenido creado por los invitados).
+- git-w-invitado: acceso de escritura y escritura (rwxs) sobre las carpetas
+refs/heads/invitado, refs/tags/invitado y objects (sin flag s) en todos los
+repositorios de todo usuario que las contengan. Permite crear ramas dentro de
+invitado/ y guardar el contenido de los commits. En objects, las carpetas
+creadas se [deben en teoría] asignar al grupo git-usuario-N-admin de manera
+automática, aunque sea un invitado quien las cree al hacer push. Por lo tanto,
+para que los usuarios del grupo git-w-invitado puedan modificar el contenido
+creado por ellos, dichas carpetas creadas y su contenido se deben asignar al grupo
+(con flag s) git-w-invitado con permisos de escritura. Este grupo, a diferencia
+del anterior, puede abarcar varios repositorios de varios usuarios.
+(Recordar volver a asignar los grupos con permiso de administración a todo el
+contenido creado por los invitados)
+
+
+Nota: dentro de la carpeta de cada usuario, existe un archivo llamado
+.id-repositorios donde se encuentra asociado para cada carpeta de repositorio un
+número, el cual se usará para crear los grupos correspondientes. Esto es
+necesario porque los nombres de grupos no pueden ser muy largos, no pudiendo
+contener el nombre completo de un repositorio.

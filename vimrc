@@ -1,5 +1,5 @@
 " get easier to use and more user friendly vim defaults
-" CAUTION: This option breaks some vi compatibility. 
+" CAUTION: This option breaks some vi compatibility.
 "          Switch it off if you prefer real vi compatibility
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -26,7 +26,7 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " WakaTime Plugin
 Plugin 'wakatime/vim-wakatime'
 
-" Búsqueda completa de archivos 
+" Búsqueda completa de archivos
 " Ctrl-P (Buscar); Ctr-d (Incluir directorios); Ctrl-f (Buffers o archivos)
 Plugin 'ctrlp.vim'
 
@@ -84,6 +84,10 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" Undo persistente. Crear manualmente el directorio ~/.vim/undodir/
+set undofile
+set undodir=~/.vim/undodir
+
 set modifiable
 
 " enable syntax highlighting
@@ -94,8 +98,8 @@ set t_Co=256
 " automatically indent lines (default)
 set autoindent
 
-" select case-insenitiv search (not default)
-set ignorecase
+" select case-sensitive search
+set noic
 
 " show cursor line and column in the status line
 set ruler
@@ -121,7 +125,7 @@ set matchtime=2
 " Required to be able to use keypad keys and map missed escape sequences
 set esckeys
 
-" allow backspacing over everything in insert mode 
+" allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
 " Complete longest common string, then each full match
@@ -141,28 +145,45 @@ autocmd BufNewFile      *.spec  call SKEL_spec()
 " Cambiar espacios por tabulación
 au BufNewFile,BufRead *.py
     \ set tabstop=4
-    \ set softtabstop=4
+    \ set softtabstop=0
     \ set shiftwidth=4
 
 au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2
-    \ set softtabstop=2
+    \ set softtabstop=0
     \ set shiftwidth=2
 
 retab
 set expandtab
+set smarttab
 set fileformat=unix
 
 " Code folding (comando za para desplegar/plegar código agrupado).
 set foldmethod=indent
 set foldlevel=99
 
-" Mantener los cambios realizados en un buffer cuando se alterna a otro
+" Mantener cambios realizados en el búfer cuando se alterna a otro.
 set hidden
 
-" Línea que informa del límite de 80 caracteres.
+" Grabar el archivo cuando se alterna a otro búfer o se ejecuta un comando de
+" terminal.
+set autowrite
+
+" Visualizar los tabuladores y espacios al final de la línea con caracteres
+" especiales
+set list
+
+" Activa búsqueda interactiva.
+set incsearch
+
+" Límite de 80 caracteres.
 set textwidth=80
+" Columna avisando del límite de caracteres. 81 general y 73 para commits
 set colorcolumn=+1
+" Límite de 72 caracteres para editar commits.
+autocmd FileType gitcommit set textwidth=72
+" Segunda columna avisando del límite de caracteres en commits.
+autocmd FileType gitcommit set colorcolumn+=51
 highlight ColorColumn ctermbg=7
 
 " Manejar buffers
@@ -178,6 +199,13 @@ nnoremap - <C-W>-
 nnoremap + <C-W>+
 nnoremap / <C-W><
 nnoremap * <C-W>>
+
+" Eliminar todos los espacios finales.
+cmap Alt-b g/[[:blank:]]*$/s//
+
+" Guardar un archivo sin privilegios sudo.
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+" cmap w!! w !sudo tee % >/dev/null
 
 " Codificación UTF-8
 set encoding=utf-8 fileencoding=utf8 termencoding=utf-8
