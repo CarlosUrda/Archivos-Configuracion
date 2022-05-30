@@ -203,12 +203,16 @@ COMANDOS NATIVOS VI
 - [n]|         // Mover a la columna n de la línea actual.
 - [n]+ \ Intro // Mover el cursor al primer carácter no blanco de la siguiente [enésima] línea.
 - [n]-         // Mover el cursor al primer carácter no blanco de la anterior [enésima] línea.
-- [n])         // Mover el cursor al inicio de la siguiente [enésima] frase.
-- [n](         // Mover el cursor al inicio de la anterior [enésima] frase.
-- [n]}         // Mover el cursor al inicio del siguiente [enésimo] párrafo.
-- [n]{         // Mover el cursor al inicio del anterior [enésimo] párrafo.
+- [n])         // Mover el cursor al inicio de la siguiente [enésima] frase. Considera los signos de puntuación . ? ó !
+- [n](         // Mover el cursor al inicio de la anterior [enésima] frase. Considera los signos de puntuación . ? ó !
+- [n]}         // Mover el cursor al inicio del siguiente [enésimo] párrafo. 
+               // Hasta siguiente salto línea o alguno de los macros de párrafo por defecto (.IP, .PP, .LP, .QP, pueden cambiarse con :set)
+- [n]{         // Mover el cursor al inicio del anterior [enésimo] párrafo. 
+               // Hasta anterior salto línea o alguno de los macros de párrafo por defecto (.IP, .PP, .LP, .QP, pueden cambiarse con :set)
 - [n]]]        // Mover el cursor al inicio de la sección [enésima] siguiente.
+               // Hasta alguno de los siguientes macros sección por defecto (.NH, .SH, .H 1, .HU, que pueden cambiarse con :set)
 - [n][[        // Mover el cursor al inicio de la sección [enésima] anterior.
+               // Hasta alguno de los anteriores macros sección por defecto (.NH, .SH, .H 1, .HU, que pueden cambiarse con :set)
 - gg           // Mover el cursor al inicio del archivo.
 - [n]G         // Mover el cursor a la línea n.
 - G            // Mover el cursor al final del archivo.
