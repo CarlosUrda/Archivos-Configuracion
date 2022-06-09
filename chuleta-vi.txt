@@ -90,7 +90,7 @@ COMANDOS NATIVOS EX
                 // Ej: :r # => Lee en la línea actual el contenido del archivo del buffer alternativo.
                 // La etiqueta % equivale al nombre del archivo del búfer actual.
 - :e! [archivo] // Descarta los cambios realizados en el búfer actual desde la última versión guardada [y se cambia al búfer de archivo].
-- :c1 | c2      // Combinar varios comandos.
+- :c1 | c2      // Combinar varios comandos. Los comandos se aplican sobre las líneas modificadas en comandos anteriores.
 - :q            // Quitar vi y volver a la terminal.
 - :x            // Guardar (si ha sido modificado el archivo) y salir.
 - :comando!     // Evita el aviso que pueda salir al ejecutar el comando.
@@ -128,7 +128,7 @@ COMANDOS NATIVOS EX
 - :g/patrón         // Mover a la última ocurrencia del patrón en el archivo.
                     // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
 - :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
-- :g/patrón/nu      // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
+- :g/patrón/nu ó #  // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
 - :g!/patr ó v/patr // Mostrar todas las líneas que no contienen el patrón.
 - :g/patrón/s//p2/g // Sustituir en todas las líneas que contienen patrón, ese mismo patrón por p2.
                     // Después de g/patrón/ se añade un comando que se ejecuta para cada línea.
@@ -156,8 +156,8 @@ COMANDOS NATIVOS EX
                     // En los anteriores registros se aplica aunque se copie o borre a un búfer nombrado con una letra o número concreto.
 - :read [a] ó r[a]  // Leer el contenido del archivo o búfer a y añadirlo a partir de la línea actual.
                     // Puede leer el resultado de un comando shell: r !sort archivo => Lee el resultado de ordenar un archivo.
-- :w [archivo]      // Guardar todas las líneas del búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
-- :w >> archivo     // Guardar todas las líneas del búfer al final del archivo.
+- :w [archivo]      // Guardar el búfer en archivo, haya sido modificado o no. Si no se indica archivo, se guarda en el actual.
+- :w >> archivo     // Guardar el búfer al final del archivo.
 - :l                // Igual que set list pero permite aplicarlo solo a un conjunto de líneas.
 - :[n]split [++opt] [+cmd] [arch]  // Parte la ventana actual en dos ventanas horizontales.
                                    // La nueva ventana tendrá n líneas. Por defecto el tamaño viene fijado por equalalways y eadirection.
@@ -428,6 +428,7 @@ EXPRESIONES REGULARES
         // Para elegir entre un rango de caracteres se usa -. [A-Za-z] => cualquier letra entre A-Z o a-z.
         // Los caracteres \ - ] necesitan ser escapados, el resto . * pierden su poder y no lo necesitan.
         // Comenzar con ^ implica cualquier carácter no incluido entre corchetes. [^ABC] => ni A, ni B ni C.
+        // No válido en patrón de substitución, actuando como caracteres normales.
 - [: :] // Clases de caracteres: alnum, alpha, blank, cntrl, digit, graph, lower, print, punct, space, upper, xdigit.
         // Este y los dos siguientes casos deben aparecer dentro de corchetes padre => [[:alpha:]!?]
 - [. .] // Los caracteres en su interior los considera como un todo, no como caracteres sueltos. [.ch.] => ch **No me funciona en vim**
@@ -435,7 +436,7 @@ EXPRESIONES REGULARES
         // Los metacaracteres anteriores (excepto \1, \2, ...) pierden su acción en el patrón de reemplazo, pero no en el patrón de búsqueda.
         // Ej :s/[abc]./.*$[ => a, b ó c seguido de cualquier carácter se sustituye simplemente por .*$[.
 - \     // Carácter de escape. Previene la interpretación especial del siguiente  carácter (\., \*, \[, \\, etc).
-        // Es válido tanto en el patrón de búsqueda como de reemplazo de una sustitución.
+        // Válido tanto en patrón de búsqueda como de reemplazo de una sustitución, aunque en el segundo no es necesario.
 - ~ ó % // Representa el patrón usado en la última acción de búsqueda (no funciona en vim).
         // Representa el patrón de reemplazo indicado en la última sustitución realizada: s/p1/p2 => ~ equivale a p2
 - &     // Dentro de patrón de reemplazo representa el patrón de búsqueda a ser sustituido. :s/.*/(&)/ => Envuelve toda la línea entre ().
