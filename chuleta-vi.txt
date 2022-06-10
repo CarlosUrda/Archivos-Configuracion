@@ -126,7 +126,9 @@ COMANDOS NATIVOS EX
 - :co[l] ó t[l]     // Copiar la línea actual y la pega en la posición siguiente a la línea l.
 - :j                // Unir las líneas seleccionadas formando una sola línea.
 - :g/patrón         // Mover a la última ocurrencia del patrón en el archivo.
-                    // Obtiene todos las líneas donde está el patrón, sobre las cuales se pueden realizar otras acciones.
+                    // Obtiene todos las líneas donde está el patrón, y sobre cada una de las cuales se pueden realizar acciones: d, mo, co, s.
+                    // A partir de cada línea encontrada se puede obtener un bloque de líneas para aplicar una acción.
+                    // g/patron1/[.,línea ó /patron2/] accion
 - :g/patrón/p       // Mostrar todas las líneas que contienen el patrón.
 - :g/patrón/nu ó #  // Mostrar todas las líneas que contienen el patrón junto con el número de línea.
 - :g!/patr ó v/patr // Mostrar todas las líneas que no contienen el patrón.
@@ -181,6 +183,7 @@ COMANDOS NATIVOS EX
 - :tabmove [+/-n]   // Mover la pestaña actual a la posición de la siguiente pestaña. Si añade + ó - se mueve n posiciones desde la actual.
                     // Si no se indica signo, se mueve a la posición n entre pestañas (puede usarse $ como posición final).
 - :tabclose [n]     // Cierra la pestaña [n], por defecto la actual.
+- :normal @a        // Aplica la macro a en la línea actual.
 
 
 COMANDOS NATIVOS VI
@@ -312,7 +315,7 @@ COMANDOS NATIVOS VI
             // Toda acción ejecutada desde la activación queda grabada hasta su finalización volviendo a pulsar q.
 - @c        // Ejecuta en modo comando la secuencia guardada en el búfer de memoria o en la macro c (número o letra minúscula)
             // Si c es " se usa el búfer por defecto (sin nombre). Si c es * ó + se usa el búfer del portapapeles.
-            // La secuencia de comandos se ejecuta como un todo, repitiéndose entera si se usa la repetición \. .
+            // La secuencia de comandos se ejecuta como un todo, repitiéndose sólo la última acción de la secuencia si se usa la repetición \.
             // También puede contener una secuencia de comandos de ex y usarse en la línea de comandos de ex.
 - @@        // Repite la última ejecución de @.
 - [n]Ctrl-] // Busca el identificador bajo el cursor (desde su posición) en archivo de tags y lleva al archivo donde se encuentra la [n] definición.
