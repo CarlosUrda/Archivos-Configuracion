@@ -7,7 +7,10 @@ return {
       local gitsigns = require("gitsigns")
 
       gitsigns.setup({
-        -- con la config por defecto vale; usa la signcolumn que ya tienes
+        signcolumn = true,  -- muestra los signos en la signcolumn
+        numhl      = true,  -- resalta el número de línea modificado
+        linehl     = false, -- no resalta la línea completa modificada
+        word_diff  = false, -- no resalta las palabras modificadas
       })
 
       -- Atajos de teclado básicos
