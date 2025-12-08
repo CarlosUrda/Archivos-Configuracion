@@ -2,6 +2,8 @@
 
 local o = vim.opt
 
+o.guifont = "FiraCode Nerd Font Mono:h10"  -- Fuente para GUI (Neovim-Qt, etc.)
+
 -- ===== INTERFAZ BÁSICA =====
 o.number         = true   -- número de línea
 o.relativenumber = true   -- número relativo (para moverse con jj, kk, etc.)
