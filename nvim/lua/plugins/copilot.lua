@@ -16,10 +16,10 @@ return {
       pcall(vim.cmd, "Copilot restart")
     end)
 
-    local opts = { noremap = true, silent = true, expr = true }
+    local opts = { noremap = true, silent = true, expr = true, replace_keycodes = false}
 
     -- Aceptar sugerencia
-    opts.desc = "Copilot: aceptar sugerencia"
+    opts.desc = "Copilot: aceptar sugerencia completa"
     vim.keymap.set("i", "<C-j>", 'copilot#Accept()', opts)
 
     -- Aceptar palabra de sugerencia
