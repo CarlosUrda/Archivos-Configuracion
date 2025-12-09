@@ -1,0 +1,158 @@
+{
+  "layer": "top",
+  "exclusive": true,
+  "position": "bottom",
+  "style": "./style.css",
+
+  "modules-left": [
+    "custom/menu",
+    "custom/lanzador_firefox",
+    "custom/lanzador_terminal",
+    "custom/lanzador_archivos",
+    "custom/lanzador_tutanota",
+    "custom/lanzador_calibre",
+    "custom/lanzador_telegram"
+  ],
+
+  "modules-center": [
+    "wlr/taskbar"
+  ],
+
+  "modules-right": [
+    "pulseaudio",
+    "network",
+    "battery",
+    "cpu",
+    "memory",
+    "clock",
+    "tray",
+    "custom/lanzador_suspender"
+  ],
+
+  "custom/menu": {
+    "format": " Menú ",
+    "on-click": "wofi --show drun",
+    "tooltip-format": "Lanzador de aplicaciones"
+  },
+
+  "custom/sep": {
+    "format": " | ",
+    "tooltip": false 
+  },
+
+  "custom/lanzador_firefox": {
+    "exec": "~/.config/waybar/scripts/lanzador-firefox.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "MOZ_ENABLE_WAYLAND=1 firefox"
+  },
+
+  "custom/lanzador_terminal": {
+    "exec": "~/.config/waybar/scripts/lanzador-terminal.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "foot"
+  },
+
+  "custom/lanzador_archivos": {
+    "exec": "~/.config/waybar/scripts/lanzador-archivos.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "caja"
+  },
+
+  "custom/lanzador_telegram": {
+    "exec": "~/.config/waybar/scripts/lanzador-telegram.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "~/Programas/Telegram/Telegram"
+  },
+
+  "custom/lanzador_calibre": {
+    "exec": "~/.config/waybar/scripts/lanzador-calibre.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "calibre"
+  },
+
+  "custom/lanzador_tutanota": {
+    "exec": "~/.config/waybar/scripts/lanzador-tutanota.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "~/Programas/tutanota-desktop-linux.AppImage"
+  },
+
+  "custom/lanzador_suspender": {
+    "exec": "~/.config/waybar/scripts/lanzador-suspender.sh",
+    "return-type": "json",
+    "interval": 0,
+    "tooltip": true,
+    "format": "{}",
+    "on-click": "pkill -x swaynag; swaynag -t warning -m '¿Deseas suspender el equipo?' -B 'Sí, suspender' 'pkill -x swaynag; systemctl suspend'",
+    "on-click-right": "pkill -x swaynag; swaynag -t warning -m '¿Deseas apagar el equipo?' -B 'Sí, apagar' 'pkill -x swaynag; systemctl poweroff'"
+  },
+
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "icon-size": 16
+  },
+
+  "pulseaudio": {
+    "format": "{volume}%",
+    "format-muted": "Silencio",
+    "scroll-step": 5,
+    "on-click": "pavucontrol"
+  },
+
+  "network": {
+    "format-wifi": " {essid} {signalStrength}%",
+    "format-ethernet": "Eth {ifname}",
+    "format-disconnected": "Sin red"
+  },
+
+  "cpu": {
+    "format": "{usage}%",
+    "interval": 2,
+    "tooltip": true
+  },
+
+  "memory": {
+    "format": "  {percentage}%",
+    "interval": 2,
+    "tooltip-format": "Memoria: {used} / {total}"
+  },
+
+  "battery": {
+    "format": " {capacity}%",
+    "format-charging": "⚡️ {capacity}%",
+    "states": {
+      "good": 80,
+      "warning": 30,
+      "critical": 15
+    }
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "{:%d/%m/%Y}"
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 6
+  }
+}
