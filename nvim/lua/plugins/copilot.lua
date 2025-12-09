@@ -4,6 +4,7 @@ return {
   event = "InsertEnter",  -- carga Copilot al entrar en modo inserción
 
   config = function()
+
     -- Que Copilot no use <Tab> por defecto
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
@@ -15,40 +16,35 @@ return {
       pcall(vim.cmd, "Copilot restart")
     end)
 
+    local opts = { noremap = true, silent = true, expr = true }
+
     -- Aceptar sugerencia
-    vim.keymap.set("i", "<C-j>", 'copilot#Accept()', {
-      expr = true,
-      replace_keycodes = false,
-      desc = "Copilot: aceptar sugerencia",
-    })
+    opts.desc = "Copilot: aceptar sugerencia"
+    vim.keymap.set("i", "<C-j>", 'copilot#Accept()', opts)
+
+    -- Aceptar palabra de sugerencia
+    opts.desc = "Copilot: aceptar palabra de sugerencia"
+    vim.keymap.set("i", "<M-j>", 'copilot#AcceptWord()', opts)
+
+    -- Aceptar línea de sugerencia
+    opts.desc = "Copilot: aceptar línea de sugerencia"
+    vim.keymap.set("i", "<M-l>", 'copilot#AcceptLine()', opts)
 
     -- Siguiente sugerencia
-    vim.keymap.set("i", "<C-l>", 'copilot#Next()', {
-      expr = true,
-      silent = true,
-      desc = "Copilot: siguiente sugerencia",
-    })
+    opts.desc = "Copilot: siguiente sugerencia"
+    vim.keymap.set("i", "<C-l>", 'copilot#Next()', opts)
 
     -- Sugerencia anterior
-    vim.keymap.set("i", "<C-h>", 'copilot#Previous()', {
-      expr = true,
-      silent = true,
-      desc = "Copilot: sugerencia anterior",
-    })
+    opts.desc = "Copilot: sugerencia anterior"
+    vim.keymap.set("i", "<C-h>", 'copilot#Previous()', opts)
 
     -- Forzar sugerencia
-    vim.keymap.set("i", "<C-f>", 'copilot#Suggest()', {
-      expr = true,
-      silent = true,
-      desc = "Copilot: forzar sugerencia",
-    })
+    opts.desc = "Copilot: forzar sugerencia"
+    vim.keymap.set("i", "<C-f>", 'copilot#Suggest()', opts)
 
     -- Desechar sugerencia
-    vim.keymap.set("i", "<C-k>", 'copilot#Dismiss()', {
-      expr = true,
-      silent = true,
-      desc = "Copilot: desechar sugerencia",
-    })
+    opts.desc = "Copilot: desechar sugerencia"
+    vim.keymap.set("i", "<C-k>", 'copilot#Dismiss()', opts)
 
   end,
 }
