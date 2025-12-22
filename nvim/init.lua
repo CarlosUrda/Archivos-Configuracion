@@ -2,11 +2,11 @@
 
 -- Líder (espacio)
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = "\\"
 
 -- Opciones básicas
-require("config.options")
+require("config.opts")
 
 -- Gestor de plugins (lazy)
-require("config.lazy")
+require("bootstrap")
 

@@ -1,4 +1,7 @@
--- ~/.config/nvim/lua/plugins/colorscheme.lua
+-- ~/.config/nvim/lua/plugins/tokyonight.lua
+
+-- local cfg = require("config").new("tokyonight", "config.tokyonight")
+
 return {
   {
     "folke/tokyonight.nvim",

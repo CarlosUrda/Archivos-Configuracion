@@ -22,14 +22,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
-require("lazy").setup({
-  spec = {
-    -- import your plugins
-    { import = "plugins" },
-  },
-  -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "habamax" } },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
-})
+local cfg = require("config").new("lazy", "config.lazy")  -- Cargar módulo de acceso a la configuración de lazy
+local opts = cfg.get_callback_get_config("opts")()    -- Cargar opciones de configuración
+opts.spec = cfg.get_callback_get_config("plugins")()  -- Cargar especificaciones de plugins
+cfg.callback_setup(_, opts or {})
