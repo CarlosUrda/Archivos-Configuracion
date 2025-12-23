@@ -5,6 +5,34 @@
 
 local M = {}
 
+-- Comprobar si una cadena es de tipo string y cumple condiciones.
+-- @param cadena string Cadena a comprobar
+-- @param nil_valido boolean Si se admite el valor nil de la cadena como válido. Por defecto inválido.
+-- @param vacio_valido boolean Si se admite la cadena vacía como válida. Por defecto inválido.
+-- @return boolean ok si la cadena es válida
+-- @return string|nil Cadena con los espacios eliminados en los bordes (trim), o nil
+-- @return string msg Mensaje de tipo de error
+local function comprobar_cadena(cadena, nil_valido, vacio_valido)
+    if type(cadena) ~= "string" then 
+        return false, nil, "El nombre del plugin no es una cadena"
+    end
+
+    if cadena == nil then
+        if nil_valido then
+            return true, cadena
+        else
+            return false, cadena, "La cadena no puede ser nil"
+        end
+    end
+
+    cadena = vim.trim(cadena)
+    if cadena == "" then and not vacio_valido then
+        return false, cadena, "La cadena no puede estar vacía"
+    end
+
+    return true, cadena
+end
+
 
 -- Crear una nueva instancia de configuración para un plugin específico
 -- @param plugin_mod string Nombre del módulo del plugin dentro de su repositorio: lua/<plugin>.lua
@@ -18,20 +46,15 @@ local M = {}
 function M.new(plugin_mod, clave_ruta_config)
     -- La comprobación de la existencia del módulo plugin.lua o plugin/init.lua se hace en el setup justo antes de intentar
     -- cargar el módulo, y no ahora que puede todavía no existir.
-    if type(plugin_mod) ~= "string" then 
-        return nil, "El nombre del plugin no es una cadena"
-    end
-    plugin_mod = vim.trim(plugin_mod)
-    if plugin_mod == "" then
-        return nil, "El nombre del plugin es una cadena vacía"
+
+    ok, plugin_mod, msg = comprobar_cadena(plugin_mod)
+    if not ok then
+        return nil, "Error con el nombre del plugin: " .. msg 
     end
 
-    if type(clave_ruta_config) ~= "string" then
-        if clave_ruta_config ~= nil then
-            return nil, "La clave de la ruta de los archivos de configuración no es una cadena"
-        end
-    else
-        clave_ruta_config = vim.trim(clave_ruta_config)
+    ok, clave_ruta_config, msg = comprobar_cadena(clave_ruta_config, true, true)
+    if not ok then
+        return nil, "Error en la clave de la ruta de los archivos de configuración: " .. msg
     end
 
 
@@ -40,26 +63,23 @@ function M.new(plugin_mod, clave_ruta_config)
     -- nil hace que la función devuelva nil, usado fuera para tomar valores por defecto.
     -- "" se considera error.
     -- @return boolean ok Indica si la carga fue exitosa
-    -- @return table|nil res Tabla con el contenido del módulo cargado, o nil si no se encontró
-    -- @return number|nil log_level Nivel de log (vim.log.levels) en caso de error
-    -- @return string|nil msg Mensaje de error en caso de error
+    -- @return any res Si ok true devuelve el resultado del módulo, o nil si la clave del módulo es nil
+    -- -- Si ok es false, devuelve una tabla con la información del error:
+    -- -- -- { level = nivel de error de vim.log.levels, msg = string mensaje de error }
     local function _comprobar_modulo(modulo)
-        if clave_ruta_config == nil or modulo == nil then
-            return true, nil
+        ok, modulo, msg = comprobar_cadena(modulo, true)
+        if not ok then
+            return false, { level = vim.log.levels.ERROR, msg = "Error con el nombre del módulo: " .. msg }
         end
 
-        if type(modulo) ~= "string" then
-            return false, nil, vim.log.levels.ERROR, "Nombre de módulo de configuración debe ser una cadena"
-        end
-        modulo = vim.trim(modulo)
-        if modulo == "" then
-            return false, nil, vim.log.levels.ERROR, "Nombre de módulo de configuración no puede ser cadena vacía"
+        if clave_ruta_config == nil or modulo == nil then
+            return true, nil
         end
 
         local clave_modulo = clave_ruta_config .. "." .. modulo
         local ok, res = pcall(require, clave_modulo)
         if not ok then
-            return false, nil, vim.log.levels.ERROR, "Error al cargar el módulo de configuración " .. clave_modulo .. ": " .. tostring(res)
+            return false, { level = vim.log.levels.ERROR, msg = "Error al cargar el módulo de configuración " .. clave_modulo .. ": " .. tostring(res) }
         end
 
         return true, res
@@ -82,7 +102,7 @@ function M.new(plugin_mod, clave_ruta_config)
     -- @return number|nil log_level Nivel de log (vim.log.levels) en caso de error
     -- @return string|nil msg Mensaje de error en caso de error
     local function exec_modulo(modulo, pre_opts)
-        local ok, res, log_level, msg = _comprobar_modulo(modulo)
+        local ok, res = _comprobar_modulo(modulo)
 
         if res == nil then
             res = pre_opts
@@ -93,7 +113,7 @@ function M.new(plugin_mod, clave_ruta_config)
             res = vim.tbl_deep_extend("force", pre_opts, res)
         end
 
-        return ok, res, log_level, msg
+        return ok, res
     end
 
 
@@ -101,19 +121,33 @@ function M.new(plugin_mod, clave_ruta_config)
     -- @param plugin_spec table Tabla con la especificación del plugin (usado en Lazy)
     -- @param opts table Tabla con las opciones de configuración del plugin
     -- @return nil
-    local function setup(plugin_spec, opts)
-        local ok, res = pcall(require, plugin_mod)
-        if not ok then
-            vim.notify("Error al cargar el módulo de setup " .. plugin_mod .. ": " .. tostring(res), vim.log.levels.ERROR)
-            return
+    local function setup(plugin_spec, opts, nombre_setup, clave_mod)
+        ok, nombre_setup, msg = comprobar_cadena(nombre_setup, true)
+        if not ok then 
+            return false, { level = vim.log.levels.ERROR, msg = "Error con el nombre de la función setup: " .. msg }
         end
-        if type(res) ~= "table" or not res["setup"] or type(res["setup"]) ~= "function" then
-            vim.notify("El módulo " .. plugin_mod .. " no tiene método setup", vim.log.levels.WARN)
-            return
+        if nombre_setup == nil then
+            nombre_setup = "setup"
+        end
+
+        ok, clave_mod, msg = comprobar_cadena(clave_mod, true)
+        if not ok then 
+            return false, { level = vim.log.levels.ERROR, msg = "Error con la clave del módulo del plugin setup: " .. msg }
+        end
+        if clave_mod == nil then
+            clave_mod = plugin_mod
+        end
+
+        local ok, res = pcall(require, clave_mod)
+        if not ok then
+            return false, { level = vim.log.levels.ERROR, msg = "Error al cargar el módulo de setup " .. clave_mod .. ": " .. tostring(res) }
+        end
+        if type(res) ~= "table" or not res[nombre_setup] or type(res[nombre_setup]) ~= "function" then
+            return false, { level = vim.log.levels.WARN, msg = "El módulo " .. clave_mod .. " no tiene método setup" }
         end
         ok, res = pcall(res.setup, opts)
         if not ok then
-            vim.notify("Error al ejecutar el método setup de " .. plugin_mod .. ": " .. tostring(res), vim.log.levels.ERROR)
+            vim.notify("Error al ejecutar el método setup de " .. clave_mod .. ": " .. tostring(res), vim.log.levels.ERROR)
             return
         end
     end
