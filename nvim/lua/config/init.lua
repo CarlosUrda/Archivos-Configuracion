@@ -12,11 +12,31 @@ local M = {}
 -- @return boolean ok si la cadena es válida
 -- @return string|nil Cadena con los espacios eliminados en los bordes (trim), o nil
 -- @return string msg Mensaje de tipo de error
-local function comprobar_cadena(cadena, nil_valido, vacio_valido)
-    if type(cadena) ~= "string" then 
-        return false, nil, "El nombre del plugin no es una cadena"
+local function comprobar_valor(valor, condiciones)
+    if type(condiciones) ~= "table" then
+        if condiciones == nil then
+            return cadena
+        end
+        error("Las condiciones de validación deben de ser una tabla")
+    elseif next(condiciones) == nil
+        return cadena
     end
 
+    local tag_tipos, tag_validez, tag_condicion, tag_defecto = "tipos", "condicion", "defecto"
+    
+
+    { validez = true, 
+      tipos = {"string" = true, 
+               "number" = {validez = false, comp = nil, valores = {0, 10}}}
+    }
+    
+
+    for tipo, validos in pairs(condiciones[tag_tipos]) do
+        if tipo == type(valor) then
+            z
+        end
+    end
+    return false, nil, "El valor no es de un tipo correcto"
     if cadena == nil then
         if nil_valido then
             return true, cadena
