@@ -5,12 +5,59 @@
 
 local M = {}
 
-local function verificar_condiciones(condiciones)
+local function normalizar_condiciones(condiciones)
 
 
 end
 
+local _priv = setmetatable({}, {__mode = "k"})
 
+local GestionCache = {}
+GestionCache.__index = Cache
+
+function GestionCache.new()
+    local self = setmetatable({}, Cache)
+    _priv[self]._cache = {}
+    _priv[self]._NIL = {}
+    return self
+end
+
+-- Comprobar argumentos de los distintos métodos de GestionCache
+-- @param clave any Cualquier valor que vale como clave, excepto nil o NaN
+-- @param normalizar function|nil Función que realiza la normalización del valor.
+-- -- Si nil, no se realiza normalización.
+function GestionCache._comprobar_args(clave, normalizar)
+    if clave == nil or clave == NaN then
+        error("La clave debe ser un valor válido (nil o NaN inválidos)", 2)
+    end
+    if normalizar ~= nil and type(normalizar) ~= "function" then
+        error("Normalizar debe ser una función o nil si no se desea aplicar normalización", 2)
+    end
+
+    return true
+end
+
+function GestionCache:obtener_valor(clave)
+    self.comprobar_args(clave)
+
+    if _priv[self]._cache[clave] == nil then
+        return false, "No existen datos guardados para esa clave"
+    elseif _priv[self]._cache[clave] == _priv[self]._NIL then
+        return true, nil
+    else
+        return true, _priv[self]._cache[clave]
+end
+
+function GestionCache.actualizar_cache(clave, valor, normalizar, fuerza_grabar)
+    self.comprobar_args(clave, normalizar)
+
+    if fuerza_grabar or GestionCache._cache[clave] == nil then
+        valor = (normalizar and normalizar(valor)) or valor
+        GestionCache._cache[clave] = (valor == nil and GestionCache._NIL) or valor
+    end
+
+    return self:obtener_valor(clave)
+end
 
 -- Comprobar si una cadena es de tipo string y cumple condiciones.
 -- @param cadena string Cadena a comprobar
