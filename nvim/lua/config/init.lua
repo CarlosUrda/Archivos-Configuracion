@@ -5,6 +5,13 @@
 
 local M = {}
 
+local function verificar_condiciones(condiciones)
+
+
+end
+
+
+
 -- Comprobar si una cadena es de tipo string y cumple condiciones.
 -- @param cadena string Cadena a comprobar
 -- @param nil_valido boolean Si se admite el valor nil de la cadena como válido. Por defecto inválido.
@@ -13,16 +20,20 @@ local M = {}
 -- @return string|nil Cadena con los espacios eliminados en los bordes (trim), o nil
 -- @return string msg Mensaje de tipo de error
 local function comprobar_valor(valor, condiciones)
+    local TAG_TIPOS, TAG_VALIDEZ, TAG_CONDICION, TAG_DEFECTO = "tipos", "condicion", "defecto"
+
     if type(condiciones) ~= "table" then
         if condiciones == nil then
             return cadena
         end
         error("Las condiciones de validación deben de ser una tabla")
-    elseif next(condiciones) == nil
+    elseif next(condiciones) == nil then
         return cadena
+    else if condiciones[tag_tipos] = 
+
+
     end
 
-    local tag_tipos, tag_validez, tag_condicion, tag_defecto = "tipos", "condicion", "defecto"
     
 
     { validez = true, 
