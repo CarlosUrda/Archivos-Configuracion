@@ -4,21 +4,28 @@
 -- -- Este módulo permite cargar opciones y plugins específicos para un plugin dado.
 
 local M = {}
+local _NIL = {}
 
 local function normalizar_condiciones(condiciones)
 
 
 end
 
-local _priv = setmetatable({}, {__mode = "k"})
+-- Tabla para guardar datos privados
+-- -- _prv_wk es para guardar datos de cada instancia de una clase (desaparecen cuando sea la clave sea
+-- --   la ultima referencia al objeto)
+-- -- _prv se suele usar para guardar métodos privados de prototipos (clases)
+local _prv_wk = setmetatable({}, {__mode = "k"})
+local _prv = {}
 
 local GestionCache = {}
-GestionCache.__index = Cache
+GestionCache.__index = GestionCache
+_prv[GestionCache] = {}
 
 function GestionCache.new()
-    local self = setmetatable({}, Cache)
+    local self = setmetatable({}, GestionCache)
+    _priv[self] = {}
     _priv[self]._cache = {}
-    _priv[self]._NIL = {}
     return self
 end
 
@@ -26,7 +33,7 @@ end
 -- @param clave any Cualquier valor que vale como clave, excepto nil o NaN
 -- @param normalizar function|nil Función que realiza la normalización del valor.
 -- -- Si nil, no se realiza normalización.
-function GestionCache._comprobar_args(clave, normalizar)
+function _prv[GestionCache]._comprobar_args(clave, normalizar)
     if clave == nil or clave == NaN then
         error("La clave debe ser un valor válido (nil o NaN inválidos)", 2)
     end
@@ -37,15 +44,68 @@ function GestionCache._comprobar_args(clave, normalizar)
     return true
 end
 
-function GestionCache:obtener_valor(clave)
-    self.comprobar_args(clave)
-
-    if _priv[self]._cache[clave] == nil then
+function _prv[GestionCache]._obtener_valor(self, clave)
+    if _prv_wk[self]._cache[clave] == nil then
         return false, "No existen datos guardados para esa clave"
-    elseif _priv[self]._cache[clave] == _priv[self]._NIL then
+    elseif _prv_wk[self]._cache[clave] == _NIL then
         return true, nil
     else
-        return true, _priv[self]._cache[clave]
+        return true, _prv_wk[self]._cache[clave]
+    end
+end
+
+
+function GestionCache:obtener_valor(clave)
+    _prv[GestionCache]._comprobar_args(clave)
+    return _prv[GestionCache]._obtener_valor(self, clave)
+end
+
+function _prv[GestionCache]._grabar_valor(self, clave, valor, normalizar)
+    local norma = false
+
+    if normalizar then
+        ok, res = pcall(normalizar, valor)
+        if not ok then
+            return false, "Error al ejecutar la función de normalización: " .. res    
+        end
+        valor = res
+        norma = normalizar
+    end
+
+    _prv_wk[self]._cache[clave] = {norma = norma}  -- No merece la pena comparar si es nil
+    if valor == nil then
+        _prv_wk[self]._cache[clave].valor = _NIL
+        return true, nil
+    else
+        return true, _prv_wk[self]._cache[clave]
+    _prv_wk[self]._cache[clave].valor = valor
+
+
+    elseif _prv_wk[self]._cache[clave] == _NIL then
+        return true, nil
+    else
+        return true, _prv_wk[self]._cache[clave]
+    end
+end
+
+
+function GestionCache:grabar_valor(clave, normalizar, valor)
+    _prv[GestionCache]._comprobar_args(clave, normalizar)
+    return _prv[GestionCache]._grabar_valor(self, clave, normalizar, valor)
+end
+
+
+function _prv[GestionCache]._limpiar(self, clave)
+    if clave == nil then
+        _prv_wk[self]._cache = {}
+    else
+        _prv_wk[self]._cache[clave] = nil 
+end
+
+
+function GestionCache:limpiar(clave)
+    _prv[GestionCache]._comprobar_args(clave, normalizar)
+    _prv[GestionCache]._limpiar(self, clave)
 end
 
 function GestionCache.actualizar_cache(clave, valor, normalizar, fuerza_grabar)
@@ -53,7 +113,7 @@ function GestionCache.actualizar_cache(clave, valor, normalizar, fuerza_grabar)
 
     if fuerza_grabar or GestionCache._cache[clave] == nil then
         valor = (normalizar and normalizar(valor)) or valor
-        GestionCache._cache[clave] = (valor == nil and GestionCache._NIL) or valor
+        GestionCache._cache[clave] = (valor == nil and _NIL) or valor
     end
 
     return self:obtener_valor(clave)
