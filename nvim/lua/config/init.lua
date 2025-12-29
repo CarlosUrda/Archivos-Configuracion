@@ -29,37 +29,72 @@ function GestionCache.new()
     return self
 end
 
+
 -- Comprobar argumentos de los distintos métodos de GestionCache
 -- @param clave any Cualquier valor que vale como clave, excepto nil o NaN
 -- @param normalizar function|nil Función que realiza la normalización del valor.
 -- -- Si nil, no se realiza normalización.
+-- @throws table arg => mensaje de error para ese argumento.
 function _prv[GestionCache]._comprobar_args(clave, normalizar)
-    if clave == nil or clave == NaN then
-        error("La clave debe ser un valor válido (nil o NaN inválidos)", 2)
+    local info_err = {}
+    local tag_clave = "clave"
+    local tag_normalizar = "normalizar"
+
+    if clave == nil or type(clave) == "number" and clave ~= clave then
+        info_err[tag_clave] = tag_clave .. " debe ser un valor válido (nil o NaN inválidos)"
     end
     if normalizar ~= nil and type(normalizar) ~= "function" then
-        error("Normalizar debe ser una función o nil si no se desea aplicar normalización", 2)
+        info_err[tag_normalizar] = tag_normalizar .. " debe ser una función o nil si no se desea normalizar"
+    end
+
+    if next(info_err) then
+        error(info_err)
     end
 
     return true
 end
 
-function _prv[GestionCache]._obtener_valor(self, clave)
-    if _prv_wk[self]._cache[clave] == nil then
+
+-- Obtener los datos de una entrada de la caché. 
+-- ** Uso interno: no comprueba los argumentos de entrada **
+-- @param self Objeto instancia de GestionCache de cuya caché se obtiene el valor.
+-- @param any Clave usada para acceder al valor en la tabla de la caché
+-- @return boolean true si obtiene un valor de la caché. false si no existe valor para esa clave.
+-- @return any valor obtenido. Puede devolver nil como valor correcto.
+-- -- Si no obtiene valor, devuelve un mensaje de error.
+function _prv[GestionCache]._obtener_entrada(self, clave)
+    entrada = _prv_wk[self]._cache[clave] 
+
+    if entrada.dato == nil then
         return false, "No existen datos guardados para esa clave"
-    elseif _prv_wk[self]._cache[clave] == _NIL then
+    elseif entrada == _NIL then
         return true, nil
     else
-        return true, _prv_wk[self]._cache[clave]
+        return true, entrada
     end
 end
 
 
+-- Obtener el valor de una entrada de la caché. 
+-- @param self Objeto instancia de GestionCache de cuya caché se obtiene el valor.
+-- @clave any Clave usada para acceder al valor en la tabla de la caché
+-- @return boolean true si obtiene un valor de la caché. false si no existe valor para esa clave.
+-- @return any valor obtenido. Puede devolver nil como valor correcto.
+-- -- Si no obtiene valor, devuelve un mensaje de error.
+-- @throws table arg => mensaje de error para ese argumento.
 function GestionCache:obtener_valor(clave)
     _prv[GestionCache]._comprobar_args(clave)
     return _prv[GestionCache]._obtener_valor(self, clave)
 end
 
+
+-- Grabar un valor en una entrada de la caché.
+-- ** Uso interno: no comprueba los argumentos de entrada **
+-- @param self Objeto instancia de GestionCache en cuya caché se graba el valor.
+-- @param any Clave usada para asociar el valor en la tabla de la caché
+-- @param any Valor a ser guardada en la entrada de la chaché.
+-- @param nil|function Función de normalización a aplicar al valor antes de ser guardado.
+-- -- Si es nil, no se aplica normalización.
 function _prv[GestionCache]._grabar_valor(self, clave, valor, normalizar)
     local norma = false
 
