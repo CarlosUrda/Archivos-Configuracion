@@ -8,7 +8,11 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 let s:shortmess_save = &shortmess
-set shortmess+=aoO
+if &shortmess =~ 'A'
+  set shortmess=aoOA
+else
+  set shortmess=aoO
+endif
 badd +42 scripts.lua
 badd +8 ajustes.lua
 badd +9 ~/Desarrollo/Archivos-Configuracion/nvim/init.lua
@@ -21,6 +25,7 @@ badd +9 ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/init.lua
 badd +4 ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/autoload.lua
 badd +1 init_config.lua
 badd +1 8
+badd +0 init.lua
 argglobal
 %argdel
 $argadd 8
@@ -28,7 +33,7 @@ set stal=2
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
-edit init_config.lua
+edit init.lua
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -49,13 +54,13 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 210)
-exe '2resize ' . ((&lines * 46 + 28) / 56)
-exe 'vert 2resize ' . ((&columns * 104 + 105) / 210)
-exe '3resize ' . ((&lines * 6 + 28) / 56)
-exe 'vert 3resize ' . ((&columns * 104 + 105) / 210)
+exe 'vert 1resize ' . ((&columns * 113 + 113) / 227)
+exe '2resize ' . ((&lines * 28 + 29) / 59)
+exe 'vert 2resize ' . ((&columns * 113 + 113) / 227)
+exe '3resize ' . ((&lines * 27 + 29) / 59)
+exe 'vert 3resize ' . ((&columns * 113 + 113) / 227)
 argglobal
-balt ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/init.lua
+balt init_config.lua
 setlocal foldmethod=manual
 setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
 setlocal foldmarker={{{,}}}
@@ -66,12 +71,12 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 63 - ((32 * winheight(0) + 26) / 53)
+let s:l = 25 - ((12 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 63
-normal! 0
+keepjumps 25
+normal! 02|
 lcd ~/Desarrollo/Archivos-Configuracion/nvim/lua/config
 wincmd w
 argglobal
@@ -90,7 +95,7 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 23) / 46)
+let s:l = 1 - ((0 * winheight(0) + 14) / 28)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -114,19 +119,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((5 * winheight(0) + 3) / 6)
+let s:l = 28 - ((20 * winheight(0) + 13) / 27)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 29
+keepjumps 28
 normal! 0
 lcd ~/Desarrollo/Archivos-Configuracion/nvim/lua/config
 wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 210)
-exe '2resize ' . ((&lines * 46 + 28) / 56)
-exe 'vert 2resize ' . ((&columns * 104 + 105) / 210)
-exe '3resize ' . ((&lines * 6 + 28) / 56)
-exe 'vert 3resize ' . ((&columns * 104 + 105) / 210)
+exe 'vert 1resize ' . ((&columns * 113 + 113) / 227)
+exe '2resize ' . ((&lines * 28 + 29) / 59)
+exe 'vert 2resize ' . ((&columns * 113 + 113) / 227)
+exe '3resize ' . ((&lines * 27 + 29) / 59)
+exe 'vert 3resize ' . ((&columns * 113 + 113) / 227)
 tabnext
 edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lualine/opts.lua
 let s:save_splitbelow = &splitbelow
@@ -145,8 +150,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 210)
-exe 'vert 2resize ' . ((&columns * 104 + 105) / 210)
+exe 'vert 1resize ' . ((&columns * 114 + 113) / 227)
+exe 'vert 2resize ' . ((&columns * 112 + 113) / 227)
 argglobal
 balt ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/init.lua
 setlocal foldmethod=manual
@@ -159,7 +164,7 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 9 - ((8 * winheight(0) + 26) / 53)
+let s:l = 9 - ((8 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -183,7 +188,7 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 11 - ((10 * winheight(0) + 26) / 53)
+let s:l = 11 - ((10 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -191,8 +196,8 @@ keepjumps 11
 normal! 0
 lcd ~/Desarrollo/Archivos-Configuracion/nvim/lua/config
 wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 105) / 210)
-exe 'vert 2resize ' . ((&columns * 104 + 105) / 210)
+exe 'vert 1resize ' . ((&columns * 114 + 113) / 227)
+exe 'vert 2resize ' . ((&columns * 112 + 113) / 227)
 tabnext
 edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/lazy.lua
 let s:save_splitbelow = &splitbelow
@@ -211,8 +216,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 81 + 105) / 210)
-exe 'vert 2resize ' . ((&columns * 128 + 105) / 210)
+exe 'vert 1resize ' . ((&columns * 88 + 113) / 227)
+exe 'vert 2resize ' . ((&columns * 138 + 113) / 227)
 argglobal
 balt ~/Desarrollo/Archivos-Configuracion/nvim/init.lua
 setlocal foldmethod=manual
@@ -225,12 +230,12 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((28 * winheight(0) + 26) / 53)
+let s:l = 28 - ((27 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 29
-normal! 043|
+keepjumps 28
+normal! 032|
 lcd ~/Desarrollo/Archivos-Configuracion/nvim/lua/config
 wincmd w
 argglobal
@@ -249,7 +254,7 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 8 - ((7 * winheight(0) + 26) / 53)
+let s:l = 8 - ((7 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -257,9 +262,9 @@ keepjumps 8
 normal! 0
 lcd ~/Desarrollo/Archivos-Configuracion/nvim/lua/config
 wincmd w
-exe 'vert 1resize ' . ((&columns * 81 + 105) / 210)
-exe 'vert 2resize ' . ((&columns * 128 + 105) / 210)
-tabnext 3
+exe 'vert 1resize ' . ((&columns * 88 + 113) / 227)
+exe 'vert 2resize ' . ((&columns * 138 + 113) / 227)
+tabnext 1
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

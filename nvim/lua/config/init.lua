@@ -48,12 +48,24 @@ function _prv[GestionCache]._comprobar_args(clave, normalizar)
     end
 
     if next(info_err) then
-        error(info_err)
+        error(info_err, 2)
     end
 
     return true
 end
 
+function _prv[GestionCache]._comprobar_entrada(entrada)
+    if type(entrada) ~= "table" then
+        error("La entrada no es una tabla", 2)
+    elseif entrada.normalizado == nil then
+        error("El campo normalizado no existe", 2)
+    elseif type(entrada.normalizado) ~= "boolean" then 
+        error("El campo normalizado tiene un valor inválido (no es boolean)", 2)
+    elseif entrada.estado == nil then
+        error("El campo estado no existe", 2)
+    elseif type(entrada.normalizado) ~= "string" then 
+        error("El campo estado tiene un valor inválido (no es boolean)", 2)
+end
 
 -- Obtener los datos de una entrada de la caché. 
 -- ** Uso interno: no comprueba los argumentos de entrada **
@@ -65,13 +77,19 @@ end
 function _prv[GestionCache]._obtener_entrada(self, clave)
     entrada = _prv_wk[self]._cache[clave] 
 
-    if entrada.dato == nil then
-        return false, "No existen datos guardados para esa clave"
+    if entrada == nil then
+        return nil, nil, nil
+    elseif 
     elseif entrada == _NIL then
         return true, nil
     else
         return true, entrada
     end
+end
+
+function GestionCache:obtener_entrada(clave)
+    _prv[GestionCache]._comprobar_args(clave)
+    return _prv[GestionCache]._obtener_entrada(self, clave)
 end
 
 
