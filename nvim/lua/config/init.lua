@@ -6,10 +6,35 @@
 local M = {}
 local _NIL = {}
 
-local function normalizar_condiciones(condiciones)
+-- Envoltorio para ejecutar una función y relanzar una excepción con un nivel concreto desde dentro del
+-- envoltorio. Si se desea relanzar desde el caller de la función que llama al envoltorio, usar nivel 3.
+-- @param nivel number|nil Nivel usado al lanzar la excepción desde dentro del envoltorio. 
+-- -- EL valor debe ser >= 0. Si nil se toma el valor 3 por defecto.
+-- @param function Función a ejecutar
+-- @return any EL valor devuelto por la función
+-- @throws Si los argumentos no son válidos, lanza excepción nivel 2 explicando el error.
+-- @throws Excepción lanzada por la función
+local function relanzar_excep(nivel, funcion, ...)
+    if nivel == nil then
+        nivel = 3
+    elseif type(nivel) ~= "number" or nivel < 0 then
+        error("Nivel debe ser un número >= 0", 2)
+    elseif type(funcion) ~= "function" then
+        error("Funcion debe ser una función", 2)
+    end
 
+    local res = table.pack(pcall(funcion, ...))
+    if not res[1] then error(res[2], nivel) end
 
+    return table.unpack(res, 2, res.n)
 end
+
+
+local function normalizar_condiciones(condiciones)
+end
+
+
+
 
 -- Tabla para guardar datos privados
 -- -- _prv_wk es para guardar datos de cada instancia de una clase (desaparecen cuando sea la clave sea
@@ -20,6 +45,8 @@ local _prv = {}
 
 local GestionCache = {}
 GestionCache.__index = GestionCache
+GestionCache.DATO_VALIDO = "valido"
+GestionCache.DATO_PROCESO = "en_proceso"
 _prv[GestionCache] = {}
 
 function GestionCache.new()
@@ -54,6 +81,11 @@ function _prv[GestionCache]._comprobar_args(clave, normalizar)
     return true
 end
 
+
+-- Comprobar si una entrada de la caché es consistente y cumple las invariantes.
+-- @param entrada table Entrada de la cache
+-- @return true Si la entrada cumple las condiciones
+-- @trows Error con mensaje explicando la inconsistencia
 function _prv[GestionCache]._comprobar_entrada(entrada)
     if type(entrada) ~= "table" then
         error("La entrada no es una tabla", 2)
@@ -63,9 +95,17 @@ function _prv[GestionCache]._comprobar_entrada(entrada)
         error("El campo normalizado tiene un valor inválido (no es boolean)", 2)
     elseif entrada.estado == nil then
         error("El campo estado no existe", 2)
-    elseif type(entrada.normalizado) ~= "string" then 
-        error("El campo estado tiene un valor inválido (no es boolean)", 2)
+    elseif entrada.estado ~= GestionCache.DATO_VALIDO and
+        entrada.estado ~= GestionCache.DATO_PROCESO then 
+        error(string.format("El campo estado tiene un valor inválido: no es %s ni %s",
+            GestionCache.DATO_VALIDO, GestionCache.DATO_PROCESO, 2))
+    elseif entrada.dato == nil then
+        error("El campo dato no existe", 2)
+    end
+
+    return true
 end
+
 
 -- Obtener los datos de una entrada de la caché. 
 -- ** Uso interno: no comprueba los argumentos de entrada **
@@ -79,12 +119,15 @@ function _prv[GestionCache]._obtener_entrada(self, clave)
 
     if entrada == nil then
         return nil, nil, nil
-    elseif 
-    elseif entrada == _NIL then
-        return true, nil
-    else
-        return true, entrada
     end
+
+    relanzar_excep(3, _prv[GestionCache]._comprobar_entrada, entrada)
+
+    local dato = entrada.dato
+    if dato == _NIL then
+        dato = nil
+
+    return dato, entrada.normalizado, entrada.estado
 end
 
 function GestionCache:obtener_entrada(clave)
