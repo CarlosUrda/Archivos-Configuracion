@@ -6,15 +6,16 @@
 local M = {}
 local _NIL = {}
 
--- Envoltorio para ejecutar una función y relanzar una excepción con un nivel concreto desde dentro del
--- envoltorio. Si se desea relanzar desde el caller de la función que llama al envoltorio, usar nivel 3.
+
+-- Envoltorio para ejecutar una función y relanzar su excepción con un nivel concreto desde dentro del
+-- envoltorio. 
 -- @param nivel number|nil Nivel usado al lanzar la excepción desde dentro del envoltorio. 
 -- -- EL valor debe ser >= 0. Si nil se toma el valor 3 por defecto.
 -- @param function Función a ejecutar
 -- @return any EL valor devuelto por la función
 -- @throws Si los argumentos no son válidos, lanza excepción nivel 2 explicando el error.
--- @throws Excepción lanzada por la función
-local function relanzar_excep(nivel, funcion, ...)
+-- @throws Excepción lanzada por la función con el nivel indicado.
+local function ejecutar(nivel, funcion, ...)
     if nivel == nil then
         nivel = 3
     elseif type(nivel) ~= "number" or nivel < 0 then
@@ -28,6 +29,9 @@ local function relanzar_excep(nivel, funcion, ...)
 
     return table.unpack(res, 2, res.n)
 end
+
+
+-- Crear función formatear tabla y añadirla a la metatabla con __tostring y __concat de las tablas devueltas al lanzar error.
 
 
 local function normalizar_condiciones(condiciones)
@@ -45,14 +49,17 @@ local _prv = {}
 
 local GestionCache = {}
 GestionCache.__index = GestionCache
-GestionCache.DATO_VALIDO = "valido"
-GestionCache.DATO_PROCESO = "en_proceso"
 _prv[GestionCache] = {}
+-- Nombre de los campos estados de cada entrada de la caché que actúan como flags (boolean)
+-- normalizado: si el dato fue normalizado antes de ser grabado en la entrada de la caché.
+-- grabado: si se ha grabado algún dato en la entrada de la caché.
+-- procesando: si está en proceso de nromalización un nuevo dato aunque aún no se ha grabado.
+_prv[GestionCache].TAG_FLAGS_ENTRADA = {"normalizado", "grabado", "procesando"}
 
 function GestionCache.new()
     local self = setmetatable({}, GestionCache)
-    _priv[self] = {}
-    _priv[self]._cache = {}
+    _prv_wk[self] = {}
+    _prv_wk[self]._cache = {}
     return self
 end
 
@@ -61,17 +68,22 @@ end
 -- @param clave any Cualquier valor que vale como clave, excepto nil o NaN
 -- @param normalizar function|nil Función que realiza la normalización del valor.
 -- -- Si nil, no se realiza normalización.
--- @throws table arg => mensaje de error para ese argumento.
-function _prv[GestionCache]._comprobar_args(clave, normalizar)
+-- @throws table arg => mensaje de error 
+-- ** Porblema: hay que distinguir entre pasar nil para no comprobar ese arg o nil como valor del arg ***
+function _prv[GestionCache]._comprobar_args(clave, normalizar, espera_procesando)
     local info_err = {}
     local tag_clave = "clave"
     local tag_normalizar = "normalizar"
+    local tag_espera_procesando = "espera_procesando"
 
     if clave == nil or type(clave) == "number" and clave ~= clave then
-        info_err[tag_clave] = tag_clave .. " debe ser un valor válido (nil o NaN inválidos)"
+        info_err[tag_clave] = string.format("%s debe ser un valor válido (nil o NaN inválidos)", tag_clave)
     end
     if normalizar ~= nil and type(normalizar) ~= "function" then
-        info_err[tag_normalizar] = tag_normalizar .. " debe ser una función o nil si no se desea normalizar"
+        info_err[tag_normalizar] = string.format("%s debe ser una función o nil si no se desea normalizar", tag_normalizar)
+    end
+    if espera_procesando ~= nil and type(espera_procesando) ~= "boolean" then
+        info_err[tag_espera_procesando] = string.format("%s debe ser boolean o nil si no se desea esperar", tag_espera_procesando)
     end
 
     if next(info_err) then
@@ -85,22 +97,30 @@ end
 -- Comprobar si una entrada de la caché es consistente y cumple las invariantes.
 -- @param entrada table Entrada de la cache
 -- @return true Si la entrada cumple las condiciones
--- @trows Error con mensaje explicando la inconsistencia
+-- @throws Error con mensaje explicando la inconsistencia en la entrada.
 function _prv[GestionCache]._comprobar_entrada(entrada)
     if type(entrada) ~= "table" then
         error("La entrada no es una tabla", 2)
-    elseif entrada.normalizado == nil then
-        error("El campo normalizado no existe", 2)
-    elseif type(entrada.normalizado) ~= "boolean" then 
-        error("El campo normalizado tiene un valor inválido (no es boolean)", 2)
-    elseif entrada.estado == nil then
-        error("El campo estado no existe", 2)
-    elseif entrada.estado ~= GestionCache.DATO_VALIDO and
-        entrada.estado ~= GestionCache.DATO_PROCESO then 
-        error(string.format("El campo estado tiene un valor inválido: no es %s ni %s",
-            GestionCache.DATO_VALIDO, GestionCache.DATO_PROCESO, 2))
-    elseif entrada.dato == nil then
-        error("El campo dato no existe", 2)
+    elseif entrada.estados == nil then
+        error("La entrada no tiene información sobre su estado", 2)
+    elseif type(entrada.estados) ~= "table" then
+        error("La información de estado de la entrada no está en una tabla", 2)
+    end
+
+    for _, tag_flag in ipairs(_prv[GestionCache].TAG_FLAGS_ENTRADA) do
+        local flag = entrada.estados[tag_flag] 
+        if flag == nil then
+            error(string.format("El campo de estado %s no existe", tag_flag), 2)
+        elseif type(flag) ~= "boolean" then 
+            error(string.format("El campo de estado %s tiene tipo inválido (no es boolean)", tag_flag, 2))
+        end
+    end
+    
+    if entrada.estados["grabado"] and entrada.dato == nil then
+        error("El campo dato se ha perdido y no existe", 2)
+    end
+    if not entrada.estados["grabado"] and entrada.dato ~= nil then
+        error("El campo dato tiene contenido pero nunca se ha grabado en él.", 2)
     end
 
     return true
@@ -111,41 +131,48 @@ end
 -- ** Uso interno: no comprueba los argumentos de entrada **
 -- @param self Objeto instancia de GestionCache de cuya caché se obtiene el valor.
 -- @param any Clave usada para acceder al valor en la tabla de la caché
--- @return boolean true si obtiene un valor de la caché. false si no existe valor para esa clave.
--- @return any valor obtenido. Puede devolver nil como valor correcto.
--- -- Si no obtiene valor, devuelve un mensaje de error.
-function _prv[GestionCache]._obtener_entrada(self, clave)
-    entrada = _prv_wk[self]._cache[clave] 
+-- @param boolean espera_procesando Si existe algún dato procesando pendiente a grabar, esperar.
+-- @return any dato Dato de la entrada.
+-- @return boolean normalizado Si el dato fue normalizado al guardarlo.
+-- @return boolean procesando Si hay un nuevo dato en proceso de normalización pendiente de ser grabado
+-- @throws Error con mensaje explicando la inconsistencia en la entrada.
+function _prv[GestionCache]._obtener_entrada(self, clave, espera_procesando)
+    local entrada = _prv_wk[self]._cache[clave] 
 
     if entrada == nil then
         return nil, nil, nil
     end
 
-    relanzar_excep(3, _prv[GestionCache]._comprobar_entrada, entrada)
+    ejecutar(3, _prv[GestionCache]._comprobar_entrada, entrada)
+
+    if entrada.estados["procesando"] and espera_procesado then
+        -- AWAIT y cuando evento: flag procesando pasa a false
+
+        ejecutar(3, _prv[GestionCache]._comprobar_entrada, entrada)
+    end
+
+    if not entrada.estados["grabado"] then
+        return nil, nil, nil
+    end
 
     local dato = entrada.dato
     if dato == _NIL then
         dato = nil
 
-    return dato, entrada.normalizado, entrada.estado
+    return dato, entrada.estados["normalizado"], entrada.estados["procesando"]
 end
 
-function GestionCache:obtener_entrada(clave)
-    _prv[GestionCache]._comprobar_args(clave)
+
+-- Obtener los datos de una entrada de la caché. 
+-- @param any Clave usada para acceder al valor en la tabla de la caché
+-- @return any dato Dato de la entrada.
+-- @return boolean normalizado Si el dato fue normalizado al guardarlo.
+-- @return string estado Estado actual del dato. Si es válido o hay otro dato en proceso de normal.
+-- @throws table arg => mensaje de error 
+-- @throws Error con mensaje explicando la inconsistencia en la entrada.
+function GestionCache:obtener_entrada(clave, espera_procesando)
+    _prv[GestionCache]._comprobar_args(clave, espera_procesando)
     return _prv[GestionCache]._obtener_entrada(self, clave)
-end
-
-
--- Obtener el valor de una entrada de la caché. 
--- @param self Objeto instancia de GestionCache de cuya caché se obtiene el valor.
--- @clave any Clave usada para acceder al valor en la tabla de la caché
--- @return boolean true si obtiene un valor de la caché. false si no existe valor para esa clave.
--- @return any valor obtenido. Puede devolver nil como valor correcto.
--- -- Si no obtiene valor, devuelve un mensaje de error.
--- @throws table arg => mensaje de error para ese argumento.
-function GestionCache:obtener_valor(clave)
-    _prv[GestionCache]._comprobar_args(clave)
-    return _prv[GestionCache]._obtener_valor(self, clave)
 end
 
 
