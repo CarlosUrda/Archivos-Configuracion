@@ -23,21 +23,32 @@ local function ejecutar(nivel, funcion, ...)
     elseif type(funcion) ~= "function" then
         error("Funcion debe ser una función", 2)
     end
-
+ 
     local res = table.pack(pcall(funcion, ...))
     if not res[1] then error(res[2], nivel) end
 
     return table.unpack(res, 2, res.n)
 end
 
-
--- Crear función formatear tabla y añadirla a la metatabla con __tostring y __concat de las tablas devueltas al lanzar error.
+-- Convertir un valor a cadena de texto de forma segura.
+-- @param valor any Valor a convertir a cadena
+-- @return string Cadena resultante de la conversión, o cadena vacía si no se pudo convertir.
+local function tostring_seg(valor)
+    local ok, res = pcall(tostring, valor)
+    if not ok or type(res) ~= "string" then
+        return ""
+    end
+    return res
+end
 
 
 local function normalizar_condiciones(condiciones)
 end
 
-
+local MetaTabla = {
+    __tostring = vim.inspect, 
+    __concat = function(a, b) return tostring(a) .. tostring(b) end
+}
 
 
 -- Tabla para guardar datos privados
@@ -56,34 +67,82 @@ _prv[GestionCache] = {}
 -- procesando: si está en proceso de nromalización un nuevo dato aunque aún no se ha grabado.
 _prv[GestionCache].TAG_FLAGS_ENTRADA = {"normalizado", "grabado", "procesando"}
 
+_prv[GestionCache].VALIDACION_DEFECTO_ARGS = { 
+    clave = {
+        validar = function(v) return v ~= nil and not (type(v) == "number" and v ~= v) end,
+        msg = string.format("%s debe ser un valor válido (nil o NaN inválidos)", "clave")
+    },
+    normalizar = {
+        validar = function(v) return v == nil or type(v) == "function" end,
+        msg = string.format("%s debe ser una función, o nil si no se desea normalizar", "normalizar")
+    },
+    procesando = {
+        validar = function(v) return v == nil or type(v) == "boolean" end,
+        msg = string.format("%s debe ser boolean o nil si no se desea esperar", "espera_procesando")
+    },
+}
+
+
 function GestionCache.new()
     local self = setmetatable({}, GestionCache)
     _prv_wk[self] = {}
     _prv_wk[self]._cache = {}
+    _prv_wk[self]._num_entradas = 0
     return self
 end
 
 
 -- Comprobar argumentos de los distintos métodos de GestionCache
--- @param clave any Cualquier valor que vale como clave, excepto nil o NaN
--- @param normalizar function|nil Función que realiza la normalización del valor.
--- -- Si nil, no se realiza normalización.
+-- @param args table Tabla con los argumentos a comprobar.
+-- -- Cada entrada de la tabla es otra tabla con los siguientes campos:
+-- -- -- valor any Valor del argumento a comprobar
+-- -- -- validar function|nil Función de validación que recibe el valor y devuelve true si es válido, false si no lo es.
+-- -- -- -- Si es nil se toma la función de validación por defecto asociada al argumento.
+-- -- -- msg string|nil Mensaje de error a lanzar si el valor no es válido.
+-- -- -- -- Si es nil se toma el mensaje por defecto asociado al argumento.
+-- @return true Si todos los argumentos son válidos
 -- @throws table arg => mensaje de error 
--- ** Porblema: hay que distinguir entre pasar nil para no comprobar ese arg o nil como valor del arg ***
-function _prv[GestionCache]._comprobar_args(clave, normalizar, espera_procesando)
-    local info_err = {}
-    local tag_clave = "clave"
-    local tag_normalizar = "normalizar"
-    local tag_espera_procesando = "espera_procesando"
+function _prv[GestionCache]._validar_args(args) --clave, normalizar, espera_procesando)
+    if type(args) ~= "table" then
+        error("Los argumentos a comprobar deben estar en una tabla", 2)
+    end
 
-    if clave == nil or type(clave) == "number" and clave ~= clave then
-        info_err[tag_clave] = string.format("%s debe ser un valor válido (nil o NaN inválidos)", tag_clave)
-    end
-    if normalizar ~= nil and type(normalizar) ~= "function" then
-        info_err[tag_normalizar] = string.format("%s debe ser una función o nil si no se desea normalizar", tag_normalizar)
-    end
-    if espera_procesando ~= nil and type(espera_procesando) ~= "boolean" then
-        info_err[tag_espera_procesando] = string.format("%s debe ser boolean o nil si no se desea esperar", tag_espera_procesando)
+    local info_err = setmetatable({}, MetaTabla)
+
+    for arg, info in pairs(args) do
+        if type(info) ~= "table" then
+            error(string.format("La información del argumento %s debe ser una tabla", tostring_seg(arg)), 2)
+        end
+
+        local info_defecto = _prv[GestionCache].VALIDACION_DEFECTO_ARGS[arg]
+        local validar = info.validar
+        local msg = info.msg
+
+        if validar == nil and if info_defecto ~= nil then
+            validar = info_defecto.validar
+        end
+        if validar ~= nil and type(validar) ~= "function" then
+            error(string.format("La función de validación del argumento %s no es una función", tostring_seg(arg)), 2)
+        end
+
+        if msg == nil then 
+            if info_defecto ~= nil then
+                msg = info_defecto.msg
+            else
+                msg = string.format("El argumento %s no es válido", tostring_seg(arg))
+            end
+        end
+        if type(msg) ~= "string" then
+            local ok
+            ok, msg = pcall(tostring, msg)
+            if not ok or type(msg) ~= "string" then
+                error(string.format("El mensaje de error del argumento %s no es una cadena ni convetible a cadena", tostring_seg(arg)), 2)
+            end
+        end
+
+        if validar ~= nil and not validar(info.valor) then
+            info_err[arg] = msg
+        end
     end
 
     if next(info_err) then
