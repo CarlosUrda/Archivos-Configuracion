@@ -6,33 +6,192 @@
 local M = {}
 local _NIL = {}
 
+local _TIPO_ERR_ARG = "E_ARG"
+local _TIPO_ERR_SPEC = "E_SPEC"
+
+
+-- Copiar una tabla de forma recursiva. Uso interno (no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar
+-- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. Si nil = false
+-- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. Si nil = false
+-- @param nivel_max_copia number Nivel máximo de copia recursiva. 
+-- -- Si es 0 no se realiza copia en ningún nivel (copia superficial).
+-- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
+-- -- Si es negativo se realiza copia recursiva ilimitada.
+-- @param tablas_vistas table Tabla usada internamente para evitar ciclos en la copia recursiva.
+-- @return table Copia recursiva de la tabla. Si la entrada no es una tabla, se devuelve el valor tal cual.
+local function _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+    if type(tabla) ~= "table" then
+        return tabla
+    end
+
+    if tablas_vistas[tabla] then
+        return tablas_vistas[tabla]
+    end
+
+    local copia = {}
+    tablas_vistas[tabla] = copia
+
+    if nivel_max_copia ~= 0 then
+        if nivel_max_copia > 0 then
+            nivel_max_copia = nivel_max_copia - 1
+        end
+
+        for k, v in pairs(tabla) do
+            if copia_claves then
+                k = tablas_vistas[k] or _copiar_tabla(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+            end
+            if copia_valores then
+                v = tablas_vistas[v] or _copiar_tabla(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+            end
+
+            copia[k] = v
+        end
+    else
+        for k, v in pairs(tabla) do
+            copia[k] = v
+        end
+    end
+
+    return copia
+end
+
+-- Copiar una tabla de forma superficial (sin copia recursiva). Uso interno (no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar.
+-- @return table Copia superficial de la tabla.
+local function _copiar_tabla_shallow(tabla)
+    return _copiar_tabla(tabla, false, false, 0, {})
+end
+
+
+
+-- Copiar una tabla.
+-- @param tabla table Tabla a copiar
+-- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. nil = por defecto false.
+-- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. nil = por defecto false.
+-- @param nivel_max_copia number|nil Nivel máximo de copia recursiva. 
+-- -- Si es nil o 0 no se realiza copia en ningún nivel (copia superficial).
+-- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
+-- -- Si es negativo se realiza copia recursiva ilimitada.
+-- @return table Copia de la tabla.
+-- @throws Error si la entrada no es una tabla, o si los parámetros no son del tipo adecuado.
+local function copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia)
+    if type(tabla) ~= "table" then
+        error("La entrada no es una tabla", 2)
+    end
+
+    for nombre_arg, arg in pairs({copia_claves = copia_claves, copia_valores = copia_valores}) do
+        if arg ~= nil and type(arg) ~= "boolean" then
+            error(_hti({tipo = _TIPO_ERR_ARG, msg = string.format("El parámetro %s debe ser boolean o nil/vacío", nombre_arg)}), 2)
+        end
+    end
+
+    if nivel_max_copia == nil then
+        nivel_max_copia = 0
+    elseif type(nivel_max_copia) ~= "number" or math.floor(nivel_max_copia) ~= nivel_max_copia then
+        error(_hti({tipo = _TIPO_ERR_ARG, msg = "El parámetro nivel_max_copia debe ser un número entero"}), 2)
+    end
+
+    return _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, {})
+end
+
+
+
+-- Hacer que una tabla sea imprimible como cadena de texto. Uso interno (no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a hacer imprimible.
+-- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
+-- @param lanza_errores boolean|nil Si no se puede acceder o modificar la metatabla, indica qué debe hacer:
+-- -- Si es true lanza errores.
+-- -- Si es false/nil, devuelve la tabla sin la metatabla modificada (no imprimible)
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si no se puede
+-- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original y un mensaje de error.
+
+local function _hacer_tabla_imprimible(tabla, copia_metatabla, lanza_errores)
+    local metatabla = getmetatable(tabla) or {}
+    if type(metatabla) ~= "table" then
+        if lanza_errores then
+            error({tipo = _TIPO_ERR_ARG, msg = "No se puede acceder a la metatabla: ésta no es una tabla"}, 2)
+        else
+            return tabla, "No se puede acceder a la metatabla: ésta no es una tabla"
+        end
+    end
+
+    if copia_metatabla then
+        metatabla = _copiar_tabla_shallow(metatabla)
+    end
+
+    metatabla.__tostring = vim.inspect
+    metatabla.__concat = function(a, b) return tostring(a) .. tostring(b) end
+    local ok, err = pcall(setmetatable, tabla, metatabla)
+    if not ok then
+        if lanza_errores then
+            error({tipo = _TIPO_ERR_ARG, msg = string.format("No se puede asignar la metatabla a la tabla: %s", tostring_seg(err))}, 2)
+        else
+            return tabla, string.format("No se puede asignar la metatabla a la tabla: %s", tostring_seg(err))
+        end
+    end
+
+    return tabla
+end
+
+-- Hacer que una tabla sea imprimible como cadena de texto.
+-- @param tabla table Tabla a hacer imprimible. Debe poder modificarse su metatabla.
+-- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
+-- o no se pasa valor se toma por defecto false.
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si la tabla ya
+-- -- tenía metatabla, se le añaden los métodos __tostring y __concat, sobrescribiéndolos si ya existían.
+-- -- Si no tenía metatabla, se crea una nueva metatabla con esos métodos.
+-- @throws Error si los argumentos no son del tipo adecuado, o si no se puede asignar la metatabla a la tabla.
+local function hacer_tabla_imprimible(tabla, copia_metatabla)
+    if type(tabla) ~= "table" then
+        error({tipo = _TIPO_ERR_ARG, msg = "La entrada no es una tabla"}, 2)
+    end
+    if copia_metatabla ~= nil and type(copia_metatabla) ~= "boolean" then
+        error({tipo = _TIPO_ERR_ARG, msg = "El parámetro copia_metatabla debe ser boolean o nil/vacío"}, 2)
+    end
+
+    return _hacer_tabla_imprimible(tabla, copia_metatabla, true)
+end
+
+local _hti = _hacer_tabla_imprimible  -- Alias corto para uso interno
+
+
+-- Comprobar si un valor es de un tipo determinado.
+-- @param valor any Valor a comprobar
+-- @param tipo string Tipo esperado del valor (según devuelve type())
+-- @param nil_valido boolean|nil Indica si se admite el valor nil como válido. Por defecto inválido.
+-- @return boolean true si el valor es del tipo esperado o es nil y nil_valido es true.
+-- @throws Error si los argumentos no son del tipo adecuado.
 local function es_tipo(valor, tipo, nil_valido)
     if type(tipo) ~= "string" then
-        error("El tipo a comprobar debe ser una cadena de texto", 2)
+        error(_hti({tipo = _TIPO_ERR_ARG, msg = "El tipo a comprobar debe ser una cadena de texto"}), 2)
     end
     if nil_valido ~= nil and type(nil_valido) ~= "boolean" then
-        error("El parámetro nil_valido debe ser boolean o nil/vacío", 2)
+        error(_hti({tipo = _TIPO_ERR_ARG, msg = "El parámetro nil_valido debe ser boolean o nil/vacío"}), 2)
     end
     
     return type(valor) == tipo or (nil_valido and valor == nil)
 end
 
+local function es_tipo_valido(valor)
+    if valor == nil or type(valor) == "string" or type(valor) == "table" or type(valor) == "number" or type(valor) == "boolean" or type(valor) == "function" or type(valor) == "userdata" or type(valor) == "thread" or type(valor) == "nil" then
+        return true
+    end
 
-local _VALIDACIONES_DEFECTO_ARGS = { 
-    es_entero_positivo = {
-        validar = function(v) return type(v) == "number" and math.floor(v) == v and v >= 0, v end,
-        msg = "El argumento %s debe ser un número entero >= 0" 
-    },
-    es_funcion = {
-        validar = function(v) return type(v) == "function", v end,
-        msg = "El argumento %s debe ser una función"
-    },
-    es_funcion_nil = {
-        validar = function(v) return type(v) == "function" or v == nil, v end,
-        msg = "El argumento %s debe ser una función o nil"
-    },
-}
-
+local function _validar_spec(spec)
+    if type(spec) ~= "table" then
+        error(_hti({tipo = _TIPO_ERR_SPEC, msg = "La especificación de variable debe ser una tabla"}), 3)
+    end
+    if type(spec.nombre) ~= "string" then
+        error(_hti({tipo = _TIPO_ERR_SPEC, "El nombre de la variable en la especificación debe ser una cadena de texto"}), 3)
+    end
+    if spec.tipos_validos ~= nil and type(spec.tipos_validos) ~= "table" and type(spec.tipos_validos) ~= "string" then
+        error(_hti({tipo = _TIPO_ERR_SPEC, msg = "Los tipos válidos en la especificación deben ser una tabla o una cadena de texto"}), 3)
+    end   
+    if spec.msg ~= nil and type(spec.msg) ~= "string" then
+        error(_hti({tipo = _TIPO_ERR_SPEC, msg = "El mensaje de error en la especificación debe ser una cadena de texto o nil"}), 3)
+    end
+ end
 
 -- Validar argumentos de los distintos métodos de GestionCache
 -- @param args table Tabla con los argumentos a comprobar.
@@ -54,7 +213,8 @@ local _VALIDACIONES_DEFECTO_ARGS = {
 -- -- el valor de un argumento, devuelve el valor original. 
 -- @throws table arg => mensaje de error de validación.
 -- @throws Error con mensaje explicando la inconsistencia en la entrada.
-local function validar(args, validaciones_defecto)
+local function validar(spec)
+    _validar_spec_arg(spec_arg)
     if type(args) ~= "table" then
         error("Los argumentos a comprobar deben estar en una tabla", 2)
     end
@@ -110,6 +270,10 @@ local function validar(args, validaciones_defecto)
     end
 
     return res_args
+end
+
+
+local function normalizar_condiciones(condiciones)
 end
 
 
@@ -195,119 +359,6 @@ local function tostring_seg(valor, es_seguro, nivel_error, msg_error)
     return res
 end
 
-
--- Copiar una tabla de forma recursiva. Uso interno (no comprueba consistencia de argumentos).
--- @param tabla table Tabla a copiar
--- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. Si nil = false
--- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. Si nil = false
--- @param nivel_max_copia number Nivel máximo de copia recursiva. 
--- -- Si es 0 no se realiza copia en ningún nivel (copia superficial).
--- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
--- -- Si es negativo se realiza copia recursiva ilimitada.
--- @param tablas_vistas table Tabla usada internamente para evitar ciclos en la copia recursiva.
--- @return table Copia recursiva de la tabla. Si la entrada no es una tabla, se devuelve el valor tal cual.
-local _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
-    if type(tabla) ~= "table" then
-        return tabla
-    end
-
-    if tablas_vistas[tabla] then
-        return tablas_vistas[tabla]
-    end
-
-    local copia = {}
-    tablas_vistas[tabla] = copia
-
-    if nivel_max_copia ~= 0 then
-        if nivel_max_copia > 0 then
-            nivel_max_copia = nivel_max_copia - 1
-
-        for k, v in pairs(tabla) do
-            if copia_claves then
-                k = tablas_vistas[k] or _copiar_tabla(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
-            end
-            if copia_valores then
-                v = tablas_vistas[v] or _copiar_tabla(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
-            end
-
-            copia[k] = v
-        end
-    else
-        for k, v in pairs(tabla) do
-            copia[k] = v
-        end
-    end
-
-    return copia
-end
-
--- Copiar una tabla.
--- @param tabla table Tabla a copiar
--- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. nil = por defecto false.
--- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. nil = por defecto false.
--- @param nivel_max_copia number|nil Nivel máximo de copia recursiva. 
--- -- Si es nil o 0 no se realiza copia en ningún nivel (copia superficial).
--- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
--- -- Si es negativo se realiza copia recursiva ilimitada.
--- @return table Copia de la tabla.
--- @throws Error si la entrada no es una tabla, o si los parámetros no son del tipo adecuado.
-local function copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia)
-    if type(tabla) ~= "table" then
-        error("La entrada no es una tabla", 2)
-    end
-
-    for nombre_arg, arg in pairs({copia_claves = copia_claves, copia_valores = copia_valores}) do
-        if arg ~= nil and type(arg) ~= "boolean" then
-            error(string.format("El parámetro %s debe ser boolean o nil/vacío", nombre_arg), 2)
-        end
-    end
-
-    if nivel_max_copia == nil then
-        nivel_max_copia = 0
-    elseif type(nivel_max_copia) ~= "number" or math.floor(nivel_max_copia) ~= nivel_max_copia then
-        error("El parámetro nivel_max_copia debe ser un número entero", 2)
-    end
-
-    return _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, {})
-end
-
-
-local function normalizar_condiciones(condiciones)
-end
-
--- Hacer que una tabla sea imprimible como cadena de texto.
--- @param tabla table Tabla a hacer imprimible.
--- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
--- o no se pasa valor se toma por defecto false.
--- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si la tabla ya
--- -- tenía metatabla, se le añaden los métodos __tostring y __concat, sobrescribiéndolos si ya existían.
--- @throws Error si la entrada no es una tabla
-local function hacer_tabla_imprimible(tabla, copia_metatabla)
-    if type(tabla) ~= "table" then
-        error("La entrada no es una tabla", 2)
-    end
-    if copia_metatabla ~= nil and type(copia_metatabla) ~= "boolean" then
-        error("El parámetro copia_metatabla debe ser boolean o nil/vacío", 2)
-    end
-
-    local metatabla = getmetatable(tabla) or {}
-    if type(metatabla) ~= "table" then
-        error("No se puede acceder a la metatabla: no es una tabla", 2)
-    end
-
-    if copia_metatabla then
-        metatabla = copiar_tabla(metatabla)
-    end
-
-    metatabla.__tostring = vim.inspect
-    metatabla.__concat = function(a, b) return tostring(a) .. tostring(b) end
-    local ok, res = pcall(setmetatable, tabla, metatabla)
-    if not ok then
-        error("No se pudo asignar la metatabla a la tabla: " .. tostring_seg(res), 2)
-    end
-
-    return res
-end
 
 
 -- Tabla para guardar datos privados
