@@ -6,6 +6,158 @@
 local M = {}
 local _NIL = {}
 
+local function es_tipo(valor, tipo, nil_valido)
+    if type(tipo) ~= "string" then
+        error("El tipo a comprobar debe ser una cadena de texto", 2)
+    end
+    if nil_valido ~= nil and type(nil_valido) ~= "boolean" then
+        error("El parámetro nil_valido debe ser boolean o nil/vacío", 2)
+    end
+    
+    return type(valor) == tipo or (nil_valido and valor == nil)
+end
+
+
+local _VALIDACIONES_DEFECTO_ARGS = { 
+    es_entero_positivo = {
+        validar = function(v) return type(v) == "number" and math.floor(v) == v and v >= 0, v end,
+        msg = "El argumento %s debe ser un número entero >= 0" 
+    },
+    es_funcion = {
+        validar = function(v) return type(v) == "function", v end,
+        msg = "El argumento %s debe ser una función"
+    },
+    es_funcion_nil = {
+        validar = function(v) return type(v) == "function" or v == nil, v end,
+        msg = "El argumento %s debe ser una función o nil"
+    },
+}
+
+
+-- Validar argumentos de los distintos métodos de GestionCache
+-- @param args table Tabla con los argumentos a comprobar.
+-- -- Cada entrada de la tabla es una clave nombre argumento cuyo valor es otra tabla con los siguientes campos:
+-- -- -- valor any Valor del argumento a comprobar. Si no existe el campo valor, se toma nil.
+-- -- -- regla string|nil Nombre de la regla de validación por defecto a usar.
+-- -- -- validar function|nil Función de validación que recibe el valor y devuelve dos valores:
+-- -- -- -- -- boolean: true si es válido, false si no lo es.
+-- -- -- -- -- any valor transformado del valor original (si no se transforma, se devuelve el valor original).
+-- -- -- -- Si es nil se toma la función de validación por defecto de la regla asociada al argumento.
+-- -- -- -- Si no existe la regla o no se encuentra, no se realiza validación.
+-- -- -- msg string|nil Mensaje de error a lanzar si el valor no es válido.
+-- -- -- -- Si es nil se toma el mensaje por defecto asociado al argumento.
+-- -- -- -- Si no existe la regla o no se encuentra, se toma un mensaje genérico.
+-- @param validaciones_defecto table|nil Tabla con las validaciones por defecto a usar si no se especifican en args.
+-- -- No se comprueba su consistencia, se asume que ya fue verificada previamente porque si no sería redundante
+-- -- estar comprobandola cada vez que se validan argumentos.
+-- @return table Tabla con los valores transformados de cada argumento tras ser validados. Si no se transforma 
+-- -- el valor de un argumento, devuelve el valor original. 
+-- @throws table arg => mensaje de error de validación.
+-- @throws Error con mensaje explicando la inconsistencia en la entrada.
+local function validar(args, validaciones_defecto)
+    if type(args) ~= "table" then
+        error("Los argumentos a comprobar deben estar en una tabla", 2)
+    end
+    if validaciones_defecto == nil then
+        validaciones_defecto = _VALIDACIONES_DEFECTO_ARGS
+    end
+
+    local err_args = hacer_tabla_imprimible({}) 
+    local res_args = {}
+
+    for arg, validacion in pairs(args) do
+        if type(validacion) ~= "table" then
+            error(string.format("La información del argumento %s debe ser una tabla", tostring_seg(arg)), 2)
+        end
+
+        local validacion_defecto = nil
+        if validacion.regla ~= nil then
+            validacion_defecto = validaciones_defecto[validacion.regla]
+        end
+        local validar = validacion.validar
+        local msg = validacion.msg
+
+        if validar == nil then
+            if validacion_defecto ~= nil then
+                validar = validacion_defecto.validar
+            end
+        elseif type(validar) ~= "function" then
+            error(string.format("La función de validación del argumento %s no es una función", tostring_seg(arg)), 2)
+        end
+
+        if msg == nil then 
+            msg = validacion_defecto and validacion_defecto.msg or "El argumento %s no es válido"
+        elseif type(msg) ~= "string" then
+            local ok
+            ok, msg = pcall(tostring, msg)
+            if not ok or type(msg) ~= "string" then
+                error(string.format("El mensaje de error del argumento %s no es una cadena ni convetible a cadena", tostring_seg(arg)), 2)
+            end
+        end
+
+        if validar ~= nil then 
+            local ok, res = validar(validacion.valor)
+            if not ok then
+                err_args[arg] = string.format(msg, tostring_seg(arg))
+            else
+                res_args[arg] = res
+            end
+        end
+    end
+
+    if next(err_args) then
+        error(err_args, 2)
+    end
+
+    return res_args
+end
+
+
+-- Verificar las reglas de validaciones por defecto de los argumentos.
+-- @param validaciones_defecto table Tabla con las validaciones por defecto a comprobar.
+-- -- Cada entrada de la tabla es una clave regla cuyo valor es otra tabla con los campos:
+-- -- -- validar function Función de validación que recibe el valor y devuelve dos valores:
+-- -- -- -- -- boolean: true si es válido, false si no lo es.
+-- -- -- -- -- any valor transformado del valor original (si no se transforma, se devuelve el valor original).
+-- -- -- msg string Mensaje de error a lanzar si el valor no es válido. Usar %s para incluir el nombre del argumento.
+-- @return true Si todas las validaciones por defecto están bien definidas.
+-- @throws Error con mensaje explicando la inconsistencia en la entrada.
+function _verificar_validaciones_defecto_args(validaciones_defecto)
+    if type(validaciones_defecto) ~= "table" then
+        error("Las reglas de validaciones por defecto de los argumentos deben estar en una tabla", 2)
+    end
+
+    for regla, validacion_defecto in pairs(validaciones_defecto) do
+        if type(validacion_defecto) ~= "table" then
+            error(string.format("La validación por defecto de la regla %s debe estar una tabla", tostring_seg(regla)), 2)
+        end
+
+        local validar = validación_defecto.validar
+        local msg = validación_defecto.msg
+
+        if type(validar) ~= "function" then
+            error(string.format("La función de validación por defecto de la regla %s no es una función", tostring_seg(regla)), 2)
+        end
+
+        if type(msg) ~= "string" then
+            if msg == nil then
+                error(string.format("El mensaje de error por defecto de la regla %s no está definido", tostring_seg(regla)), 2)
+            end
+            local ok, res = pcall(tostring, msg)
+            if not ok or type(res) ~= "string" then
+                error(string.format("El mensaje de error por defecto de la regla %s no es una cadena ni convetible a cadena", tostring_seg(regla)), 2)
+            end
+        end
+    end
+
+    return true
+end
+
+
+
+
+_verificar_validaciones_defecto_args(_VALIDACIONES_DEFECTO_ARGS)
+
 
 -- Envoltorio para ejecutar una función y relanzar su excepción con un nivel concreto desde dentro del
 -- envoltorio. 
@@ -18,10 +170,9 @@ local _NIL = {}
 local function ejecutar(nivel, funcion, ...)
     if nivel == nil then
         nivel = 3
-    elseif type(nivel) ~= "number" or nivel < 0 then
-        error("Nivel debe ser un número >= 0", 2)
-    elseif type(funcion) ~= "function" then
-        error("Funcion debe ser una función", 2)
+    else
+        _validar_args({ nivel = { valor = nivel, regla = "entero_positivo" }, 
+                        funcion = { valor = funcion, regla = "funcion" } })
     end
  
     local res = table.pack(pcall(funcion, ...))
@@ -30,25 +181,133 @@ local function ejecutar(nivel, funcion, ...)
     return table.unpack(res, 2, res.n)
 end
 
+
+local function hacer_constante_tabla(tabla)
 -- Convertir un valor a cadena de texto de forma segura.
 -- @param valor any Valor a convertir a cadena
 -- @return string Cadena resultante de la conversión, o cadena vacía si no se pudo convertir.
-local function tostring_seg(valor)
+local function tostring_seg(valor, es_seguro, nivel_error, msg_error)
     local ok, res = pcall(tostring, valor)
     if not ok or type(res) ~= "string" then
+        if 
         return ""
     end
     return res
 end
 
 
+-- Copiar una tabla de forma recursiva. Uso interno (no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar
+-- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. Si nil = false
+-- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. Si nil = false
+-- @param nivel_max_copia number Nivel máximo de copia recursiva. 
+-- -- Si es 0 no se realiza copia en ningún nivel (copia superficial).
+-- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
+-- -- Si es negativo se realiza copia recursiva ilimitada.
+-- @param tablas_vistas table Tabla usada internamente para evitar ciclos en la copia recursiva.
+-- @return table Copia recursiva de la tabla. Si la entrada no es una tabla, se devuelve el valor tal cual.
+local _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+    if type(tabla) ~= "table" then
+        return tabla
+    end
+
+    if tablas_vistas[tabla] then
+        return tablas_vistas[tabla]
+    end
+
+    local copia = {}
+    tablas_vistas[tabla] = copia
+
+    if nivel_max_copia ~= 0 then
+        if nivel_max_copia > 0 then
+            nivel_max_copia = nivel_max_copia - 1
+
+        for k, v in pairs(tabla) do
+            if copia_claves then
+                k = tablas_vistas[k] or _copiar_tabla(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+            end
+            if copia_valores then
+                v = tablas_vistas[v] or _copiar_tabla(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+            end
+
+            copia[k] = v
+        end
+    else
+        for k, v in pairs(tabla) do
+            copia[k] = v
+        end
+    end
+
+    return copia
+end
+
+-- Copiar una tabla.
+-- @param tabla table Tabla a copiar
+-- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. nil = por defecto false.
+-- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. nil = por defecto false.
+-- @param nivel_max_copia number|nil Nivel máximo de copia recursiva. 
+-- -- Si es nil o 0 no se realiza copia en ningún nivel (copia superficial).
+-- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
+-- -- Si es negativo se realiza copia recursiva ilimitada.
+-- @return table Copia de la tabla.
+-- @throws Error si la entrada no es una tabla, o si los parámetros no son del tipo adecuado.
+local function copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia)
+    if type(tabla) ~= "table" then
+        error("La entrada no es una tabla", 2)
+    end
+
+    for nombre_arg, arg in pairs({copia_claves = copia_claves, copia_valores = copia_valores}) do
+        if arg ~= nil and type(arg) ~= "boolean" then
+            error(string.format("El parámetro %s debe ser boolean o nil/vacío", nombre_arg), 2)
+        end
+    end
+
+    if nivel_max_copia == nil then
+        nivel_max_copia = 0
+    elseif type(nivel_max_copia) ~= "number" or math.floor(nivel_max_copia) ~= nivel_max_copia then
+        error("El parámetro nivel_max_copia debe ser un número entero", 2)
+    end
+
+    return _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, {})
+end
+
+
 local function normalizar_condiciones(condiciones)
 end
 
-local MetaTabla = {
-    __tostring = vim.inspect, 
-    __concat = function(a, b) return tostring(a) .. tostring(b) end
-}
+-- Hacer que una tabla sea imprimible como cadena de texto.
+-- @param tabla table Tabla a hacer imprimible.
+-- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
+-- o no se pasa valor se toma por defecto false.
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si la tabla ya
+-- -- tenía metatabla, se le añaden los métodos __tostring y __concat, sobrescribiéndolos si ya existían.
+-- @throws Error si la entrada no es una tabla
+local function hacer_tabla_imprimible(tabla, copia_metatabla)
+    if type(tabla) ~= "table" then
+        error("La entrada no es una tabla", 2)
+    end
+    if copia_metatabla ~= nil and type(copia_metatabla) ~= "boolean" then
+        error("El parámetro copia_metatabla debe ser boolean o nil/vacío", 2)
+    end
+
+    local metatabla = getmetatable(tabla) or {}
+    if type(metatabla) ~= "table" then
+        error("No se puede acceder a la metatabla: no es una tabla", 2)
+    end
+
+    if copia_metatabla then
+        metatabla = copiar_tabla(metatabla)
+    end
+
+    metatabla.__tostring = vim.inspect
+    metatabla.__concat = function(a, b) return tostring(a) .. tostring(b) end
+    local ok, res = pcall(setmetatable, tabla, metatabla)
+    if not ok then
+        error("No se pudo asignar la metatabla a la tabla: " .. tostring_seg(res), 2)
+    end
+
+    return res
+end
 
 
 -- Tabla para guardar datos privados
@@ -67,22 +326,27 @@ _prv[GestionCache] = {}
 -- procesando: si está en proceso de nromalización un nuevo dato aunque aún no se ha grabado.
 _prv[GestionCache].TAG_FLAGS_ENTRADA = {"normalizado", "grabado", "procesando"}
 
-_prv[GestionCache].VALIDACION_DEFECTO_ARGS = { 
+_prv[GestionCache]._VALIDACIONES_DEFECTO_ARGS = { 
     clave = {
         validar = function(v) return v ~= nil and not (type(v) == "number" and v ~= v) end,
-        msg = string.format("%s debe ser un valor válido (nil o NaN inválidos)", "clave")
+        msg = "%s debe ser un valor válido (nil o NaN inválidos)"
     },
     normalizar = {
         validar = function(v) return v == nil or type(v) == "function" end,
-        msg = string.format("%s debe ser una función, o nil si no se desea normalizar", "normalizar")
+        msg = "%s debe ser una función, o nil si no se desea normalizar"
     },
     procesando = {
         validar = function(v) return v == nil or type(v) == "boolean" end,
-        msg = string.format("%s debe ser boolean o nil si no se desea esperar", "espera_procesando")
+        msg = "%s debe ser boolean o nil si no se desea esperar"
     },
 }
 
 
+_verificar_validaciones_defecto_args(_prv[GestionCache]._VALIDACIONES_DEFECTO_ARGS)
+
+
+-- Crear una nueva instancia de Gestión de Caché.
+-- @return table Instancia de Gestión de Caché.
 function GestionCache.new()
     local self = setmetatable({}, GestionCache)
     _prv_wk[self] = {}
@@ -92,65 +356,6 @@ function GestionCache.new()
 end
 
 
--- Comprobar argumentos de los distintos métodos de GestionCache
--- @param args table Tabla con los argumentos a comprobar.
--- -- Cada entrada de la tabla es otra tabla con los siguientes campos:
--- -- -- valor any Valor del argumento a comprobar
--- -- -- validar function|nil Función de validación que recibe el valor y devuelve true si es válido, false si no lo es.
--- -- -- -- Si es nil se toma la función de validación por defecto asociada al argumento.
--- -- -- msg string|nil Mensaje de error a lanzar si el valor no es válido.
--- -- -- -- Si es nil se toma el mensaje por defecto asociado al argumento.
--- @return true Si todos los argumentos son válidos
--- @throws table arg => mensaje de error 
-function _prv[GestionCache]._validar_args(args) --clave, normalizar, espera_procesando)
-    if type(args) ~= "table" then
-        error("Los argumentos a comprobar deben estar en una tabla", 2)
-    end
-
-    local info_err = setmetatable({}, MetaTabla)
-
-    for arg, info in pairs(args) do
-        if type(info) ~= "table" then
-            error(string.format("La información del argumento %s debe ser una tabla", tostring_seg(arg)), 2)
-        end
-
-        local info_defecto = _prv[GestionCache].VALIDACION_DEFECTO_ARGS[arg]
-        local validar = info.validar
-        local msg = info.msg
-
-        if validar == nil and if info_defecto ~= nil then
-            validar = info_defecto.validar
-        end
-        if validar ~= nil and type(validar) ~= "function" then
-            error(string.format("La función de validación del argumento %s no es una función", tostring_seg(arg)), 2)
-        end
-
-        if msg == nil then 
-            if info_defecto ~= nil then
-                msg = info_defecto.msg
-            else
-                msg = string.format("El argumento %s no es válido", tostring_seg(arg))
-            end
-        end
-        if type(msg) ~= "string" then
-            local ok
-            ok, msg = pcall(tostring, msg)
-            if not ok or type(msg) ~= "string" then
-                error(string.format("El mensaje de error del argumento %s no es una cadena ni convetible a cadena", tostring_seg(arg)), 2)
-            end
-        end
-
-        if validar ~= nil and not validar(info.valor) then
-            info_err[arg] = msg
-        end
-    end
-
-    if next(info_err) then
-        error(info_err, 2)
-    end
-
-    return true
-end
 
 
 -- Comprobar si una entrada de la caché es consistente y cumple las invariantes.
