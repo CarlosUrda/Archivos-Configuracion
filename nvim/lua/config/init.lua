@@ -6,8 +6,9 @@
 local M = {}
 local _NIL = {}
 
-local _TIPO_ERR_ARG = "E_ARG"
-local _TIPO_ERR_SPEC = "E_SPEC"
+local _TIPO_ERR_ARG   = "E_ARG"
+local _TIPO_ERR_SPEC  = "E_SPEC"
+local _TIPO_ERR_VALUE = "E_VALUE"
 
 
 -- Copiar una tabla de forma recursiva. Uso interno (no comprueba consistencia de argumentos).
@@ -153,7 +154,13 @@ local function hacer_tabla_imprimible(tabla, copia_metatabla)
     return _hacer_tabla_imprimible(tabla, copia_metatabla, true)
 end
 
-local _hti = _hacer_tabla_imprimible  -- Alias corto para uso interno
+-- Versión rápida de hacer_tabla_imprimible sin copia de metatabla y sin lanzar errores. Uso interno.
+-- @param tabla table Tabla a hacer imprimible.
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si no se puede
+-- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original.
+local function _hti(tabla) 
+    return _hacer_tabla_imprimible(tabla, false, false)
+end
 
 
 -- Comprobar si un valor es de un tipo determinado.
@@ -173,48 +180,163 @@ local function es_tipo(valor, tipo, nil_valido)
     return type(valor) == tipo or (nil_valido and valor == nil)
 end
 
-local function es_tipo_valido(valor)
-    if valor == nil or type(valor) == "string" or type(valor) == "table" or type(valor) == "number" or type(valor) == "boolean" or type(valor) == "function" or type(valor) == "userdata" or type(valor) == "thread" or type(valor) == "nil" then
-        return true
-    end
 
+-- Comprobar si el nombre de un tipo es válido (uno de los tipos existentes)
+-- @param tipo string Nombre del tipo a comprobar.
+-- @return boolean true si el nombre del tipo es válido.
+local function nombre_tipo_valido(tipo)
+    return tipo == "nil" or tipo == "string" or tipo == "table" or tipo == "number" or tipo == "boolean" or tipo == "function" or 
+        tipo == "userdata" or tipo == "thread"
+end
+
+
+-- Validar la especificación con la información de una varible en la función validar.
+-- @param spec table Especificación de la variable a validar.
+-- @throws Error con mensaje explicando la inconsistencia en la especificación.
 local function _validar_spec(spec)
     if type(spec) ~= "table" then
         error(_hti({tipo = _TIPO_ERR_SPEC, msg = "La especificación de variable debe ser una tabla"}), 3)
     end
     if type(spec.nombre) ~= "string" then
-        error(_hti({tipo = _TIPO_ERR_SPEC, "El nombre de la variable en la especificación debe ser una cadena de texto"}), 3)
+        error(_hti({tipo = _TIPO_ERR_SPEC, msg = "El nombre de la variable en la especificación debe ser una cadena de texto"}), 3)
     end
-    if spec.tipos_validos ~= nil and type(spec.tipos_validos) ~= "table" and type(spec.tipos_validos) ~= "string" then
-        error(_hti({tipo = _TIPO_ERR_SPEC, msg = "Los tipos válidos en la especificación deben ser una tabla o una cadena de texto"}), 3)
-    end   
+    for _, campo_tipos in ipairs({"tipo_valido", "tipo_filtro"}) do
+        if type(spec[campo_tipos]) == "table" then
+            for _, tipo in ipairs(spec[campo_tipos]) do
+                if not nombre_tipo_valido(tipo) then
+                    error(_hti({tipo = _TIPO_ERR_SPEC, msg = string.format("El tipo %s dentro de %s en la especificación no es un tipo reconocido", tostring_seg(tipo), campo_tipos)}), 3)
+                end
+            end
+        elseif spec[campo_tipos] ~= nil and not nombre_tipo_valido(spec[campo_tipos]) then
+            error(_hti({tipo = _TIPO_ERR_SPEC, msg = string.format("El campo %s en la especificación no es un tipo reconocido o una tabla de tipos", campo_tipos)}), 3)
+        end   
+    end
+    for _, campo_funciones in ipairs({"pre_procesar", "post_procesar", "validar"}) do
+        if type(spec[campo_funciones]) == "table" then
+            for _, func in ipairs(spec[campo_funciones]) do
+                if type(func) ~= "function" then
+                    error(_hti({tipo = _TIPO_ERR_SPEC, msg = string.format("El campo %s en la especificación contiene un valor que no es una función", campo_funciones)}), 3)
+                end
+            end
+        elseif spec[campo_funciones] ~= nil and type(spec[campo_funciones]) ~= "function" then
+            error(_hti({tipo = _TIPO_ERR_SPEC, msg = string.format("El campo %s en la especificación no es una función ni una tabla de funciones", campo_funciones)}), 3)
+        end
+    end
     if spec.msg ~= nil and type(spec.msg) ~= "string" then
         error(_hti({tipo = _TIPO_ERR_SPEC, msg = "El mensaje de error en la especificación debe ser una cadena de texto o nil"}), 3)
     end
+
+    return true
  end
 
--- Validar argumentos de los distintos métodos de GestionCache
--- @param args table Tabla con los argumentos a comprobar.
--- -- Cada entrada de la tabla es una clave nombre argumento cuyo valor es otra tabla con los siguientes campos:
--- -- -- valor any Valor del argumento a comprobar. Si no existe el campo valor, se toma nil.
--- -- -- regla string|nil Nombre de la regla de validación por defecto a usar.
--- -- -- validar function|nil Función de validación que recibe el valor y devuelve dos valores:
--- -- -- -- -- boolean: true si es válido, false si no lo es.
--- -- -- -- -- any valor transformado del valor original (si no se transforma, se devuelve el valor original).
--- -- -- -- Si es nil se toma la función de validación por defecto de la regla asociada al argumento.
--- -- -- -- Si no existe la regla o no se encuentra, no se realiza validación.
--- -- -- msg string|nil Mensaje de error a lanzar si el valor no es válido.
--- -- -- -- Si es nil se toma el mensaje por defecto asociado al argumento.
--- -- -- -- Si no existe la regla o no se encuentra, se toma un mensaje genérico.
--- @param validaciones_defecto table|nil Tabla con las validaciones por defecto a usar si no se especifican en args.
--- -- No se comprueba su consistencia, se asume que ya fue verificada previamente porque si no sería redundante
--- -- estar comprobandola cada vez que se validan argumentos.
--- @return table Tabla con los valores transformados de cada argumento tras ser validados. Si no se transforma 
--- -- el valor de un argumento, devuelve el valor original. 
--- @throws table arg => mensaje de error de validación.
--- @throws Error con mensaje explicando la inconsistencia en la entrada.
+
+-- Validar y procesar el valor de una variable.
+-- @param spec table Tabla con la especificación de la variable a validar. Los campos de la especificación son:
+-- -- nombre string Nombre de la variable a validar. Obligatorio.
+-- -- valor any Valor de la variable a validar. Si no está presente o es nil, el valor a validar es nil.
+-- Los siguientes campos son todos opcionales y el orden en que se ejecutan las fases es el siguiente: 
+-- pre_procesar => tipo_valido => tipo_filtro => validar => post_procesar:
+--                             ↑___________________↑
+-- Fase de pre-procesado:
+-- -- pre_procesar function|table|nil Función o tabla de funciones que reciben el valor y devuelven el valor transformado que será usado
+-- -- -- en las siguientes fases de validación. Si es tabla ordenada se aplica el pipeline de funciones en orden. En caso de algún problema
+-- -- -- la función debe lanzar una excepción y se consideraría que el valor no pasa la validación. Si es nil no se realiza esta fase.
+-- Fase de validación:
+-- -- tipo_valido string|table|nil Tipos que validan directamente. Puede ser un solo tipo (string) o una tabla de tipos (table). 
+-- -- -- Si el tipo del valor está incluid en tipo_valido, el valor pasa directamente a fase de post-procesado sin validar más. 
+-- -- -- Si el tipo del valor no está incluido en tipo_valido, se pasa a la siguiente fase de validación (tipo_filtro).
+-- -- -- Si es nil se ignora esta comprobación y pasa a tipo_filtro.
+-- -- tipo_filtro string|table|nil Tipos que permiten entrar a validar. Puede ser un solo tipo (string) o una tabla de tipos (table). 
+-- -- -- Si el tipo del valor es uno de tipo_filtro, el valor pasa a la siguiente fase de validar.
+-- -- -- Si el tipo del valor no es ninguno de tipo_filtro, se lanza error de validación desechando el valor como no validado.
+-- -- -- Si es nil se ignora esta comprobación y se pasa a validar.
+-- -- validar function|table|nil Función o tabla de funciones que reciben el valor y devuelven dos valores:
+-- -- -- -- boolean: true si es válido, false si no lo es.
+-- -- -- -- string: mensaje de error en caso de no ser válido.
+-- -- -- Si es tabla ordenada se aplica un OR de las funciones en orden. Si alguna devuelve true se considera valor válido y pasa
+-- -- -- -- directamente a la fase de post-procesado.
+-- -- -- Si todas las funciones devuelven false (ninguna pasa la validación), se lanza error desechando el valor como no validado.
+-- -- -- Si es nil se considera valor válido y pasa directamente a post-procesado.
+-- Fase de post-procesado:
+-- -- post_procesar function|table|nil Función o tabla de funciones que reciben el valor y devuelven el valor transformado.
+-- -- -- Si es tabla ordenada se aplica el pipeline de funciones en orden. En caso de algún problema la función debe lanzar un error
+-- -- -- y se consideraría que el valor no pasa la validación. Si es nil no se realiza esta fase.
+-- @return any Valor validado y procesado.
+-- @throws table {tipo=string, msg=string}
+-- -- tipo string Tipo de error: 
+-- -- -- E_VALUE para errores en la validación o procesamiento del valor.
+-- -- -- E_SPEC error por incumplimiento de contrato en la especificación.
 local function validar(spec)
-    _validar_spec_arg(spec_arg)
+    _validar_spec(spec)
+
+    local valor = spec.valor
+    local nombre = spec.nombre
+    local msg = spec.msg and spec.msg .. ": " or ""
+
+    local pre_procesar = type(spec.pre_procesar) == "function" and { spec.pre_procesar } or spec.pre_procesar or {}
+    for _, pre_func in ipairs(pre_procesar) do
+        local ok, res = pcall(pre_func, valor)
+        if not ok then
+            error(_hti({tipo = _TIPO_ERR_VALUE, msg = string.format("%sError en pre_procesar de %s: %s", msg, nombre, tostring_seg(res))}), 2)
+        end
+        valor = res
+    end
+
+    local validado = false 
+
+    local tipo_valido = type(spec.tipo_valido) == "string" and { spec.tipo_valido } or spec.tipo_valido or {}
+    for _, tipo in ipairs(tipo_valido) do
+        if type(valor) == tipo then
+            validado = true
+            break
+        end
+    end
+
+    if not validado then
+        local filtrado = spec.tipo_filtro == nil
+
+        local tipo_filtro = type(spec.tipo_filtro) == "string" and { spec.tipo_filtro } or spec.tipo_filtro or {}
+        for _, tipo in ipairs(tipo_filtro) do
+            if type(valor) == tipo then
+                filtrado = true
+                break
+            end
+        end
+
+        if not filtrado then
+            error(_hti({tipo = _TIPO_ERR_VALUE, msg = string.format("%sEl tipo del valor de %s no está incluido en tipo_filtro", msg, nombre)}), 2)
+        end
+
+        local validar = type(spec.validar) == "string" and { spec.validar } or spec.validar or {}
+        for _, valid_func in ipairs(validar) do
+            local ok, res, err = pcall(valid_func, valor)
+            if not ok then
+                error(_hti({tipo = _TIPO_ERR_SPEC, msg = string.format("La función validar ha lanzado un error validando %s: %s", nombre, tostring_seg(res))}), 2)
+            end
+            if res then
+                validado = true
+                break
+            else
+                -- Hacer algo con el mensaje de error
+            end
+        end
+
+        if not validado then
+            error(_hti({tipo = _TIPO_ERR_VALUE, msg = string.format("%sEl valor de %s no ha pasado ninguna función validar", msg, nombre)}), 2)
+        end
+    end
+
+    local post_procesar = type(spec.post_procesar) == "function" and { spec.post_procesar } or spec.post_procesar or {}
+    for _, pre_func in ipairs(post_procesar) do
+        local ok, res = pcall(pre_func, valor)
+        if not ok then
+            error(_hti({tipo = _TIPO_ERR_VALUE, msg = string.format("%sError en post_procesar de %s: %s", msg, nombre, tostring_seg(res))}), 2)
+        end
+        valor = res
+    end
+
+
+
     if type(args) ~= "table" then
         error("Los argumentos a comprobar deben estar en una tabla", 2)
     end
