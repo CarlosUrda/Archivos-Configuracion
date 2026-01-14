@@ -10,8 +10,11 @@ local _TIPO_ERR_ARG   = "E_ARG"
 local _TIPO_ERR_SPEC  = "E_SPEC"
 local _TIPO_ERR_VALUE = "E_VALUE"
 
+local TUtil = {}
+TUtil.__index = TUtil
+local _prv = {}
 
--- Copiar una tabla de forma recursiva. Uso interno (no comprueba consistencia de argumentos).
+-- Copiar una tabla de forma recursiva (no comprueba consistencia de argumentos).
 -- @param tabla table Tabla a copiar
 -- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. Si nil = false
 -- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. Si nil = false
@@ -21,7 +24,7 @@ local _TIPO_ERR_VALUE = "E_VALUE"
 -- -- Si es negativo se realiza copia recursiva ilimitada.
 -- @param tablas_vistas table Tabla usada internamente para evitar ciclos en la copia recursiva.
 -- @return table Copia recursiva de la tabla. Si la entrada no es una tabla, se devuelve el valor tal cual.
-local function _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+function _prv[TUtil]._copiar_unsafe(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
     if type(tabla) ~= "table" then
         return tabla
     end
@@ -57,14 +60,26 @@ local function _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia
     return copia
 end
 
--- Copiar una tabla de forma superficial (sin copia recursiva). Uso interno (no comprueba consistencia de argumentos).
--- @param tabla table Tabla a copiar.
--- @return table Copia superficial de la tabla.
-local function _copiar_tabla_shallow(tabla)
-    return _copiar_tabla(tabla, false, false, 0, {})
+
+function TUtil:copiar_unsafe(copia_claves, copia_valores, nivel_max_copia)
+    return _prv[TUtil]._copiar_unsafe(self, copia_claves, copia_valores, nivel_max_copia, {})
 end
 
 
+-- Copiar una tabla de forma superficial (sin copia recursiva - no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar.
+-- @return table Copia superficial de la tabla.
+function TUtil:copiar_shallow_unsafe()
+    return _prv[TUtil]._copiar_unsafe(self, false, false, 0, {})
+end
+
+
+-- Copiar una tabla de forma superficial (sin copia recursiva - no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar.
+-- @return table Copia superficial de la tabla.
+function TUtil:copiar_shallow()
+    return self:copiar(false, false, 0)
+end
 
 -- Copiar una tabla.
 -- @param tabla table Tabla a copiar
@@ -76,8 +91,8 @@ end
 -- -- Si es negativo se realiza copia recursiva ilimitada.
 -- @return table Copia de la tabla.
 -- @throws Error si la entrada no es una tabla, o si los parámetros no son del tipo adecuado.
-local function copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia)
-    if type(tabla) ~= "table" then
+function TUtil:copiar(copia_claves, copia_valores, nivel_max_copia)
+    if type(self) ~= "table" then
         error("La entrada no es una tabla", 2)
     end
 
@@ -93,7 +108,7 @@ local function copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia)
         error(_hti({tipo = _TIPO_ERR_ARG, msg = "El parámetro nivel_max_copia debe ser un número entero"}), 2)
     end
 
-    return _copiar_tabla(tabla, copia_claves, copia_valores, nivel_max_copia, {})
+    return _prv[TUtil]._copiar_unsafe(self, copia_claves, copia_valores, nivel_max_copia, {})
 end
 
 
