@@ -74,12 +74,6 @@ function TUtil:copiar_shallow_unsafe()
 end
 
 
--- Copiar una tabla de forma superficial (sin copia recursiva - no comprueba consistencia de argumentos).
--- @param tabla table Tabla a copiar.
--- @return table Copia superficial de la tabla.
-function TUtil:copiar_shallow()
-    return self:copiar(false, false, 0)
-end
 
 -- Copiar una tabla.
 -- @param tabla table Tabla a copiar
@@ -112,24 +106,26 @@ function TUtil:copiar(copia_claves, copia_valores, nivel_max_copia)
 end
 
 
+-- Copiar una tabla de forma superficial (sin copia recursiva - no comprueba consistencia de argumentos).
+-- @param tabla table Tabla a copiar.
+-- @return table Copia superficial de la tabla.
+function TUtil:copiar_shallow()
+    return self:copiar(false, false, 0)
+end
 
--- Hacer que una tabla sea imprimible como cadena de texto. Uso interno (no comprueba consistencia de argumentos).
--- @param tabla table Tabla a hacer imprimible.
+
+-- Hacer que una tabla sea imprimible como cadena de texto (no comprueba consistencia de argumentos, aunque
+-- la tabla sí debe dejar modificar su metatabla).
 -- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
--- @param lanza_errores boolean|nil Si no se puede acceder o modificar la metatabla, indica qué debe hacer:
--- -- Si es true lanza errores.
--- -- Si es false/nil, devuelve la tabla sin la metatabla modificada (no imprimible)
--- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si no se puede
--- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original y un mensaje de error.
-
-local function _hacer_tabla_imprimible(tabla, copia_metatabla, lanza_errores)
-    local metatabla = getmetatable(tabla) or {}
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto.
+-- @throws table {tipo = string, msg = string}
+-- -- Si la tabla no se puede hacer imprimible modificando su metatabla, se lanza error.
+-- -- tipo es error de argumento ERR_ARG
+-- -- msg es el mensaje con la descripción del error.
+function TUtil:hacer_imprimible_unsafe(copia_metatabla)
+    local metatabla = getmetatable(self) or {}
     if type(metatabla) ~= "table" then
-        if lanza_errores then
-            error({tipo = _TIPO_ERR_ARG, msg = "No se puede acceder a la metatabla: ésta no es una tabla"}, 2)
-        else
-            return tabla, "No se puede acceder a la metatabla: ésta no es una tabla"
-        end
+        error({tipo = _TIPO_ERR_ARG, msg = "No se puede acceder a la metatabla: ésta no es una tabla"}, 2)
     end
 
     if copia_metatabla then
@@ -138,43 +134,85 @@ local function _hacer_tabla_imprimible(tabla, copia_metatabla, lanza_errores)
 
     metatabla.__tostring = vim.inspect
     metatabla.__concat = function(a, b) return tostring(a) .. tostring(b) end
-    local ok, err = pcall(setmetatable, tabla, metatabla)
+    local ok, err = pcall(setmetatable, self, metatabla)
     if not ok then
-        if lanza_errores then
-            error({tipo = _TIPO_ERR_ARG, msg = string.format("No se puede asignar la metatabla a la tabla: %s", tostring_seg(err))}, 2)
-        else
-            return tabla, string.format("No se puede asignar la metatabla a la tabla: %s", tostring_seg(err))
-        end
+        error({tipo = _TIPO_ERR_ARG, msg = string.format("No se puede asignar la metatabla a la tabla: %s", tostring_seg(err))}, 2)
     end
 
-    return tabla
+    return self
 end
 
+
+-- Hacer que una tabla sea imprimible como cadena de texto (no comprueba consistencia de argumentos).
+-- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
+-- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si no se puede
+-- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original y un mensaje de error.
+function TUtil:hacer_imprimible_try_unsafe(copia_metatabla)
+    local ok, res, err = pcall(self.hacer_imprimible_unsafe, self, copia_metatabla)
+    if not ok then
+        return self, res.msg
+    end
+
+    return self
+end
+
+
 -- Hacer que una tabla sea imprimible como cadena de texto.
--- @param tabla table Tabla a hacer imprimible. Debe poder modificarse su metatabla.
 -- @param copia_metatabla boolean|nil Indica si se debe crear una copia de la metatabla existente. Si es nil
 -- o no se pasa valor se toma por defecto false.
--- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si la tabla ya
--- -- tenía metatabla, se le añaden los métodos __tostring y __concat, sobrescribiéndolos si ya existían.
+-- @param try boolean Si true y la tabla no se puede hacer imprimible no lanza ningún error y devuelve
+-- -- la propia tabla. Si false lanza error al no poder hacerla imprimible. Esto no afecta a la comprobación
+-- -- de los argumentos de entrada.
+-- @return table Si try es true, tabla original con metatabla que permite imprimirla como cadena de texto.
+-- -- Si la tabla ya tenía metatabla, se le añaden los métodos __tostring y __concat, sobrescribiéndolos si 
+-- -- ya existían.
 -- -- Si no tenía metatabla, se crea una nueva metatabla con esos métodos.
--- @throws Error si los argumentos no son del tipo adecuado, o si no se puede asignar la metatabla a la tabla.
-local function hacer_tabla_imprimible(tabla, copia_metatabla)
-    if type(tabla) ~= "table" then
+-- @throws Si try es nil/false Error tipo ERR_ARG si los argumentos no son del tipo adecuado, o error
+-- tipo ERR_VALUE si no se puede asignar o modificar la metatabla de la tabla.
+function TUtil:hacer_imprimible(copia_metatabla, try)
+    if type(self) ~= "table" then
         error({tipo = _TIPO_ERR_ARG, msg = "La entrada no es una tabla"}, 2)
     end
     if copia_metatabla ~= nil and type(copia_metatabla) ~= "boolean" then
         error({tipo = _TIPO_ERR_ARG, msg = "El parámetro copia_metatabla debe ser boolean o nil/vacío"}, 2)
     end
 
-    return _hacer_tabla_imprimible(tabla, copia_metatabla, true)
+    if try then
+        return self:hacer_imprimible_try_unsafe(copia_metatabla) 
+    else
+        return self:hacer_imprimible_unsafe(copia_metatabla)
+    end
+
 end
 
--- Versión rápida de hacer_tabla_imprimible sin copia de metatabla y sin lanzar errores. Uso interno.
--- @param tabla table Tabla a hacer imprimible.
+
+-- Versión rápida de hacer_tabla_imprimible sin copia de metatabla, sin comprobar argumentos y sin lanzar errores.
 -- @return table Tabla original con metatabla que permite imprimirla como cadena de texto. Si no se puede
--- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original.
-local function _hti(tabla) 
-    return _hacer_tabla_imprimible(tabla, false, false)
+-- -- modificar o asignar la metatabla de la tabla, devuelve la tabla original y un mensaje de error.
+function TUtil:hitu() 
+    return self:hacer_imprimible_try_unsafe(false, false)
+end
+
+
+-- Busca un valor entre los valores de una tabla (no comprueba argumentos)
+-- @param valor any valor a comprobar si existe dentro de la tabla
+-- @return boolean true o false si encuentra el valor o no.
+function TUtil:contiene_unsafe(valor)
+    for _, v in pairs(self) do
+        if v == valor then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+function TUtil:contiene(valor)
+    if type(self) ~= "table" then
+        error({tipo = _TIPO_ERR_ARG, msg = "La entrada no es una tabla"}, 2)
+    end
+    return self:contiene_unsafe(valor)
 end
 
 
