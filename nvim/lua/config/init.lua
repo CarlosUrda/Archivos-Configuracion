@@ -14,7 +14,7 @@ local TUtil = {}
 TUtil.__index = TUtil
 local _prv = {}
 
--- Copiar una tabla de forma recursiva (no comprueba consistencia de argumentos).
+-- Clonar una tabla de forma recursiva (no comprueba consistencia de argumentos).
 -- @param tabla table Tabla a copiar
 -- @param copia_claves boolean|nil Indica si se deben copiar las claves de la tabla. Si nil = false
 -- @param copia_valores boolean|nil Indica si se deben copiar los valores de la tabla. Si nil = false
@@ -23,33 +23,41 @@ local _prv = {}
 -- -- Si es un número positivo N, se realiza copia recursiva hasta N niveles.
 -- -- Si es negativo se realiza copia recursiva ilimitada.
 -- @param tablas_vistas table Tabla usada internamente para evitar ciclos en la copia recursiva.
--- @return table Copia recursiva de la tabla. Si la entrada no es una tabla, se devuelve el valor tal cual.
-function _prv[TUtil]._copiar_unsafe(tabla, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
-    if type(tabla) ~= "table" then
-        return tabla
-    end
-
+-- @return table Copia recursiva de la tabla.
+function _prv[TUtil]._clonar_unsafe(tabla, copia_claves, copia_valores, nivel_max_copia, copia_metatabla, tablas_vistas)
     if tablas_vistas[tabla] then
         return tablas_vistas[tabla]
     end
 
     local copia = {}
     tablas_vistas[tabla] = copia
+    if copia_metatabla then
 
-    if nivel_max_copia ~= 0 then
+    end
+
+    if (copia_claves or copia_valores) and nivel_max_copia ~= 0 then
         if nivel_max_copia > 0 then
             nivel_max_copia = nivel_max_copia - 1
         end
 
-        for k, v in pairs(tabla) do
-            if copia_claves then
-                k = tablas_vistas[k] or _copiar_tabla(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+        local type, pairs, clonar_unsafe = type, pairs, _prv[TUtil]._clonar_unsafe
+        
+        if copia_claves and copia_valores then
+            for k, v in pairs(tabla) do
+                if type(k) == "table" then k = clonar_unsafe(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas) end
+                if type(v) == "table" then v = clonar_unsafe(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas) end
+                copia[k] = v
             end
-            if copia_valores then
-                v = tablas_vistas[v] or _copiar_tabla(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas)
+        elseif not copia_claves then
+            for k, v in pairs(tabla) do
+                if type(v) == "table" then v = clonar_unsafe(v, copia_claves, copia_valores, nivel_max_copia, tablas_vistas) end
+        copia[k] = v
             end
-
-            copia[k] = v
+        else
+            for k, v in pairs(tabla) do
+                if type(k) == "table" then k = clonar_unsafe(k, copia_claves, copia_valores, nivel_max_copia, tablas_vistas) end
+                copia[k] = v
+            end
         end
     else
         for k, v in pairs(tabla) do
@@ -216,7 +224,26 @@ function TUtil:contiene(valor)
 end
 
 
--- Comprobar si un valor es de un tipo determinado.
+-- Comprobar si el nombre de un tipo es válido (uno de los tipos existentes)
+-- @param tipo string Nombre del tipo a comprobar.
+-- @return boolean true si el nombre del tipo es válido.
+local function nombre_tipo_valido(tipo)
+    return tipo == "nil" or tipo == "string" or tipo == "table" or tipo == "number" or tipo == "boolean" or tipo == "function" or 
+        tipo == "userdata" or tipo == "thread"
+end
+
+
+-- Comprobar si un valor es igual a otro valor, dando la posibilidad de aceptar nil. 
+-- @param valor any Valor a comprobar
+-- @param valor_cmp any Valor con el cual comparar.
+-- @param nil_valido boolean|nil Indica si se admite el valor nil como válido. Por defecto inválido.
+-- @return boolean true si los valóres son iguales o es nil y nil_valido es true.
+-- @throws Error si los argumentos no son del tipo adecuado.
+local function es_valor(valor, valor_cmp, nil_valido)
+end
+
+
+-- Comprobar si un valor es igual a otro valor
 -- @param valor any Valor a comprobar
 -- @param tipo string Tipo esperado del valor (según devuelve type())
 -- @param nil_valido boolean|nil Indica si se admite el valor nil como válido. Por defecto inválido.
@@ -233,14 +260,6 @@ local function es_tipo(valor, tipo, nil_valido)
     return type(valor) == tipo or (nil_valido and valor == nil)
 end
 
-
--- Comprobar si el nombre de un tipo es válido (uno de los tipos existentes)
--- @param tipo string Nombre del tipo a comprobar.
--- @return boolean true si el nombre del tipo es válido.
-local function nombre_tipo_valido(tipo)
-    return tipo == "nil" or tipo == "string" or tipo == "table" or tipo == "number" or tipo == "boolean" or tipo == "function" or 
-        tipo == "userdata" or tipo == "thread"
-end
 
 
 -- Validar la especificación con la información de una varible en la función validar.
