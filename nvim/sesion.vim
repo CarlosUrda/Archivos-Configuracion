@@ -3,7 +3,7 @@ let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-
 let v:this_session=expand("<sfile>:p")
 silent only
 silent tabonly
-cd ~/repos/Archivos-Configuracion/nvim
+cd ~/Desarrollo/Archivos-Configuracion/nvim
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
@@ -13,50 +13,15 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +42 scripts.lua
-badd +8 ajustes.lua
-badd +9 ~/Desarrollo/Archivos-Configuracion/nvim/init.lua
-badd +9 lazy/opts.lua
-badd +3 lazy/plugins.lua
-badd +1 lualine/opts.lua
-badd +1 ~/Desarrollo/Archivos-Configuracion/nvim/lua/plugins/lualine.lua
-badd +1 ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/lazy.lua
-badd +9 ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/init.lua
-badd +4 ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/autoload.lua
-badd +1 init_config.lua
-badd +1 8
-badd +12 init.lua
-badd +1 ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lualine/opts.lua
-badd +0 ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lazy/opts.lua
-badd +0 lua/config/init.lua
+badd +1 lua/config/init.lua
+badd +0 lib/tutil.lua
+badd +0 lib/error.lua
 argglobal
 %argdel
-$argadd 8
 set stal=2
-tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit lua/config/init.lua
-argglobal
-balt init.lua
-setlocal foldmethod=manual
-setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 299 - ((58 * winheight(0) + 49) / 99)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 299
-normal! 045|
-tabnext
-edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lualine/opts.lua
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -73,12 +38,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 1resize ' . ((&columns * 60 + 99) / 199)
-exe '2resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 2resize ' . ((&columns * 59 + 99) / 199)
+exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
 argglobal
-balt ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/init.lua
+balt lua/config/init.lua
 setlocal foldmethod=manual
 setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
 setlocal foldmarker={{{,}}}
@@ -89,7 +52,7 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
+let s:l = 1 - ((0 * winheight(0) + 33) / 66)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -97,13 +60,13 @@ keepjumps 1
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("~/Desarrollo/Archivos-Configuracion/nvim/lua/plugins/lualine.lua", ":p")) | buffer ~/Desarrollo/Archivos-Configuracion/nvim/lua/plugins/lualine.lua | else | edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/plugins/lualine.lua | endif
+if bufexists(fnamemodify("lib/tutil.lua", ":p")) | buffer lib/tutil.lua | else | edit lib/tutil.lua | endif
 if &buftype ==# 'terminal'
-  silent file ~/Desarrollo/Archivos-Configuracion/nvim/lua/plugins/lualine.lua
+  silent file lib/tutil.lua
 endif
-balt ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/autoload.lua
+balt lua/config/init.lua
 setlocal foldmethod=manual
-setlocal foldexpr=0
+setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
 setlocal foldmarker={{{,}}}
 setlocal foldignore=#
 setlocal foldlevel=0
@@ -112,19 +75,17 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
+let s:l = 1 - ((0 * winheight(0) + 33) / 66)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 1resize ' . ((&columns * 60 + 99) / 199)
-exe '2resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 2resize ' . ((&columns * 59 + 99) / 199)
+exe 'vert 1resize ' . ((&columns * 136 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 136 + 136) / 273)
 tabnext
-edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/bootstrap/lazy.lua
+edit lib/error.lua
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -141,35 +102,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 1resize ' . ((&columns * 46 + 99) / 199)
-exe '2resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 2resize ' . ((&columns * 73 + 99) / 199)
+exe 'vert 1resize ' . ((&columns * 135 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 137 + 136) / 273)
 argglobal
-balt ~/Desarrollo/Archivos-Configuracion/nvim/init.lua
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 1
-normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lazy/opts.lua", ":p")) | buffer ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lazy/opts.lua | else | edit ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lazy/opts.lua | endif
-if &buftype ==# 'terminal'
-  silent file ~/Desarrollo/Archivos-Configuracion/nvim/lua/config/lazy/opts.lua
-endif
-balt ~/Desarrollo/Archivos-Configuracion/nvim/init.lua
+balt lib/tutil.lua
 setlocal foldmethod=manual
 setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
 setlocal foldmarker={{{,}}}
@@ -180,18 +116,39 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 13) / 27)
+let s:l = 48 - ((47 * winheight(0) + 33) / 66)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 48
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 1resize ' . ((&columns * 46 + 99) / 199)
-exe '2resize ' . ((&lines * 27 + 51) / 102)
-exe 'vert 2resize ' . ((&columns * 73 + 99) / 199)
-tabnext 1
+argglobal
+if bufexists(fnamemodify("lib/error.lua", ":p")) | buffer lib/error.lua | else | edit lib/error.lua | endif
+if &buftype ==# 'terminal'
+  silent file lib/error.lua
+endif
+balt lib/tutil.lua
+setlocal foldmethod=manual
+setlocal foldexpr=v:lua.vim.treesitter.foldexpr()
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 9 - ((8 * winheight(0) + 33) / 66)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 9
+normal! 05|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 135 + 136) / 273)
+exe 'vert 2resize ' . ((&columns * 137 + 136) / 273)
+tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -207,6 +164,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
