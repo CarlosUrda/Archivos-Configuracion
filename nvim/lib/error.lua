@@ -1,3 +1,6 @@
+-- Hacer funciones hacer_imprimible y hacer_constante en el módulo TUtil.
+-- Este módulo debe ser constante y los errores lanzados deben ser imprimibles.
+
 local E = {}
 local _prv = {}
 
@@ -24,12 +27,15 @@ _prv[E]_TIPO = {
             msg = "Valor inválido",
         }
         META = {
-            msg = "Error al preparar el lanzamiento de un error"
+            msg = "Error al preparar el lanzamiento de un error",
+            ARG = _prv[E].TIPO.ERR.ARG,
+            TIPO = _prv[E].TIPO.ERR.TIPO,
+            VALOR = _prv[E].TIPO.ERR.VALOR,
         },
         ARG = {
             msg  = "Inconsistencia en argumento",
-            TIPO = E.TIPO.TIPO,
-            VALOR = E.TIPO.VALOR,
+            TIPO = _prv[E].TIPO.ERR.TIPO,
+            VALOR = _prv[E].TIPO.ERR.VALOR,
         }
     }
 }
@@ -38,6 +44,32 @@ _prv[E]_TIPO = {
 -- @param 
 function E.es_entero(numero)
     return type(numero) == "number" and math.floor(numero) ~= numero
+end
+
+
+-- Comprobar si un valor es igual a otro valor, dando la posibilidad de aceptar nil. 
+-- @param valor any Valor a comprobar
+-- @param valor_cmp any Valor con el cual comparar.
+-- @param nil_valido boolean|nil Indica si se admite el valor nil como válido. Por defecto inválido.
+-- @return boolean true si los valóres son iguales, o es nil y nil_valido es true.
+-- @throws Error si los argumentos no son del tipo adecuado.
+local function es_valor(valor, valor_cmp, nil_valido)
+    return valor == valor_cmp or (nil_valido ~= false and nil_valido ~= nil)
+end
+
+
+-- Comprobar si un valor es igual a otro valor
+-- @param valor any Valor a comprobar
+-- @param tipo string Tipo esperado del valor (según devuelve type())
+-- @param nil_valido boolean|nil Indica si se admite el valor nil como válido. Por defecto inválido.
+-- @return boolean true si el valor es del tipo esperado o es nil y nil_valido es true.
+-- @throws Error si los argumentos no son del tipo adecuado.
+local function es_tipo(valor, tipo, nil_valido)
+    assertf_dbg(type(tipo) ~= "string", "ERR.META.ARG.TIPO",
+        "El segundo argumento (tipo a comprobar) debe ser string", "STRING_ESPERADO", 
+        {var = "tipo", val = tipo}, 3)
+    
+    return type(valor) == tipo or (nil_valido and valor == nil)
 end
 
 
@@ -74,6 +106,8 @@ function E.crear_err(tipo, codigo, msg, extra)
             info = {var = "msg", val = msg}
         })
     end
+
+    -- El error creado debe ser imprimible.
 end
 
 
