@@ -88,7 +88,7 @@ end
 
 -- Cambiar el flag debug para ejecutar el módulo en modo debug.
 -- @param estado any Valor del estado considerado como boolean.
--- @return boolean el estado promocionado a boolean.
+-- @return boolean Valor de estado promocionado a boolean.
 function E.cambiar_debug(estado)
     _prv[E].debug = E.es_true(estado)
 
@@ -101,10 +101,10 @@ end
 -- @throws {tipo, msg, codigo, {var, val, , subval, fun}}
 function _prv[E].obtener_msg(tipo_err)
     local extra = {var = "tipo_err", val = tipo_err, fun = "E.obtener_msg"}
-    assertf_dbg(type(tipo_err) == "string", "ERR.META.ARG.TIPO", "El primer argumento (tipo de error) debe ser string", "STRING_ESPERADO", extra, 2)
+    assertf_dbg(type(tipo_err) == "string", "ERR.META.ARG.TIPO", "El primer argumento (tipo_err) debe ser string", "STRING_ESPERADO", extra, 2)
 
     local tipo_err_norm = tipo_err:match("^%s*([%w_]+(%.[%w_]+)*)%s*$") 
-    assertf_dbg(tipo_err_norm ~= nil, "ERR.META.ARG.VALOR", "El primer argumento (tipo de error) debe estar en formato correcto", "FORMATO_INVALIDO", 2)
+    assertf_dbg(tipo_err_norm ~= nil, "ERR.META.ARG.VALOR", "El primer argumento (tipo_err) debe estar en formato correcto", "FORMATO_INVALIDO", extra, 2)
     tipo_err_norm = tipo_err_norm:upper()
 
     local msg = ""
@@ -112,7 +112,7 @@ function _prv[E].obtener_msg(tipo_err)
     for subtipo_err in string.gmatch(tipo_err_norm, "[_%w]+") do
         extra.subval = subtipo_err
         local info_subtipo_err = info_tipo_err[subtipo_err]
-        assertf_dbg(type(info_subtipo_err) == "table", "ERR.META.ARG.VALOR", "El subtipo de error %s del primer argumento (tipo de error) no es un tipo predefinido":format(subtipo_err), "SUBVALOR_INVALIDO", extra, 2) 
+        assertf_dbg(type(info_subtipo_err) == "table", "ERR.META.ARG.VALOR", "El subtipo de error %s del primer argumento (tipo_err) no es un tipo predefinido":format(subtipo_err), "TIPO_ERR_INVALIDO", extra, 2) 
         msg_subtipo = info_subtipo_err.msg
         assertf_dbg(type(msg_subtipo) == "string", "ERR.META.SPEC", "El campo msg por defecto del subtipo de error %s no es una cadena":format(subtipo_err), "STING_ESPERADO", extra, 2) 
         msg = msg .. msg_subtipo .. ":"
@@ -148,35 +148,40 @@ function E.crear_err(tipo, codigo, msg, extra)
 end
 
 
-
-function raise(tipo, msg, codigo, extra, nivel)
-    err = crear_err(tipo, msg, codigo, extra)
-    if nivel == nil then
-        nivel = 2
-    else
-        assertf(E.es_entero(nivel), )
+function E.error(err, nivel)
+    if nivel ~= nil then 
+        if not E.es_entero(nivel) then
+            error({"ERR.META.ARG.TIPO", "El parametro nivel debe ser un entero", "ENTERO_ESPERADO", {var = "nivel", val = nivel, fun = "E.error"}}, 2)
+        elseif nivel < 0 then
+            error({"ERR.META.ARG.VALOR", "El parametro nivel debe ser >= 0", "ENTERO_>=0_ESPERADO", {var = "nivel", val = nivel, fun = "E.error"}}, 2)
+        end
     end
-    
-end
-
-
-function E.assertf(cond, info, nivel)
-    assertf_dbg(E.es_entero(nivel), 
-        function() return {"ERR.META.ARG.TIPO", "El tercer parametro (nivel) debe ser un entero", "ENTERO_ESPERADO",
-            {var = "nivel", val = nivel, fun = "E.assertf"} end, 2)
-
-    if cond then return end
-
-    if type(info) == "function" then
-        err = info()
-    else
-        err = info
-
     error(err, nivel)
 end
 
 
-function E.assertf(cond, tipo, msg, codigo, extra, nivel)
+function E.errort(tipo, msg, codigo, extra, nivel)
+    local err = crear_err(tipo, msg, codigo, extra)
+    E.error(err, nivel) 
+end
+
+
+function E.error_cond(cond, err, nivel)
+    if cond then return end
+
+    if type(err) == "function" then
+        err = err()
+    end
+
+    E.error(err, nivel)
+end
+
+
+function E.error_condt(cond, tipo, msg, codigo, extra, nivel)
+    if cond then return end
+    E.errort(tipo, msg, codigo, extra, nivel)
+end
+
 
 function _prv[E].validar_info(info)
 
